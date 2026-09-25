@@ -1,6 +1,8 @@
 # Vivienda sobre planos
 Tu cuota inicial solo se mueve cuando la obra avanza
 
+**Versión interactiva:** [Ver artefacto en Claude](https://claude.ai/artifact/U6cxxHBvKfxxKoteM2CeAt)
+
 ---
 
 ## Decisión del problema
