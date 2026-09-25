@@ -1,4 +1,4 @@
-# Propuesta individual — Fase 1
+# Propuesta individual: Fase 1
 
 **Johan Mateo Castañeda Mejía**
 Bootcamp Blockchain · Ruta N BAF · Red Stellar · Septiembre de 2026

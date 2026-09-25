@@ -1,4 +1,4 @@
-# Propuesta individual — Fase 1
+# Propuesta individual: Fase 1
 
 **Diana Carolina González Díaz**
 Bootcamp Blockchain · Ruta N BAF · Red Stellar · Septiembre de 2026
@@ -31,13 +31,13 @@ El momento crítico no es la firma ni la entrega: es el intervalo de dos o tres 
 
 Hoy la protección del comprador descansa en tres mecanismos, y ninguno le devuelve visibilidad sobre su dinero.
 
-**1. La fiducia inmobiliaria.** El dinero no va directo a la constructora sino a una fiduciaria que lo administra. En teoría es la garantía; en la práctica la fiduciaria verifica requisitos contractuales —punto de equilibrio, licencias, desembolsos— y no el avance físico de la obra. *Cuesta* entre el 1% y el 2% del valor del proyecto en comisiones, y aun así 11 fiduciarias acumularon 45 condenas entre 2025 y 2026.
+**1. La fiducia inmobiliaria.** El dinero no va directo a la constructora sino a una fiduciaria que lo administra. En teoría es la garantía; en la práctica la fiduciaria verifica requisitos contractuales (punto de equilibrio, licencias, desembolsos) y no el avance físico de la obra. *Cuesta* entre el 1% y el 2% del valor del proyecto en comisiones, y aun así 11 fiduciarias acumularon 45 condenas entre 2025 y 2026.
 
 **2. La confianza en la marca.** El comprador investiga la reputación de la constructora y asume el riesgo por su cuenta. *Cuesta* el capital completo cuando la empresa se atrasa, quiebra o nunca inicia: en el caso de la constructora Avi, en Puerto Colombia, más de 200 personas pagaron desde 2014 un proyecto donde nunca se levantó una pared.
 
 **3. El seguimiento informal.** Llamadas, mensajes de WhatsApp y visitas a la obra los fines de semana. *Cuesta* tiempo y no resuelve el fondo: una visita muestra un día de los treinta que pasaron, y la información sigue dependiendo de lo que la constructora quiera contar.
 
-Cuando el proyecto falla empieza la ruta de reclamación —SIC, Superintendencia Financiera, Fiscalía, abogados—, que *cuesta* años y dinero adicional con baja probabilidad de recuperar el capital. Doña Leonor, de 75 años, invirtió $90 millones en 2014 en un apartamento cerca de Barranquilla que debía recibir en 2016; en 2023 seguía sin casa y sin su plata.
+Cuando el proyecto falla empieza la ruta de reclamación (SIC, Superintendencia Financiera, Fiscalía, abogados), que *cuesta* años y dinero adicional con baja probabilidad de recuperar el capital. Doña Leonor, de 75 años, invirtió $90 millones en 2014 en un apartamento cerca de Barranquilla que debía recibir en 2016; en 2023 seguía sin casa y sin su plata.
 
 El costo total se reparte en tres frentes:
 
@@ -51,9 +51,9 @@ El costo total se reparte en tres frentes:
 
 ## ¿Por qué creo que blockchain podría aportar?
 
-Mi hipótesis —y la planteo como hipótesis, no como conclusión— es que este caso encaja con dos de los criterios de pertinencia que revisamos en la Sesión 1.
+Lo que sigue lo planteo como hipótesis y no como conclusión: creo que este caso encaja con dos de los criterios de pertinencia que revisamos en la Sesión 1.
 
-**Varias partes que no confían entre sí necesitan compartir un mismo registro.** En un proyecto sobre planos intervienen al menos cuatro actores con intereses distintos: el comprador busca certeza, la constructora busca liquidez, la fiduciaria busca cumplir el contrato sin asumir riesgo operativo y el interventor certifica el avance. Hoy cada uno mantiene su propia versión de los hechos en sistemas separados, y el comprador —que es quien pone el dinero— es el único sin acceso a ninguno. Un registro compartido, donde el interventor publique el avance verificado y los desembolsos se liberen contra esa verificación, le daría a Laura la misma información que tienen los demás y al mismo tiempo.
+**Varias partes que no confían entre sí necesitan compartir un mismo registro.** En un proyecto sobre planos intervienen al menos cuatro actores con intereses distintos: el comprador busca certeza, la constructora busca liquidez, la fiduciaria busca cumplir el contrato sin asumir riesgo operativo y el interventor certifica el avance. Hoy cada uno mantiene su propia versión de los hechos en sistemas separados, y el comprador, que es quien pone el dinero, es el único sin acceso a ninguno. Un registro compartido, donde el interventor publique el avance verificado y los desembolsos se liberen contra esa verificación, le daría a Laura la misma información que tienen los demás y al mismo tiempo.
 
 **El histórico no puede alterarse.** El avance de obra es hoy un relato que controla quien lo emite: el render se repite, la fecha de entrega se corre y no queda rastro verificable de lo que se prometió en cada momento. Si cada hito quedara registrado de forma inmutable, con fecha y evidencia asociada, el comprador podría detectar la desviación en el mes en que ocurre y no dos años después, cuando ya no hay nada que recuperar.
 
@@ -65,10 +65,10 @@ Lo que sí me parece sólido es el punto de partida: hay un problema real, con v
 
 ## Fuentes consultadas
 
-- Cablenoticias (mayo de 2026) — viviendas sin entregar en Colombia.
-- El Heraldo (marzo de 2026) — cifras de la SIC y de la Superintendencia Financiera; declaraciones de la Lonja de Propiedad Horizontal del Atlántico.
-- Semana (agosto de 2025) — caso Acierto Inmobiliario.
-- El Tiempo (septiembre de 2026) — condena por proyecto falso en Antioquia.
-- Infobae (marzo de 2024) — constructora en Santander.
-- Pulzo (2023) — caso Avi en Puerto Colombia y otros proyectos señalados.
-- Decreto 0510 de 2026 — reglas de información y control para la fiducia inmobiliaria.
+- Cablenoticias (mayo de 2026): viviendas sin entregar en Colombia.
+- El Heraldo (marzo de 2026): cifras de la SIC y de la Superintendencia Financiera; declaraciones de la Lonja de Propiedad Horizontal del Atlántico.
+- Semana (agosto de 2025): caso Acierto Inmobiliario.
+- El Tiempo (septiembre de 2026): condena por proyecto falso en Antioquia.
+- Infobae (marzo de 2024): constructora en Santander.
+- Pulzo (2023): caso Avi en Puerto Colombia y otros proyectos señalados.
+- Decreto 0510 de 2026: reglas de información y control para la fiducia inmobiliaria.

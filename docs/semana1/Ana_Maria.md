@@ -1,4 +1,4 @@
-# Propuesta individual — Fase 1
+# Propuesta individual: Fase 1
 
 **Ana María García Arias**
 Bootcamp Blockchain · Ruta N BAF · Red Stellar · Septiembre de 2026

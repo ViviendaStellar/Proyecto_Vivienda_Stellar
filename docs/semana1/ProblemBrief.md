@@ -224,7 +224,7 @@ Tu plata avanza al mismo ritmo que tu apartamento.
 
 ---
 
-Datos: Superintendencia de Industria y Comercio, Superintendencia Financiera y prensa nacional (2023–2026).
+Datos: Superintendencia de Industria y Comercio, Superintendencia Financiera y prensa nacional (2023-2026).
 
 Equipo: Diana Carolina González Díaz, Ana María García Arias, Johan Mateo Castañeda Mejía, Julián Correa.
 
