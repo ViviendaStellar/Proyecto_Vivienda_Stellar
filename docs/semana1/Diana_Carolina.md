@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📋 Propuesta individual: Fase 1
+# Propuesta individual: Fase 1
 ## Diana Carolina González Díaz
 
 </div>
