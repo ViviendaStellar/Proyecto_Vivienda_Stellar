@@ -47,7 +47,6 @@ Familias de Colombia pierden el control de sus ahorros cuando pagan cuota inicia
 | Diana Carolina González Díaz | Product Manager | Coordinación general y decisión del problema |
 | Ana María García Arias | Research | Validación de supuestos con fiduciarias |
 | Johan Mateo Castañeda Mejía | Product | Diseño del flujo actual y oportunidad |
-| Jorge Iván Gómez Restrepo | Technical Lead | Arquitectura blockchain e integración |
 | Julián Correa | Design | Experiencia del comprador en aplicación |
 
 **Canal de coordinación:** Slack / WhatsApp grupal
@@ -227,6 +226,6 @@ Tu plata avanza al mismo ritmo que tu apartamento.
 
 Datos: Superintendencia de Industria y Comercio, Superintendencia Financiera y prensa nacional (2023–2026).
 
-Equipo: Diana Carolina González Díaz, Ana María García Arias, Johan Mateo Castañeda Mejía, Jorge Iván Gómez Restrepo, Julián Correa.
+Equipo: Diana Carolina González Díaz, Ana María García Arias, Johan Mateo Castañeda Mejía, Julián Correa.
 
 Septiembre 2026
