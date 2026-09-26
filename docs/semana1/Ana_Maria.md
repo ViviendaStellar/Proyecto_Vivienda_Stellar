@@ -61,58 +61,7 @@ Lo que **no** afirmo es que la tecnología resuelva el problema por sí sola. El
 
 ---
 
-## Decisión del problema
-
-### Problema elegido
-
-Plantas termoeléctricas y comercializadores industriales de carbón arriesgan la operación de sus calderas y enfrentan sanciones legales al no poder verificar en tiempo real el origen legal y la calidad exacta de los lotes de carbón que ingresan a su patio de acopio.
-
-**Propuesto por:** Ana María García Arias
-
-### Por qué elegimos este
-
-- **Fricción económica y operativa de alto impacto:** El ingreso de carbón fuera de especificación (alto en azufre, humedad o cenizas) destruye molinos y tuberías de calderas, causando paradas no programadas que cuestan cientos de miles de dólares por día.
-- **Riesgo regulatorio y de cumplimiento (Compliance):** Las autoridades minero-ambientales (como la ANM) exigen trazabilidad de origen legal de cada tonelada. Un título minero clonado o dudoso expone a la planta a investigaciones por contrabando y minería ilegal.
-- **Tiempos muertos entre báscula y laboratorio:** El camión descarga en el patio de acopio en minutos, pero los resultados del análisis de laboratorio tardan entre 24 y 48 horas. Para cuando se detecta el incumplimiento, el mineral ya fue mezclado en la pila.
-- **Blockchain resuelve la raíz:** Actúa como un notario imparcial inalterable entre dos partes con intereses financieros opuestos (Comprador/Termoeléctrica vs. Proveedor/Minero), donde ninguno confía en la base de datos privada del otro.
-
-### Propuestas descartadas
-
-- *Notarización genérica de contratos en PDF:* Descartada por ser un caso de uso común sin un nicho operativo con dolor financiero directo.
-- *Plataforma de fidelización/puntos para multinivel:* Descartada para priorizar un problema de infraestructura crítica B2B de alto volumen.
-
-### Cómo tomamos la decisión
-
-- Consenso del equipo al identificar la asimetría de información y el alto riesgo operativo en la recepción de combustibles para generación térmica.
-
----
-
-## Problem Brief
-
-### Encabezado
-
-**Proyecto:** Proof-of-Coal (Trazabilidad de Origen y Calidad de Carbón)
-
-**Frase descriptiva:** Transparencia e inmutabilidad en la cadena de custodia del combustible desde la mina hasta la caldera.
-
----
-
-### Equipo y roles
-
-| Integrante | Rol | Responsabilidad |
-|---|---|---|
-| Ana María García Arias | Product / Research | Definición del flujo operativo, reglas de calidad y contexto minero |
-| [Nombre Integrante 2] | Product Manager | Coordinación general y estructuración de la propuesta |
-| [Nombre Integrante 3] | UX/UI Design | Diseño de la experiencia liviana (WhatsApp / Web) para el proveedor y báscula |
-| [Nombre Integrante 4] | Tech Lead / Dev | Integración del contrato inteligente de trazabilidad y anclaje en Stellar |
-
-**Canal de coordinación:** WhatsApp / Slack grupal
-
-**Responsable de entregas:** Ana María García Arias
-
----
-
-### Problema y evidencia
+## Problema y evidencia
 
 **Enunciado:**
 
@@ -130,7 +79,7 @@ El problema afecta a plantas termoeléctricas de generación térmica, centros d
 
 ---
 
-### Flujo actual de valor
+## Flujo actual de valor
 
 **Cómo se mueve el carbón hoy:**
 
@@ -147,7 +96,7 @@ El problema afecta a plantas termoeléctricas de generación térmica, centros d
 
 ---
 
-### Fricciones identificadas
+## Fricciones identificadas
 
 | Fricción | Paso | Causa raíz | A quién afecta |
 |---|---|---|---|
@@ -158,7 +107,7 @@ El problema afecta a plantas termoeléctricas de generación térmica, centros d
 
 ---
 
-### Oportunidad e hipótesis
+## Oportunidad e hipótesis
 
 **Oportunidad priorizada:**
 
@@ -182,7 +131,7 @@ Si el Jefe de Combustible pudiera congelar en blockchain la huella criptográfic
 
 ---
 
-### Criterio de pertinencia
+## Criterio de pertinencia
 
 **¿Por qué blockchain y no una base de datos tradicional o integración de sistemas?**
 
@@ -200,7 +149,7 @@ Blockchain es estrictamente necesario porque resuelve un problema de **confianza
 
 ---
 
-### Supuestos y riesgos
+## Supuestos y riesgos
 
 | Supuesto | Cómo validarlo | Riesgo si es falso |
 |---|---|---|
@@ -216,6 +165,6 @@ Tu combustible sellado, tu caldera segura y tu operación auditable.
 
 ---
 
-Equipo: Ana María García Arias, [Integrante 2], [Integrante 3], [Integrante 4].
+Ana María García Arias
 
 Septiembre 2026
