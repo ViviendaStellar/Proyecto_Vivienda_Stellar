@@ -49,21 +49,21 @@ Para ordenar las historias me hice una sola pregunta: ¿qué pasa si entregamos 
 
 | Nivel | Qué significa |
 |:---|:---|
-| **Imprescindible** | Sin esto el producto no sirve. El problema sigue igual que hoy |
-| **Debería** | El producto funciona sin esto, pero la compradora corre un riesgo que podíamos evitarle |
-| **Podría** | Le facilita el trabajo a otro actor. A la compradora no le cambia el resultado |
-| **Queda fuera** | Es útil, pero no hace falta para demostrar que la solución funciona |
+| 🔴 **Imprescindible** | Sin esto el producto no sirve. El problema sigue igual que hoy |
+| 🟠 **Debería** | El producto funciona sin esto, pero la compradora corre un riesgo que podíamos evitarle |
+| 🟡 **Podría** | Le facilita el trabajo a otro actor. A la compradora no le cambia el resultado |
+| ⚪ **Queda fuera** | Es útil, pero no hace falta para demostrar que la solución funciona |
 
 ### Resumen
 
 | | Código | Rol | Qué necesita poder hacer | Nivel |
 |:---:|:---:|:---|:---|:---|
-| 1 | **HU-D01** | Comprador | Que su cuota no salga hasta que se certifique la etapa | **Imprescindible** |
-| 2 | **HU-D02** | Interventor | Certificar una etapa con fotos fechadas | **Imprescindible** |
-| 3 | **HU-D03** | Comprador | Recibir un aviso cuando una etapa se atrasa | **Debería** |
-| 4 | **HU-D04** | Comprador | Saber cómo y cuándo puede recuperar su dinero | **Debería** |
-| 5 | **HU-D05** | Constructora | Pedir el pago de una etapa ya certificada | **Podría** |
-| 6 | **HU-D06** | Superintendencia | Revisar el historial del proyecto sin pedírselo a nadie | **Queda fuera** |
+| 1 | **HU-D01** | Comprador | Que su cuota no salga hasta que se certifique la etapa | 🔴 **Imprescindible** |
+| 2 | **HU-D02** | Interventor | Certificar una etapa con fotos fechadas | 🔴 **Imprescindible** |
+| 3 | **HU-D03** | Comprador | Recibir un aviso cuando una etapa se atrasa | 🟠 **Debería** |
+| 4 | **HU-D04** | Comprador | Saber cómo y cuándo puede recuperar su dinero | 🟠 **Debería** |
+| 5 | **HU-D05** | Constructora | Pedir el pago de una etapa ya certificada | 🟡 **Podría** |
+| 6 | **HU-D06** | Superintendencia | Revisar el historial del proyecto sin pedírselo a nadie | ⚪ **Queda fuera** |
 
 ### Por qué cada historia quedó en ese nivel
 
@@ -101,7 +101,7 @@ flowchart LR
 
 | Rol | Nivel de backlog |
 |:---|:---|
-| Comprador | Imprescindible |
+| Comprador | 🔴 Imprescindible |
 
 > **Como** compradora,
 > **quiero** que cada cuota que pago quede retenida y se libere a la constructora solo cuando el interventor certifique la etapa correspondiente,
@@ -113,7 +113,7 @@ flowchart LR
 
 | Rol | Nivel de backlog |
 |:---|:---|
-| Interventor | Imprescindible |
+| Interventor | 🔴 Imprescindible |
 
 > **Como** interventor,
 > **quiero** certificar la terminación de una etapa adjuntando fotografías fechadas y el reporte técnico que la respalda,
@@ -125,7 +125,7 @@ flowchart LR
 
 | Rol | Nivel de backlog |
 |:---|:---|
-| Comprador | Debería |
+| Comprador | 🟠 Debería |
 
 > **Como** compradora,
 > **quiero** recibir una alerta en el momento en que una etapa supera la fecha comprometida sin certificación,
@@ -137,7 +137,7 @@ flowchart LR
 
 | Rol | Nivel de backlog |
 |:---|:---|
-| Comprador | Debería |
+| Comprador | 🟠 Debería |
 
 > **Como** compradora,
 > **quiero** consultar en lenguaje claro qué tipo de contrato firmé y bajo qué condiciones puedo recuperar mi dinero,
@@ -149,7 +149,7 @@ flowchart LR
 
 | Rol | Nivel de backlog |
 |:---|:---|
-| Constructora | Podría |
+| Constructora | 🟡 Podría |
 
 > **Como** constructora,
 > **quiero** solicitar el desembolso de una etapa ya certificada y seguir el estado de esa solicitud,
@@ -161,7 +161,7 @@ flowchart LR
 
 | Rol | Nivel de backlog |
 |:---|:---|
-| Superintendencia de Industria y Comercio | Queda fuera |
+| Superintendencia de Industria y Comercio | ⚪ Queda fuera |
 
 > **Como** funcionario de la Superintendencia,
 > **quiero** consultar el histórico de certificaciones y desembolsos de un proyecto sin solicitárselo a la constructora ni a la fiduciaria,
