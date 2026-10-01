@@ -45,14 +45,14 @@ Los roles provienen de la tabla de actores del Problem Brief. Cada historia desc
 
 ### Niveles de backlog
 
-Para ordenar las historias me hice una sola pregunta: ¿qué pasa si entregamos el producto sin esta historia?
+Para ordenar las historias me hice una sola pregunta: ¿qué pasa si entregamos el producto sin ella?
 
 | Nivel | Qué significa |
 |:---|:---|
-| 🔴 **Imprescindible** | Sin esto el producto no sirve. El problema sigue igual que hoy |
-| 🟠 **Debería** | El producto funciona sin esto, pero la compradora corre un riesgo que podíamos evitarle |
-| 🟡 **Podría** | Le facilita el trabajo a otro actor. A la compradora no le cambia el resultado |
-| ⚪ **Queda fuera** | Es útil, pero no hace falta para demostrar que la solución funciona |
+| 🔴 **Imprescindible** | Si falta, el producto no resuelve el problema. La familia sigue perdiendo su dinero igual que hoy |
+| 🟠 **Debería** | El producto funciona sin esto, pero deja sola a la compradora justo cuando necesita reaccionar |
+| 🟡 **Podría** | Le facilita el trabajo a la constructora o a la fiduciaria. Para la compradora el resultado no cambia |
+| ⚪ **Queda fuera** | Tendría valor para el sector, pero no hace falta para demostrar que la solución funciona |
 
 ### Resumen
 
@@ -175,7 +175,7 @@ flowchart LR
 
 ### Criterio de ordenamiento
 
-Las historias se ordenaron según el daño que evita cada una. El problema que el equipo eligió no es la falta de información en abstracto: es que el dinero de la familia sale de su cuenta sin que exista obra que lo respalde. Por eso encabezan la lista las historias que intervienen directamente sobre ese movimiento de dinero, siguen las que permiten reaccionar a tiempo y cierran las que ordenan la operación de los demás actores.
+Las historias se ordenaron según el daño que evita cada una. El problema que el equipo eligió no es la falta de información en abstracto: es que el dinero de la familia sale de su cuenta sin que exista obra que lo respalde. Por eso encabezan la lista las historias que intervienen directamente sobre ese movimiento de dinero, siguen las que le permiten reaccionar a tiempo y cierran las que le ordenan el trabajo a la constructora y a la autoridad que vigila.
 
 ### La más importante
 
@@ -187,4 +187,4 @@ La diferencia es concreta. Una compradora que solo consulta información se ente
 
 **HU-D02, la certificación con evidencia,** ocupa el segundo lugar porque sostiene técnicamente a la primera. La retención de HU-D01 necesita un disparador confiable: alguien independiente tiene que afirmar que la etapa se terminó. Sin esa certificación, la retención bloquea el proyecto en lugar de protegerlo, porque el dinero nunca encontraría la condición que lo libera.
 
-Estas dos historias forman el núcleo del producto. Las cuatro restantes amplían su alcance: HU-D03 y HU-D04 le dan a la compradora capacidad de reacción y comprensión de sus derechos, HU-D05 hace viable el modelo para la constructora, que de otro modo no lo adoptaría, y HU-D06 convierte a la autoridad en un actor preventivo y no solo sancionatorio.
+Estas dos historias forman el núcleo del producto. Las cuatro restantes amplían su alcance: HU-D03 y HU-D04 le dan a la compradora capacidad de reacción y comprensión de sus derechos, HU-D05 hace viable el modelo para la constructora, que de otro modo no lo adoptaría, y HU-D06 le permite a la Superintendencia prevenir el incumplimiento en lugar de llegar tarde a sancionarlo.
