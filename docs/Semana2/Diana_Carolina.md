@@ -50,7 +50,7 @@ Para ordenar las historias me hice una sola pregunta: ¿qué pasa si entregamos 
 | Nivel | Qué significa |
 |:---|:---|
 | 🔴 **Imprescindible** | Si falta, el producto no resuelve el problema. La familia sigue perdiendo su dinero igual que hoy |
-| 🟠 **Debería** | El producto funciona sin esto, pero deja sola a la compradora justo cuando necesita reaccionar |
+| 🟠 **Debería** | El dinero sigue protegido sin esto. Lo que falta es que la compradora se entere a tiempo y sepa qué puede hacer |
 | 🟡 **Podría** | Le facilita el trabajo a la constructora o a la fiduciaria. Para la compradora el resultado no cambia |
 | ⚪ **Queda fuera** | Tendría valor para el sector, pero no hace falta para demostrar que la solución funciona |
 
