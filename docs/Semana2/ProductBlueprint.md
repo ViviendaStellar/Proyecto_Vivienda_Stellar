@@ -73,19 +73,19 @@ flowchart TD
     style SIC fill:#EFEFEF,color:#333,stroke:#999
 ```
 
-**Entrada.** Antes de vender el primer apartamento, la constructora registra el proyecto: licencia de construcción, matrícula del lote, apartamentos disponibles, las etapas de obra en orden (cimentación, estructura, mampostería, acabados), la fecha comprometida de cada una, el porcentaje que libera al terminarla (deben sumar cien) y los datos del interventor y la fiduciaria. Mientras falte un campo, el proyecto no recibe dinero de nadie.
+**Entrada.** Antes de vender el primer apartamento, la constructora registra el proyecto: licencia de construcción, matrícula del lote, apartamentos disponibles, las etapas de obra en orden (cimentación, estructura, mampostería, acabados), su fecha comprometida, el porcentaje que libera cada una (deben sumar cien) y los datos del interventor y la fiduciaria. Sin un solo campo, el proyecto no recibe dinero.
 
-**Puntos de interacción.** Cada rol entra en un momento distinto. Al separar, la compradora todavía no es dueña: la propiedad solo llega con la escritura. Lo que queda registrado a su nombre es el derecho sobre ese apartamento, y sus arras entran retenidas igual que las cuotas. El paso 7 no lo ejecuta una persona sino la plataforma, al recibir la certificación.
+**Pasos intermedios.** Cada rol entra en un momento distinto, y el paso 7 lo ejecuta la plataforma, no una persona. Al separar, la compradora aún no es dueña: la propiedad llega con la escritura. Lo que queda a su nombre es el derecho sobre ese apartamento, y sus arras se retienen como las cuotas.
 
 | Rol | Entra en | Qué hace |
 |---|:---:|---|
 | Constructora | Entrada y paso 5 | Registra el proyecto y construye cada etapa |
-| Compradora | Pasos 1 a 3 | Revisa las reglas, separa con arras y paga sus cuotas |
+| Compradora | Pasos 1 a 3 | Revisa reglas, separa con arras y paga cuotas |
 | Fiduciaria | Paso 4 | Recibe el dinero y lo mantiene retenido |
 | Interventor | Paso 6 | Certifica la etapa con fotos fechadas |
 | Superintendencia | Paso 8 | Revisa el historial cuando lo necesita |
 
-**Salida.** Al cerrar cada ciclo la compradora sabe tres cosas que hoy no sabe: en qué etapa va la obra, cuánto de su dinero salió y qué evidencia lo justificó. Si la etapa vence sin certificación, recibe la alerta y su dinero sigue retenido. Esa es la promesa de la sección anterior: el dinero solo se mueve cuando la obra avanza de verdad.
+**Salida.** El ciclo se repite en cada etapa. Al cerrar cada vuelta la compradora sabe tres cosas que hoy no sabe: en qué etapa va la obra, cuánto de su dinero salió y qué evidencia lo justificó. Si una etapa vence sin certificación recibe la alerta, y si la obra se detiene conserva todo lo que aún no se había liberado. Esa es la promesa de la sección anterior: el dinero solo se mueve cuando la obra avanza de verdad.
 
 ## 4. Alcance del MVP
 
