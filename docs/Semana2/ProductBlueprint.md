@@ -71,9 +71,30 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 
 ## 4. Alcance del MVP
 
-<!-- Funcionalidad central separada de lo que queda fuera.
-     Justificación de por qué ese recorte sigue entregando valor.
-     Extensión: 150 a 300 palabras. -->
+El MVP cubre un proyecto con cuatro etapas de obra y demuestra el ciclo completo: el dinero entra, queda retenido y solo sale contra una certificación.
+
+**Dentro del MVP: funcionalidad central**
+
+| Funcionalidad | Historia | Paso del flujo |
+|---|:---:|:---:|
+| Registro del proyecto con etapas, fechas y porcentajes | HU1 | Entrada |
+| Registro de la compradora y su derecho sobre el apartamento | HU2 | 1 |
+| Retención de arras y cuotas | HU3 | 2 y 3 |
+| Registro del avance con huella digital (hash) | HU4 | 4 |
+| Certificación y liberación del porcentaje pactado | HU3 y HU4 | 5 y 6 |
+| Alerta por etapa vencida | HU5 | 6 |
+
+**Fuera del MVP: funcionalidad deseable**
+
+| Funcionalidad | Por qué después |
+|---|---|
+| Reembolso automático por incumplimiento | Exige validar reglas legales con las fiduciarias |
+| Votación de prórrogas entre compradores | No cambia la protección básica |
+| Retención del último 10% hasta la entrega | Depende de la escrituración final |
+| Panel de auditoría para la Superintendencia | El historial ya se puede consultar en la red |
+| Pagos en pesos conectados a bancos | Se usa la red de pruebas de Stellar |
+
+**Por qué el recorte sigue entregando valor.** El problema tiene dos causas: la compradora no sabe dónde está su dinero y no puede verificar si la obra avanza. Las seis funciones atacan ambas: cada peso queda registrado y retenido, y solo sale cuando hay evidencia certificada. Lo que queda fuera mejora la experiencia, pero no cambia el resultado central: si la obra se detiene, la compradora conserva todo lo no liberado.
 
 ## 5. Lean Canvas
 
