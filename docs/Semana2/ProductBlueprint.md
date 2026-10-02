@@ -53,40 +53,42 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 
 ```mermaid
 flowchart TD
-    E["ENTRADA<br/>La constructora registra el proyecto<br/>y sus etapas"] --> P1["1. Laura consulta las reglas<br/>antes de firmar"]
-    P1 --> P2["2. Laura se vincula a su unidad"]
-    P2 --> P3["3. Laura paga su cuota"]
-    P3 --> P4["4. La fiduciaria custodia el aporte retenido"]
-    P4 --> P5["5. La constructora ejecuta la etapa"]
-    P5 --> P6["6. El interventor visita y certifica<br/>con fotos fechadas"]
-    P6 --> D{"La etapa quedo<br/>certificada a tiempo"}
-    D -->|Si| P7["7. Se libera el porcentaje pactado<br/>y la constructora cobra"]
-    D -->|Vencio el plazo| AL["Alerta a Laura.<br/>Su dinero sigue retenido"]
-    P7 --> S["SALIDA<br/>Laura ve en que etapa va la obra, cuanto<br/>de su dinero se libero y contra que evidencia"]
+    E["ENTRADA<br/>La constructora registra el proyecto,<br/>sus etapas y sus reglas de pago"] --> P1["1. La compradora consulta las reglas<br/>antes de firmar"]
+    P1 --> P2["2. La compradora escoge su apartamento<br/>y queda registrada como su unica duena"]
+    P2 --> P3["3. La compradora paga su cuota del mes"]
+    P3 --> P4["4. La fiduciaria recibe el dinero<br/>y lo mantiene retenido"]
+    P4 --> P5["5. La constructora construye la etapa<br/>y avisa que la termino"]
+    P5 --> P6["6. El interventor visita la obra y certifica<br/>con fotos fechadas y reporte tecnico"]
+    P6 --> D{"La etapa quedo certificada<br/>antes de su fecha"}
+    D -->|Si| P7["7. Se libera el porcentaje pactado<br/>y la constructora cobra esa etapa"]
+    D -->|No| AL["La compradora recibe una alerta.<br/>Su dinero sigue retenido"]
+    P7 --> S["SALIDA<br/>La compradora ve en que etapa va la obra, cuanto de<br/>su dinero salio y que evidencia justifico esa salida"]
     AL --> S
-    S -.se repite por cada etapa.-> P3
+    S -.el ciclo se repite en cada etapa.-> P3
+    S -.> SIC["8. La Superintendencia revisa el historial<br/>cuando lo necesita, sin pedirle permiso a nadie"]
 
     style E fill:#1A3A6B,color:#fff,stroke:#1A3A6B
     style S fill:#0E6B4F,color:#fff,stroke:#0E6B4F
     style AL fill:#F5EAD4,color:#12223D,stroke:#B07A1A
+    style SIC fill:#EFEFEF,color:#333,stroke:#999
 ```
 
-**Entrada.** Antes de vender la primera unidad, la constructora registra el proyecto. Debe cargar la licencia de construcción y la matrícula del lote, las unidades disponibles, las etapas de obra en orden (cimentación, estructura, mampostería y acabados), la fecha comprometida de cada una, el porcentaje de dinero que se libera al terminarla (la suma debe dar cien), y los datos del interventor y de la fiduciaria. Sin esos campos completos el proyecto no puede recibir aportes.
+**Entrada.** Antes de vender el primer apartamento, la constructora registra el proyecto. Debe cargar la licencia de construcción y la matrícula del lote, los apartamentos disponibles, las etapas de obra en orden (cimentación, estructura, mampostería y acabados), la fecha comprometida de cada etapa, el porcentaje del dinero que se libera al terminarla (la suma debe dar cien) y los datos del interventor y de la fiduciaria. Mientras falte alguno de esos campos, el proyecto no puede recibir dinero de nadie.
 
-**Pasos intermedios.** Cada rol entra en un momento distinto y ninguno puede saltarse al siguiente.
+**Pasos intermedios.** Cada rol entra en un momento distinto y ninguno puede adelantarse al anterior.
 
 | # | Rol | Qué hace |
 |:---:|---|---|
-| 1 | Compradora | Consulta etapas, fechas y porcentajes antes de firmar |
-| 2 | Compradora | Se vincula a una unidad y su aporte queda a su nombre |
-| 3 | Fiduciaria | Custodia el dinero, que entra retenido y no se mueve |
-| 4 | Constructora | Ejecuta la etapa y reporta que la terminó |
-| 5 | Interventor | Visita la obra y certifica con fotos fechadas y reporte técnico |
-| 6 | Plataforma | Libera solo el porcentaje pactado para esa etapa |
-| 7 | Constructora | Recibe el desembolso de esa etapa |
-| 8 | Superintendencia | Consulta el histórico sin pedírselo a las partes |
+| 1 | Compradora | Revisa las etapas, las fechas y los porcentajes antes de firmar |
+| 2 | Compradora | Escoge su apartamento y queda registrada como su única compradora |
+| 3 | Compradora | Paga la cuota del mes |
+| 4 | Fiduciaria | Recibe ese dinero y lo mantiene retenido, sin entregarlo todavía |
+| 5 | Constructora | Construye la etapa y avisa que la terminó |
+| 6 | Interventor | Visita la obra y certifica con fotos fechadas y reporte técnico |
+| 7 | Plataforma | Libera a la constructora solo el porcentaje que esa etapa tenía pactado |
+| 8 | Superintendencia | Revisa el historial del proyecto cuando lo necesita, sin pedirle permiso a nadie |
 
-**Salida.** Al cerrar cada ciclo Laura sabe tres cosas que hoy no puede saber: en qué etapa va la obra, cuánto de su dinero salió y contra qué evidencia salió. Si la etapa vence sin certificar, recibe la alerta y su capital permanece retenido. Esa es exactamente la promesa de la sección anterior: su dinero solo se mueve cuando la obra avanza de verdad.
+**Salida.** Al cerrar cada ciclo la compradora sabe tres cosas que hoy no puede saber: en qué etapa va la obra, cuánto de su dinero salió y qué evidencia justificó esa salida. Si la etapa vence sin certificación, recibe la alerta y su dinero permanece retenido. Esa es exactamente la promesa de la sección anterior: el dinero solo se mueve cuando la obra avanza de verdad.
 
 ## 4. Alcance del MVP
 
