@@ -51,9 +51,42 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 
 ## 3. Flujo de usuario
 
-<!-- Recorrido de la persona por la solución de principio a fin, roles y puntos de interacción.
-     Diagrama o secuencia numerada.
-     Extensión: 150 a 300 palabras. -->
+```mermaid
+flowchart TD
+    E["ENTRADA<br/>La constructora registra el proyecto<br/>y sus etapas"] --> P1["1. Laura consulta las reglas<br/>antes de firmar"]
+    P1 --> P2["2. Laura se vincula a su unidad"]
+    P2 --> P3["3. Laura paga su cuota"]
+    P3 --> P4["4. La fiduciaria custodia el aporte retenido"]
+    P4 --> P5["5. La constructora ejecuta la etapa"]
+    P5 --> P6["6. El interventor visita y certifica<br/>con fotos fechadas"]
+    P6 --> D{"La etapa quedo<br/>certificada a tiempo"}
+    D -->|Si| P7["7. Se libera el porcentaje pactado<br/>y la constructora cobra"]
+    D -->|Vencio el plazo| AL["Alerta a Laura.<br/>Su dinero sigue retenido"]
+    P7 --> S["SALIDA<br/>Laura ve en que etapa va la obra, cuanto<br/>de su dinero se libero y contra que evidencia"]
+    AL --> S
+    S -.se repite por cada etapa.-> P3
+
+    style E fill:#1A3A6B,color:#fff,stroke:#1A3A6B
+    style S fill:#0E6B4F,color:#fff,stroke:#0E6B4F
+    style AL fill:#F5EAD4,color:#12223D,stroke:#B07A1A
+```
+
+**Entrada.** Antes de vender la primera unidad, la constructora registra el proyecto. Debe cargar la licencia de construcción y la matrícula del lote, las unidades disponibles, las etapas de obra en orden (cimentación, estructura, mampostería y acabados), la fecha comprometida de cada una, el porcentaje de dinero que se libera al terminarla (la suma debe dar cien), y los datos del interventor y de la fiduciaria. Sin esos campos completos el proyecto no puede recibir aportes.
+
+**Pasos intermedios.** Cada rol entra en un momento distinto y ninguno puede saltarse al siguiente.
+
+| # | Rol | Qué hace |
+|:---:|---|---|
+| 1 | Compradora | Consulta etapas, fechas y porcentajes antes de firmar |
+| 2 | Compradora | Se vincula a una unidad y su aporte queda a su nombre |
+| 3 | Fiduciaria | Custodia el dinero, que entra retenido y no se mueve |
+| 4 | Constructora | Ejecuta la etapa y reporta que la terminó |
+| 5 | Interventor | Visita la obra y certifica con fotos fechadas y reporte técnico |
+| 6 | Plataforma | Libera solo el porcentaje pactado para esa etapa |
+| 7 | Constructora | Recibe el desembolso de esa etapa |
+| 8 | Superintendencia | Consulta el histórico sin pedírselo a las partes |
+
+**Salida.** Al cerrar cada ciclo Laura sabe tres cosas que hoy no puede saber: en qué etapa va la obra, cuánto de su dinero salió y contra qué evidencia salió. Si la etapa vence sin certificar, recibe la alerta y su capital permanece retenido. Esa es exactamente la promesa de la sección anterior: su dinero solo se mueve cuando la obra avanza de verdad.
 
 ## 4. Alcance del MVP
 
