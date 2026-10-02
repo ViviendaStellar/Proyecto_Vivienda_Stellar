@@ -53,87 +53,38 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 
 ```mermaid
 flowchart LR
-    subgraph ENT["ENTRADA<br/>Se fijan las reglas"]
-        direction TB
-        E(["Constructora<br/>Registra licencia, apartamentos,<br/>etapas, fechas y porcentajes"])
-    end
-
-    subgraph APO["PASOS 1 a 4<br/>El dinero entra y queda retenido"]
-        direction TB
-        P1("1. Compradora<br/>Consulta las reglas")
-        P2("2. Compradora<br/>Separa y paga arras")
-        P3("3. Compradora<br/>Paga su cuota")
-        P4("4. Fiduciaria<br/>Retiene el dinero")
-        P1 --> P2 --> P3 --> P4
-    end
-
-    subgraph VER["PASOS 5 a 7<br/>La obra se verifica y el dinero se libera"]
-        direction TB
-        P5("5. Constructora<br/>Construye la etapa")
-        P6("6. Interventor<br/>Certifica con fotos fechadas")
-        D{"¿Certificada<br/>a tiempo?"}
-        P7("7. Plataforma<br/>Libera ese porcentaje")
-        AL("7b. Alerta a la compradora<br/>El dinero sigue retenido")
-        P5 --> P6 --> D
-        D -- Sí --> P7
-        D -- No --> AL
-    end
-
-    subgraph SAL["SALIDA<br/>El problema queda resuelto"]
-        direction TB
-        S1(["La obra avanzó<br/>Ve la etapa certificada, cuánto<br/>dinero salió y con qué evidencia"])
-        S2(["La obra se detuvo<br/>Conserva todo lo que<br/>aún no se había liberado"])
-        SIC("8. Superintendencia<br/>Revisa el historial completo")
-    end
-
-    E --> P1
-    P4 --> P5
-    P7 --> S1
-    AL --> S2
-    S1 --> SIC
+    E(["Registrar"]) --> P1["1. Consultar"] --> P2["2. Separar"] --> P3["3. Pagar"] --> P4["4. Retener"] --> P5["5. Construir"] --> P6["6. Certificar"] --> D{"¿A tiempo?"}
+    D -- Sí --> P7["7. Liberar"] --> S1(["Obra verificada"])
+    D -- No --> AL["7. Alertar"] --> S2(["Dinero protegido"])
+    S1 --> P8["8. Auditar"]
     S1 -. siguiente etapa .-> P3
 
-    classDef constructora fill:#FFF1E0,stroke:#D9822B,color:#4A2A05,stroke-width:1.5px
-    classDef compradora fill:#E7EEFC,stroke:#3B5BDB,color:#14254F,stroke-width:1.5px
-    classDef fiduciaria fill:#F1E9FB,stroke:#7B4FC4,color:#2E1757,stroke-width:1.5px
-    classDef interventor fill:#E3F5F2,stroke:#1F8A78,color:#0B3B33,stroke-width:1.5px
-    classDef plataforma fill:#1A3A6B,stroke:#1A3A6B,color:#FFFFFF,stroke-width:1.5px
-    classDef decision fill:#FFF8E1,stroke:#C99A06,color:#4A3A00,stroke-width:1.5px
-    classDef alerta fill:#FDECEA,stroke:#C8372D,color:#5A1410,stroke-width:1.5px
-    classDef salida fill:#0E6B4F,stroke:#0E6B4F,color:#FFFFFF,stroke-width:1.5px
-    classDef regulador fill:#F2F2F2,stroke:#8A8A8A,color:#333333,stroke-width:1.5px
+    classDef extremo fill:#1A3A6B,stroke:#1A3A6B,color:#FFFFFF
+    classDef paso fill:#EEF2F8,stroke:#5B7FB4,color:#12223D
+    classDef decision fill:#FFF8E1,stroke:#C99A06,color:#4A3A00
+    classDef alerta fill:#FDECEA,stroke:#C8372D,color:#5A1410
+    classDef salida fill:#0E6B4F,stroke:#0E6B4F,color:#FFFFFF
 
-    class E,P5 constructora
-    class P1,P2,P3 compradora
-    class P4 fiduciaria
-    class P6 interventor
-    class P7 plataforma
+    class E extremo
+    class P1,P2,P3,P4,P5,P6,P7,P8 paso
     class D decision
     class AL alerta
     class S1,S2 salida
-    class SIC regulador
-
-    style ENT fill:#FAFBFD,stroke:#1A3A6B,stroke-width:1px,color:#1A3A6B
-    style APO fill:#FAFBFD,stroke:#3B5BDB,stroke-width:1px,color:#14254F
-    style VER fill:#FAFBFD,stroke:#1F8A78,stroke-width:1px,color:#0B3B33
-    style SAL fill:#F3FAF7,stroke:#0E6B4F,stroke-width:1px,color:#0E6B4F
-
-    linkStyle default stroke:#5B6B85,stroke-width:1.5px
 ```
 
-**Entrada.** Antes de vender el primer apartamento, la constructora registra el proyecto: licencia de construcción, matrícula del lote, apartamentos disponibles, las etapas de obra en orden (cimentación, estructura, mampostería, acabados), su fecha comprometida, el porcentaje que libera cada una (deben sumar cien) y los datos del interventor y la fiduciaria. Sin un solo campo, el proyecto no recibe dinero.
+| Etapa | Rol | Entra en | Qué hace |
+|---|---|:---:|---|
+| Entrada | Constructora | Registrar | Registra licencia, matrícula, apartamentos, etapas de obra, fecha y porcentaje de cada etapa (deben sumar cien), interventor y fiduciaria. Sin un campo, no recibe dinero |
+| Aporte | Compradora | Pasos 1 a 3 | Consulta las reglas, separa con arras y paga sus cuotas |
+| Aporte | Fiduciaria | Paso 4 | Recibe el dinero y lo mantiene retenido |
+| Verificación | Constructora | Paso 5 | Construye la etapa |
+| Verificación | Interventor | Paso 6 | Certifica la etapa con fotos fechadas y reporte técnico |
+| Verificación | Plataforma | Paso 7 | Libera solo el porcentaje de esa etapa o, si venció el plazo, alerta a la compradora |
+| Salida | Superintendencia | Paso 8 | Revisa el historial del proyecto cuando lo necesita |
 
-**Pasos intermedios.** Los roles se encadenan: la fiduciaria no retiene si no hay cuota, el interventor no certifica si no hay obra y la plataforma no libera si no hay certificación. Ninguno puede saltarse al anterior. Al separar, la compradora aún no es dueña, porque la propiedad llega con la escritura: lo que queda a su nombre es el derecho sobre ese apartamento, y sus arras se retienen como las cuotas.
+**Cómo se encadenan.** Ningún rol puede saltarse al anterior: la fiduciaria no retiene sin cuota, el interventor no certifica sin obra y la plataforma no libera sin certificación. Al separar, la compradora aún no es dueña, porque la propiedad llega con la escritura; lo que queda a su nombre es el derecho sobre ese apartamento.
 
-| Rol | Entra en | Qué hace |
-|---|:---:|---|
-| Constructora | Entrada y paso 5 | Registra el proyecto y construye cada etapa |
-| Compradora | Pasos 1 a 3 | Revisa reglas, separa con arras y paga cuotas |
-| Fiduciaria | Paso 4 | Recibe el dinero y lo mantiene retenido |
-| Interventor | Paso 6 | Certifica la etapa con fotos fechadas |
-| Superintendencia | Paso 8 | Revisa el historial cuando lo necesita |
-
-**Salida.** El ciclo se repite en cada etapa y cierra las dos preguntas que hoy la compradora no puede responder. Si la obra avanzó, ve qué etapa se certificó, cuánto dinero salió y con qué evidencia. Si la obra se detuvo, recibe la alerta y conserva todo lo que aún no se había liberado. En los dos escenarios se cumple la promesa de la sección anterior: el dinero solo se mueve cuando la obra avanza de verdad.
+**Salida.** El ciclo se repite en cada etapa y cierra dos escenarios. Si la obra avanzó, la compradora ve qué etapa se certificó, cuánto dinero salió y con qué evidencia. Si se detuvo, conserva todo lo que aún no se había liberado. En ambos se cumple la promesa: el dinero solo se mueve cuando la obra avanza de verdad.
 
 ## 4. Alcance del MVP
 
