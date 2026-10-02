@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <clipPath id="marco">
+      <rect x="0" y="0" width="960" height="600" rx="18"/>
+    </clipPath>
+    <linearGradient id="boton" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#14306B"/>
+      <stop offset="1" stop-color="#3B5BDB"/>
+    </linearGradient>
+  </defs>
+
+  <g clip-path="url(#marco)">
+  <rect x="0" y="0" width="960" height="600" fill="#FFFFFF"/>
+  <rect x="0.75" y="0.75" width="958.5" height="598.5" rx="18" fill="none" stroke="#D9DFEA" stroke-width="1.5"/>
+
+  <!-- Barra de ventana -->
+  <rect x="0" y="0" width="960" height="44" fill="#F1F4F9"/>
+  <line x1="0" y1="44" x2="960" y2="44" stroke="#E1E6EF"/>
+  <circle cx="24" cy="22" r="6" fill="#FF6B6B"/>
+  <circle cx="44" cy="22" r="6" fill="#FCC419"/>
+  <circle cx="64" cy="22" r="6" fill="#51CF66"/>
+  <rect x="330" y="11" width="300" height="22" rx="11" fill="#FFFFFF" stroke="#E1E6EF"/>
+  <text x="480" y="26" font-size="11.5" fill="#6B7280" text-anchor="middle">vivienda-stellar / registrar-proyecto</text>
+
+  <!-- Encabezado -->
+  <text x="36" y="86" font-size="22" font-weight="700" fill="#12223D">Registrar proyecto</text>
+  <text x="36" y="108" font-size="13" fill="#6B7280">🏗️  Constructora  ·  Entrada del flujo: las reglas se fijan antes de vender</text>
+  <rect x="770" y="68" width="154" height="26" rx="13" fill="#FFF4E0"/>
+  <text x="847" y="85" font-size="11.5" font-weight="700" fill="#B5650F" text-anchor="middle">Borrador sin publicar</text>
+
+  <!-- ===== Datos del proyecto ===== -->
+  <text x="36" y="146" font-size="11" font-weight="700" fill="#3B5BDB" letter-spacing="1.2">DATOS DEL PROYECTO</text>
+
+  <text x="36" y="172" font-size="11.5" fill="#6B7280">Nombre del proyecto</text>
+  <rect x="36" y="180" width="360" height="32" rx="8" fill="#F8FAFD" stroke="#D5DCE8"/>
+  <text x="48" y="201" font-size="13.5" fill="#1B2433">Torres del Parque, Bello</text>
+
+  <text x="36" y="232" font-size="11.5" fill="#6B7280">Licencia de construcción</text>
+  <rect x="36" y="240" width="360" height="32" rx="8" fill="#F8FAFD" stroke="#D5DCE8"/>
+  <text x="48" y="261" font-size="13.5" fill="#1B2433">LC-2026-0457</text>
+
+  <text x="36" y="292" font-size="11.5" fill="#6B7280">Matrícula inmobiliaria del lote</text>
+  <rect x="36" y="300" width="360" height="32" rx="8" fill="#F8FAFD" stroke="#D5DCE8"/>
+  <text x="48" y="321" font-size="13.5" fill="#1B2433">012-345678</text>
+
+  <text x="36" y="352" font-size="11.5" fill="#6B7280">Apartamentos disponibles</text>
+  <rect x="36" y="360" width="360" height="32" rx="8" fill="#F8FAFD" stroke="#D5DCE8"/>
+  <text x="48" y="381" font-size="13.5" fill="#1B2433">120</text>
+
+  <text x="36" y="412" font-size="11.5" fill="#6B7280">Interventor asignado</text>
+  <rect x="36" y="420" width="360" height="32" rx="8" fill="#F8FAFD" stroke="#D5DCE8"/>
+  <text x="48" y="441" font-size="13.5" fill="#1B2433">🦺  Interventoría de ejemplo S.A.S.</text>
+
+  <text x="36" y="472" font-size="11.5" fill="#6B7280">Fiduciaria</text>
+  <rect x="36" y="480" width="360" height="32" rx="8" fill="#F8FAFD" stroke="#D5DCE8"/>
+  <text x="48" y="501" font-size="13.5" fill="#1B2433">🏦  Fiduciaria de ejemplo S.A.</text>
+
+  <!-- ===== Etapas y reglas de pago ===== -->
+  <text x="430" y="146" font-size="11" font-weight="700" fill="#3B5BDB" letter-spacing="1.2">ETAPAS DE OBRA Y REGLAS DE PAGO</text>
+
+  <rect x="430" y="160" width="494" height="32" rx="8" fill="#F3F6FE"/>
+  <text x="448" y="181" font-size="11.5" font-weight="700" fill="#33415C">#</text>
+  <text x="476" y="181" font-size="11.5" font-weight="700" fill="#33415C">Etapa</text>
+  <text x="630" y="181" font-size="11.5" font-weight="700" fill="#33415C">Fecha comprometida</text>
+  <text x="790" y="181" font-size="11.5" font-weight="700" fill="#33415C">Libera al terminar</text>
+
+  <!-- Fila 1 -->
+  <circle cx="452" cy="218" r="11" fill="#E8590C"/>
+  <text x="452" y="222" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">1</text>
+  <text x="476" y="223" font-size="14" font-weight="600" fill="#1B2433">Cimentación</text>
+  <text x="630" y="223" font-size="13.5" fill="#33415C">30 jun 2027</text>
+  <text x="790" y="216" font-size="14" font-weight="700" fill="#14306B">20 %</text>
+  <rect x="790" y="224" width="120" height="7" rx="3.5" fill="#E7EEFC"/>
+  <rect x="790" y="224" width="24" height="7" rx="3.5" fill="#3B5BDB"/>
+  <line x1="430" y1="244" x2="924" y2="244" stroke="#EEF1F6"/>
+
+  <!-- Fila 2 -->
+  <circle cx="452" cy="270" r="11" fill="#E8590C"/>
+  <text x="452" y="274" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">2</text>
+  <text x="476" y="275" font-size="14" font-weight="600" fill="#1B2433">Estructura</text>
+  <text x="630" y="275" font-size="13.5" fill="#33415C">15 dic 2027</text>
+  <text x="790" y="268" font-size="14" font-weight="700" fill="#14306B">30 %</text>
+  <rect x="790" y="276" width="120" height="7" rx="3.5" fill="#E7EEFC"/>
+  <rect x="790" y="276" width="36" height="7" rx="3.5" fill="#3B5BDB"/>
+  <line x1="430" y1="296" x2="924" y2="296" stroke="#EEF1F6"/>
+
+  <!-- Fila 3 -->
+  <circle cx="452" cy="322" r="11" fill="#E8590C"/>
+  <text x="452" y="326" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">3</text>
+  <text x="476" y="327" font-size="14" font-weight="600" fill="#1B2433">Mampostería</text>
+  <text x="630" y="327" font-size="13.5" fill="#33415C">30 jun 2028</text>
+  <text x="790" y="320" font-size="14" font-weight="700" fill="#14306B">30 %</text>
+  <rect x="790" y="328" width="120" height="7" rx="3.5" fill="#E7EEFC"/>
+  <rect x="790" y="328" width="36" height="7" rx="3.5" fill="#3B5BDB"/>
+  <line x1="430" y1="348" x2="924" y2="348" stroke="#EEF1F6"/>
+
+  <!-- Fila 4 -->
+  <circle cx="452" cy="374" r="11" fill="#E8590C"/>
+  <text x="452" y="378" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">4</text>
+  <text x="476" y="379" font-size="14" font-weight="600" fill="#1B2433">Acabados</text>
+  <text x="630" y="379" font-size="13.5" fill="#33415C">15 dic 2028</text>
+  <text x="790" y="372" font-size="14" font-weight="700" fill="#14306B">20 %</text>
+  <rect x="790" y="380" width="120" height="7" rx="3.5" fill="#E7EEFC"/>
+  <rect x="790" y="380" width="24" height="7" rx="3.5" fill="#3B5BDB"/>
+
+  <!-- Total -->
+  <rect x="430" y="402" width="494" height="44" rx="10" fill="#E8F7EF" stroke="#BDE5D2"/>
+  <text x="476" y="429" font-size="14" font-weight="700" fill="#0E6B4F">Total</text>
+  <text x="630" y="429" font-size="13" fill="#0E6B4F">✓ Las etapas suman 100 %</text>
+  <text x="790" y="429" font-size="15" font-weight="700" fill="#0E6B4F">100 %</text>
+
+  <!-- Regla -->
+  <text x="430" y="476" font-size="12" fill="#6B7280">Cada porcentaje solo se libera cuando el interventor</text>
+  <text x="430" y="493" font-size="12" fill="#6B7280">certifica la etapa correspondiente.</text>
+
+  <!-- ===== Aviso y acción ===== -->
+  <rect x="36" y="530" width="640" height="44" rx="10" fill="#FFF8E1" stroke="#F1D78A"/>
+  <text x="52" y="557" font-size="12.5" fill="#5C4A00">🔒  Al publicar, las reglas quedan en Stellar con su huella digital y no se pueden cambiar.</text>
+
+  <rect x="704" y="530" width="220" height="44" rx="10" fill="url(#boton)"/>
+  <text x="814" y="557" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">Publicar reglas</text>
+  </g>
+</svg>
