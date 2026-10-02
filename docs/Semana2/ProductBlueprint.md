@@ -71,26 +71,26 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 
 ## 4. Alcance del MVP
 
-El MVP es un piloto en la red de pruebas de Stellar: un proyecto de cuatro etapas con una constructora, un interventor y compradoras de prueba. Valida una sola hipótesis: si el dinero solo sale contra una certificación, la compradora protege su ahorro y sabe en qué va la obra.
+El MVP es un piloto en la red de pruebas de Stellar: un proyecto de cuatro etapas con compradoras de prueba. Busca comprobar una sola idea: si la plata solo sale cuando la interventoría certifica el avance, la compradora protege sus ahorros y sabe en qué va la obra.
 
 **Dentro: funcionalidad central**
 
-| Funcionalidad | Historia | Paso |
-|---|:---:|:---:|
-| Registrar el proyecto con etapas, fechas y porcentajes | HU1 | Entrada |
-| Registrar a la compradora y su derecho sobre el apartamento | HU2 | 1 |
-| Retener arras y cuotas | HU3 | 2 y 3 |
-| Registrar el avance con huella digital (hash) | HU4 | 4 |
-| Certificar y liberar el porcentaje pactado | HU3 y HU4 | 5 y 6 |
-| Alertar por etapa vencida | HU5 | 6 |
+1. **Registrar el proyecto** (HU1, entrada). La constructora sube licencia, matrícula, etapas, fechas, desembolsos y las fotos que exigirá como prueba.
 
 <p align="center">
-  <img src="img/registro_proyecto_v2.svg" alt="Pantalla para registrar el proyecto con etapas, fechas y desembolso de cada una" width="90%">
+  <img src="img/registro_proyecto_v2.svg" alt="Pantalla para registrar el proyecto con etapas, fechas, desembolso y fotos exigidas" width="90%">
 </p>
+
+2. **Registrar a la compradora** (HU2, paso 1) y su derecho sobre el apartamento.
+3. **Retener arras y cuotas** en la fiduciaria (HU3, pasos 2 y 3).
+4. **Reportar el avance** (HU4, paso 4) con fotos de la obra, informe y huella digital (hash).
 
 <p align="center">
   <img src="img/reporte_avance_v1.svg" alt="Pantalla para reportar el avance de obra con la foto, el informe y la huella digital" width="90%">
 </p>
+
+5. **Certificar y liberar** el porcentaje pactado (HU3 y HU4, pasos 5 y 6).
+6. **Alertar** a la compradora si una etapa se vence (HU5, paso 6).
 
 **Fuera: funcionalidad deseable**
 
@@ -107,7 +107,7 @@ El MVP es un piloto en la red de pruebas de Stellar: un proyecto de cuatro etapa
 2. La compradora ve cuánto aportó, cuánto sigue retenido y qué evidencia justificó cada salida.
 3. Una etapa vencida genera la alerta al día siguiente.
 
-**Por qué el recorte entrega valor.** Las seis funciones atacan las dos causas del problema: el dinero que no se ve y el avance que no se verifica. Lo que queda fuera mejora la experiencia, pero no cambia el resultado: si la obra se detiene, la compradora conserva todo lo no liberado.
+**Por qué el recorte entrega valor.** Las seis funciones atacan las dos causas del problema: la plata que no se ve y el avance que no se verifica. Lo que queda fuera no cambia el resultado: si la obra se detiene, la compradora conserva lo no liberado.
 
 ## 5. Lean Canvas
 
