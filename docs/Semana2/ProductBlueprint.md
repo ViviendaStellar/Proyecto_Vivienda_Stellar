@@ -54,7 +54,7 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 ```mermaid
 flowchart TD
     E["ENTRADA<br/>Registro del proyecto<br/>y sus etapas"] --> P1["1. Compradora<br/>Consulta las reglas"]
-    P1 --> P2["2. Compradora<br/>Escoge apartamento"]
+    P1 --> P2["2. Compradora<br/>Separa y paga arras"]
     P2 --> P3["3. Compradora<br/>Paga su cuota"]
     P3 --> P4["4. Fiduciaria<br/>Retiene el dinero"]
     P4 --> P5["5. Constructora<br/>Construye la etapa"]
@@ -73,19 +73,19 @@ flowchart TD
     style SIC fill:#EFEFEF,color:#333,stroke:#999
 ```
 
-**Entrada.** Antes de vender el primer apartamento, la constructora registra el proyecto. Debe cargar la licencia de construcción y la matrícula del lote, los apartamentos disponibles, las etapas de obra en orden (cimentación, estructura, mampostería y acabados), la fecha comprometida de cada etapa, el porcentaje del dinero que se libera al terminarla (la suma debe dar cien) y los datos del interventor y de la fiduciaria. Mientras falte alguno de esos campos, el proyecto no puede recibir dinero de nadie.
+**Entrada.** Antes de vender el primer apartamento, la constructora registra el proyecto: licencia de construcción, matrícula del lote, apartamentos disponibles, las etapas de obra en orden (cimentación, estructura, mampostería, acabados), la fecha comprometida de cada una, el porcentaje que libera al terminarla (deben sumar cien) y los datos del interventor y la fiduciaria. Mientras falte un campo, el proyecto no recibe dinero de nadie.
 
-**Puntos de interacción.** Cada rol entra en un momento distinto del recorrido y ninguno puede adelantarse al anterior. El paso 7 no lo ejecuta ninguna persona: lo hace la plataforma al recibir la certificación.
+**Puntos de interacción.** Cada rol entra en un momento distinto. Al separar, la compradora todavía no es dueña: la propiedad solo llega con la escritura. Lo que queda registrado a su nombre es el derecho sobre ese apartamento, y sus arras entran retenidas igual que las cuotas. El paso 7 no lo ejecuta una persona sino la plataforma, al recibir la certificación.
 
 | Rol | Entra en | Qué hace |
 |---|:---:|---|
 | Constructora | Entrada y paso 5 | Registra el proyecto y construye cada etapa |
-| Compradora | Pasos 1 a 3 | Revisa las reglas, escoge apartamento y paga |
+| Compradora | Pasos 1 a 3 | Revisa las reglas, separa con arras y paga sus cuotas |
 | Fiduciaria | Paso 4 | Recibe el dinero y lo mantiene retenido |
 | Interventor | Paso 6 | Certifica la etapa con fotos fechadas |
 | Superintendencia | Paso 8 | Revisa el historial cuando lo necesita |
 
-**Salida.** Al cerrar cada ciclo la compradora sabe tres cosas que hoy no puede saber: en qué etapa va la obra, cuánto de su dinero salió y qué evidencia justificó esa salida. Si la etapa vence sin certificación, recibe la alerta y su dinero permanece retenido. Esa es exactamente la promesa de la sección anterior: el dinero solo se mueve cuando la obra avanza de verdad.
+**Salida.** Al cerrar cada ciclo la compradora sabe tres cosas que hoy no sabe: en qué etapa va la obra, cuánto de su dinero salió y qué evidencia lo justificó. Si la etapa vence sin certificación, recibe la alerta y su dinero sigue retenido. Esa es la promesa de la sección anterior: el dinero solo se mueve cuando la obra avanza de verdad.
 
 ## 4. Alcance del MVP
 
