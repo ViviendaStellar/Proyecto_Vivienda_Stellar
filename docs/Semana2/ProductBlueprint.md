@@ -53,19 +53,19 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 
 ```mermaid
 flowchart TD
-    E["ENTRADA<br/>La constructora registra el proyecto,<br/>sus etapas y sus reglas de pago"] --> P1["1. La compradora consulta las reglas<br/>antes de firmar"]
-    P1 --> P2["2. La compradora escoge su apartamento<br/>y queda registrada como su unica duena"]
-    P2 --> P3["3. La compradora paga su cuota del mes"]
-    P3 --> P4["4. La fiduciaria recibe el dinero<br/>y lo mantiene retenido"]
-    P4 --> P5["5. La constructora construye la etapa<br/>y avisa que la termino"]
-    P5 --> P6["6. El interventor visita la obra y certifica<br/>con fotos fechadas y reporte tecnico"]
-    P6 --> D{"La etapa quedo certificada<br/>antes de su fecha"}
-    D -->|Si| P7["7. Se libera el porcentaje pactado<br/>y la constructora cobra esa etapa"]
-    D -->|No| AL["La compradora recibe una alerta.<br/>Su dinero sigue retenido"]
-    P7 --> S["SALIDA<br/>La compradora ve en que etapa va la obra, cuanto de<br/>su dinero salio y que evidencia justifico esa salida"]
+    E["ENTRADA<br/>Registro del proyecto<br/>y sus etapas"] --> P1["1. Compradora<br/>Consulta las reglas"]
+    P1 --> P2["2. Compradora<br/>Escoge apartamento"]
+    P2 --> P3["3. Compradora<br/>Paga su cuota"]
+    P3 --> P4["4. Fiduciaria<br/>Retiene el dinero"]
+    P4 --> P5["5. Constructora<br/>Construye la etapa"]
+    P5 --> P6["6. Interventor<br/>Certifica con fotos"]
+    P6 --> D{"Certificada<br/>a tiempo"}
+    D -->|Si| P7["7. Plataforma<br/>Libera el porcentaje"]
+    D -->|No| AL["Alerta.<br/>Dinero retenido"]
+    P7 --> S["SALIDA<br/>Ve el avance, el dinero liberado<br/>y la evidencia que lo justifica"]
     AL --> S
-    S -.el ciclo se repite en cada etapa.-> P3
-    S -.> SIC["8. La Superintendencia revisa el historial<br/>cuando lo necesita, sin pedirle permiso a nadie"]
+    S -.se repite por etapa.-> P3
+    S -.> SIC["8. Superintendencia<br/>Revisa el historial"]
 
     style E fill:#1A3A6B,color:#fff,stroke:#1A3A6B
     style S fill:#0E6B4F,color:#fff,stroke:#0E6B4F
@@ -75,18 +75,15 @@ flowchart TD
 
 **Entrada.** Antes de vender el primer apartamento, la constructora registra el proyecto. Debe cargar la licencia de construcción y la matrícula del lote, los apartamentos disponibles, las etapas de obra en orden (cimentación, estructura, mampostería y acabados), la fecha comprometida de cada etapa, el porcentaje del dinero que se libera al terminarla (la suma debe dar cien) y los datos del interventor y de la fiduciaria. Mientras falte alguno de esos campos, el proyecto no puede recibir dinero de nadie.
 
-**Pasos intermedios.** Cada rol entra en un momento distinto y ninguno puede adelantarse al anterior.
+**Puntos de interacción.** Cada rol entra en un momento distinto del recorrido y ninguno puede adelantarse al anterior. El paso 7 no lo ejecuta ninguna persona: lo hace la plataforma al recibir la certificación.
 
-| # | Rol | Qué hace |
-|:---:|---|---|
-| 1 | Compradora | Revisa las etapas, las fechas y los porcentajes antes de firmar |
-| 2 | Compradora | Escoge su apartamento y queda registrada como su única compradora |
-| 3 | Compradora | Paga la cuota del mes |
-| 4 | Fiduciaria | Recibe ese dinero y lo mantiene retenido, sin entregarlo todavía |
-| 5 | Constructora | Construye la etapa y avisa que la terminó |
-| 6 | Interventor | Visita la obra y certifica con fotos fechadas y reporte técnico |
-| 7 | Plataforma | Libera a la constructora solo el porcentaje que esa etapa tenía pactado |
-| 8 | Superintendencia | Revisa el historial del proyecto cuando lo necesita, sin pedirle permiso a nadie |
+| Rol | Entra en | Qué hace |
+|---|:---:|---|
+| Constructora | Entrada y paso 5 | Registra el proyecto y construye cada etapa |
+| Compradora | Pasos 1 a 3 | Revisa las reglas, escoge apartamento y paga |
+| Fiduciaria | Paso 4 | Recibe el dinero y lo mantiene retenido |
+| Interventor | Paso 6 | Certifica la etapa con fotos fechadas |
+| Superintendencia | Paso 8 | Revisa el historial cuando lo necesita |
 
 **Salida.** Al cerrar cada ciclo la compradora sabe tres cosas que hoy no puede saber: en qué etapa va la obra, cuánto de su dinero salió y qué evidencia justificó esa salida. Si la etapa vence sin certificación, recibe la alerta y su dinero permanece retenido. Esa es exactamente la promesa de la sección anterior: el dinero solo se mueve cuando la obra avanza de verdad.
 
