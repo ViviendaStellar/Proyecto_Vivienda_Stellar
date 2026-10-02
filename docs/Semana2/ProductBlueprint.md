@@ -58,16 +58,16 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 | Etapa | Rol | Entra en | Qué hace |
 |---|---|:---:|---|
 | Entrada | 🏗️ Constructora | Registrar proyecto | Registra licencia, matrícula, apartamentos, etapas de obra, fecha y porcentaje de cada etapa (deben sumar cien), interventor y fiduciaria. Sin un campo, no recibe dinero |
-| Aporte | 👩 Compradora | Pasos 1 y 2 | Consulta las reglas, separa con arras y paga sus cuotas |
-| Aporte | 🏦 Fiduciaria | Paso 3 | Recibe el dinero y lo mantiene retenido |
-| Verificación | 🏗️ Constructora | Paso 4 | Construye la etapa |
-| Verificación | 🦺 Interventor | Paso 5 | Certifica la etapa con fotos fechadas y reporte técnico |
-| Verificación | 💻 Plataforma | Paso 6 | Libera solo el porcentaje de esa etapa o, si venció el plazo, alerta a la compradora |
+| Aporte | 👩 Compradora | Pasos 1 y 2 | Revisa etapas, fechas y porcentajes. Separa con arras: queda a su nombre el derecho sobre el apartamento, no la propiedad, que llega con la escritura. Luego paga sus cuotas |
+| Aporte | 🏦 Fiduciaria | Paso 3 | Recibe arras y cuotas y las mantiene retenidas. No entrega nada a la constructora sin una etapa certificada |
+| Verificación | 🏗️ Constructora | Paso 4 | Ejecuta la etapa según el cronograma registrado y avisa en la plataforma que la terminó |
+| Verificación | 🦺 Interventor | Paso 5 | Visita la obra y certifica la etapa con fotos fechadas y reporte técnico. La certificación emitida no se puede modificar |
+| Verificación | 💻 Plataforma | Paso 6 | Si la etapa se certificó a tiempo, libera solo el porcentaje pactado. Si venció el plazo, alerta a la compradora y el dinero sigue retenido |
 | Salida | ⚖️ Superintendencia | Paso 7 | Revisa el historial del proyecto cuando lo necesita |
 
-**Cómo se encadenan.** Ningún rol puede saltarse al anterior: la fiduciaria no retiene sin cuota, el interventor no certifica sin obra y la plataforma no libera sin certificación. Al separar, la compradora aún no es dueña, porque la propiedad llega con la escritura; lo que queda a su nombre es el derecho sobre ese apartamento.
+**Cómo se encadenan.** Ningún rol puede saltarse al anterior: sin cuota no hay retención, sin obra no hay certificación y sin certificación no hay pago.
 
-**Salida.** El ciclo se repite en cada etapa y cierra dos escenarios. Si la obra avanzó, la compradora ve qué etapa se certificó, cuánto dinero salió y con qué evidencia. Si se detuvo, conserva todo lo que aún no se había liberado. En ambos se cumple la promesa: el dinero solo se mueve cuando la obra avanza de verdad.
+**Salida.** El ciclo se repite en cada etapa. Si la obra avanzó, la compradora ve qué etapa se certificó y con qué evidencia salió su dinero. Si se detuvo, conserva todo lo no liberado.
 
 ## 4. Alcance del MVP
 
