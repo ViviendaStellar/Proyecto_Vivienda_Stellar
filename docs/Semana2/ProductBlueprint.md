@@ -55,35 +55,35 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 flowchart LR
     subgraph ENT["ENTRADA<br/>Se fijan las reglas"]
         direction TB
-        E["La constructora registra<br/>el proyecto: licencia,<br/>apartamentos, etapas,<br/>fechas y porcentajes"]
+        E(["Constructora<br/>Registra licencia, apartamentos,<br/>etapas, fechas y porcentajes"])
     end
 
     subgraph APO["PASOS 1 a 4<br/>El dinero entra y queda retenido"]
         direction TB
-        P1["1. Compradora<br/>Consulta las reglas"]
-        P2["2. Compradora<br/>Separa y paga arras"]
-        P3["3. Compradora<br/>Paga su cuota"]
-        P4["4. Fiduciaria<br/>Retiene el dinero"]
+        P1("1. Compradora<br/>Consulta las reglas")
+        P2("2. Compradora<br/>Separa y paga arras")
+        P3("3. Compradora<br/>Paga su cuota")
+        P4("4. Fiduciaria<br/>Retiene el dinero")
         P1 --> P2 --> P3 --> P4
     end
 
     subgraph VER["PASOS 5 a 7<br/>La obra se verifica y el dinero se libera"]
         direction TB
-        P5["5. Constructora<br/>Construye la etapa"]
-        P6["6. Interventor<br/>Certifica con fotos fechadas"]
-        D{"Certificada<br/>a tiempo"}
-        P7["7. Plataforma<br/>Libera ese porcentaje"]
-        AL["7b. Alerta<br/>El dinero sigue retenido"]
+        P5("5. Constructora<br/>Construye la etapa")
+        P6("6. Interventor<br/>Certifica con fotos fechadas")
+        D{"¿Certificada<br/>a tiempo?"}
+        P7("7. Plataforma<br/>Libera ese porcentaje")
+        AL("7b. Alerta a la compradora<br/>El dinero sigue retenido")
         P5 --> P6 --> D
-        D -->|Si| P7
-        D -->|No| AL
+        D -- Sí --> P7
+        D -- No --> AL
     end
 
     subgraph SAL["SALIDA<br/>El problema queda resuelto"]
         direction TB
-        S1["La obra avanzo<br/>Ve la etapa certificada,<br/>cuanto dinero salio<br/>y con que evidencia"]
-        S2["La obra se detuvo<br/>Conserva todo lo que<br/>aun no se habia liberado"]
-        SIC["8. Superintendencia<br/>Revisa el historial completo"]
+        S1(["La obra avanzó<br/>Ve la etapa certificada, cuánto<br/>dinero salió y con qué evidencia"])
+        S2(["La obra se detuvo<br/>Conserva todo lo que<br/>aún no se había liberado"])
+        SIC("8. Superintendencia<br/>Revisa el historial completo")
     end
 
     E --> P1
@@ -91,14 +91,34 @@ flowchart LR
     P7 --> S1
     AL --> S2
     S1 --> SIC
-    S1 -.siguiente etapa.-> P3
+    S1 -. siguiente etapa .-> P3
 
-    style E fill:#1A3A6B,color:#fff,stroke:#1A3A6B
-    style D fill:#FCF2E3,color:#12223D,stroke:#C97A12
-    style AL fill:#F5EAD4,color:#12223D,stroke:#B07A1A
-    style S1 fill:#0E6B4F,color:#fff,stroke:#0E6B4F
-    style S2 fill:#0E6B4F,color:#fff,stroke:#0E6B4F
-    style SIC fill:#EFEFEF,color:#333,stroke:#999
+    classDef constructora fill:#FFF1E0,stroke:#D9822B,color:#4A2A05,stroke-width:1.5px
+    classDef compradora fill:#E7EEFC,stroke:#3B5BDB,color:#14254F,stroke-width:1.5px
+    classDef fiduciaria fill:#F1E9FB,stroke:#7B4FC4,color:#2E1757,stroke-width:1.5px
+    classDef interventor fill:#E3F5F2,stroke:#1F8A78,color:#0B3B33,stroke-width:1.5px
+    classDef plataforma fill:#1A3A6B,stroke:#1A3A6B,color:#FFFFFF,stroke-width:1.5px
+    classDef decision fill:#FFF8E1,stroke:#C99A06,color:#4A3A00,stroke-width:1.5px
+    classDef alerta fill:#FDECEA,stroke:#C8372D,color:#5A1410,stroke-width:1.5px
+    classDef salida fill:#0E6B4F,stroke:#0E6B4F,color:#FFFFFF,stroke-width:1.5px
+    classDef regulador fill:#F2F2F2,stroke:#8A8A8A,color:#333333,stroke-width:1.5px
+
+    class E,P5 constructora
+    class P1,P2,P3 compradora
+    class P4 fiduciaria
+    class P6 interventor
+    class P7 plataforma
+    class D decision
+    class AL alerta
+    class S1,S2 salida
+    class SIC regulador
+
+    style ENT fill:#FAFBFD,stroke:#1A3A6B,stroke-width:1px,color:#1A3A6B
+    style APO fill:#FAFBFD,stroke:#3B5BDB,stroke-width:1px,color:#14254F
+    style VER fill:#FAFBFD,stroke:#1F8A78,stroke-width:1px,color:#0B3B33
+    style SAL fill:#F3FAF7,stroke:#0E6B4F,stroke-width:1px,color:#0E6B4F
+
+    linkStyle default stroke:#5B6B85,stroke-width:1.5px
 ```
 
 **Entrada.** Antes de vender el primer apartamento, la constructora registra el proyecto: licencia de construcción, matrícula del lote, apartamentos disponibles, las etapas de obra en orden (cimentación, estructura, mampostería, acabados), su fecha comprometida, el porcentaje que libera cada una (deben sumar cien) y los datos del interventor y la fiduciaria. Sin un solo campo, el proyecto no recibe dinero.
