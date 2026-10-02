@@ -75,6 +75,7 @@
     <line x1="780" y1="428" x2="821" y2="428"/>
     <line x1="780" y1="544" x2="821" y2="544"/>
     <line x1="1016" y1="428" x2="1027" y2="428"/>
+    <line x1="1016" y1="544" x2="1027" y2="544"/>
   </g>
   <text x="564" y="448" font-size="12" font-weight="700" fill="#0E6B4F">Sí</text>
   <text x="564" y="492" font-size="12" font-weight="700" fill="#C92A2A">No</text>
@@ -210,36 +211,42 @@
   <rect x="648" y="578" width="84" height="16" rx="8" fill="#FFE3E3"/>
   <text x="690" y="590" font-size="10" font-weight="700" fill="#C92A2A" text-anchor="middle">Plataforma</text>
 
-  <!-- Salida: obra verificada -->
+  <!-- Salida: si la obra avanza -->
   <g filter="url(#sombra)">
-    <rect x="826" y="374" width="190" height="108" rx="18" fill="url(#verde)"/>
+    <rect x="826" y="374" width="190" height="108" rx="16" fill="url(#verde)"/>
   </g>
-  <text x="921" y="410" font-size="22" text-anchor="middle">✅</text>
-  <text x="921" y="438" font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="middle">Obra verificada</text>
-  <text x="921" y="456" font-size="11.5" fill="#D3F0E4" text-anchor="middle">Ve qué etapa se certificó</text>
-  <text x="921" y="471" font-size="11.5" fill="#D3F0E4" text-anchor="middle">y con qué evidencia salió</text>
+  <rect x="840" y="386" width="124" height="18" rx="9" fill="#FFFFFF" fill-opacity="0.2"/>
+  <text x="902" y="399" font-size="9.5" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">SI LA OBRA AVANZA</text>
+  <text x="840" y="430" font-size="16" fill="#FFFFFF">✅</text>
+  <text x="864" y="430" font-size="15" font-weight="700" fill="#FFFFFF">Obra verificada</text>
+  <text x="840" y="451" font-size="11.5" fill="#E2F6EE">Ve qué etapa se certificó,</text>
+  <text x="840" y="467" font-size="11.5" fill="#E2F6EE">cuánto salió y con qué prueba</text>
 
-  <!-- Salida: dinero protegido -->
+  <!-- Salida: si la obra se detiene -->
   <g filter="url(#sombra)">
-    <rect x="826" y="490" width="190" height="108" rx="18" fill="url(#verde)"/>
+    <rect x="826" y="490" width="190" height="108" rx="16" fill="url(#verde)"/>
   </g>
-  <text x="921" y="526" font-size="22" text-anchor="middle">🛡️</text>
-  <text x="921" y="554" font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="middle">Dinero protegido</text>
-  <text x="921" y="572" font-size="11.5" fill="#D3F0E4" text-anchor="middle">Conserva todo lo que</text>
-  <text x="921" y="587" font-size="11.5" fill="#D3F0E4" text-anchor="middle">aún no se había liberado</text>
+  <rect x="840" y="502" width="150" height="18" rx="9" fill="#FFFFFF" fill-opacity="0.2"/>
+  <text x="915" y="515" font-size="9.5" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">SI LA OBRA SE DETIENE</text>
+  <text x="840" y="546" font-size="16" fill="#FFFFFF">🛡️</text>
+  <text x="864" y="546" font-size="15" font-weight="700" fill="#FFFFFF">Dinero protegido</text>
+  <text x="840" y="567" font-size="11.5" fill="#E2F6EE">Conserva todo lo que</text>
+  <text x="840" y="583" font-size="11.5" fill="#E2F6EE">aún no se había liberado</text>
 
-  <!-- Paso 7: auditar -->
+  <!-- Paso 7: auditar ambos escenarios -->
   <g filter="url(#sombra)">
-    <rect x="1032" y="374" width="126" height="108" rx="14" fill="#FFFFFF" stroke="#E4E9F2"/>
+    <rect x="1032" y="374" width="126" height="224" rx="16" fill="#FFFFFF" stroke="#D5DAE1"/>
   </g>
-  <rect x="1046" y="374" width="98" height="4" rx="2" fill="#495057"/>
-  <circle cx="1050" cy="396" r="11" fill="#495057"/>
-  <text x="1050" y="400" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">7</text>
-  <circle cx="1095" cy="414" r="20" fill="#F1F3F5"/>
-  <text x="1095" y="421" font-size="20" text-anchor="middle">⚖️</text>
-  <text x="1095" y="454" font-size="13" font-weight="700" fill="#1B2433" text-anchor="middle">Auditar historial</text>
-  <rect x="1041" y="462" width="108" height="16" rx="8" fill="#F1F3F5"/>
-  <text x="1095" y="474" font-size="10" font-weight="700" fill="#495057" text-anchor="middle">Superintendencia</text>
+  <circle cx="1052" cy="396" r="11" fill="#495057"/>
+  <text x="1052" y="400" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">7</text>
+  <circle cx="1095" cy="456" r="26" fill="#F1F3F5"/>
+  <text x="1095" y="465" font-size="24" text-anchor="middle">⚖️</text>
+  <text x="1095" y="508" font-size="14" font-weight="700" fill="#1B2433" text-anchor="middle">Auditar</text>
+  <text x="1095" y="525" font-size="14" font-weight="700" fill="#1B2433" text-anchor="middle">historial</text>
+  <text x="1095" y="545" font-size="10.5" fill="#6B7280" text-anchor="middle">Revisa los dos</text>
+  <text x="1095" y="559" font-size="10.5" fill="#6B7280" text-anchor="middle">escenarios</text>
+  <rect x="1041" y="572" width="108" height="16" rx="8" fill="#F1F3F5"/>
+  <text x="1095" y="584" font-size="10" font-weight="700" fill="#495057" text-anchor="middle">Superintendencia</text>
 
   <!-- ================= NOTA DEL CICLO ================= -->
   <rect x="30" y="626" width="1140" height="30" rx="15" fill="#F4F6FA"/>

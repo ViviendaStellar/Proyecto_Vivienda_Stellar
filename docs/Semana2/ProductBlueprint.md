@@ -52,7 +52,7 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 ## 3. Flujo de usuario
 
 <p align="center">
-  <img src="img/flujo_usuario_v2.svg" alt="Flujo de usuario: la constructora registra el proyecto, la compradora separa y paga, la fiduciaria retiene, la constructora registra el avance con su huella digital, el interventor certifica; si la etapa se certifica a tiempo la plataforma libera el pago y la obra queda verificada, si no alerta a la compradora y el dinero queda protegido; la Superintendencia audita el historial" width="100%">
+  <img src="img/flujo_usuario_v3.svg" alt="Flujo de usuario: la constructora registra el proyecto, la compradora separa y paga, la fiduciaria retiene, la constructora registra el avance con su huella digital, el interventor certifica; si la etapa se certifica a tiempo la plataforma libera el pago y la obra queda verificada, si no alerta a la compradora y el dinero queda protegido; la Superintendencia audita el historial" width="100%">
 </p>
 
 | Etapa | Rol | Entra en | Qué hace |
@@ -71,30 +71,35 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 
 ## 4. Alcance del MVP
 
-El MVP cubre un proyecto con cuatro etapas de obra y demuestra el ciclo completo: el dinero entra, queda retenido y solo sale contra una certificación.
+El MVP es un piloto en la red de pruebas de Stellar: un proyecto de cuatro etapas con una constructora, un interventor y compradoras de prueba. Valida una sola hipótesis: si el dinero solo sale contra una certificación, la compradora protege su ahorro y sabe en qué va la obra.
 
-**Dentro del MVP: funcionalidad central**
+**Dentro: funcionalidad central**
 
-| Funcionalidad | Historia | Paso del flujo |
+| Funcionalidad | Historia | Paso |
 |---|:---:|:---:|
-| Registro del proyecto con etapas, fechas y porcentajes | HU1 | Entrada |
-| Registro de la compradora y su derecho sobre el apartamento | HU2 | 1 |
-| Retención de arras y cuotas | HU3 | 2 y 3 |
-| Registro del avance con huella digital (hash) | HU4 | 4 |
-| Certificación y liberación del porcentaje pactado | HU3 y HU4 | 5 y 6 |
-| Alerta por etapa vencida | HU5 | 6 |
+| Registrar el proyecto con etapas, fechas y porcentajes | HU1 | Entrada |
+| Registrar a la compradora y su derecho sobre el apartamento | HU2 | 1 |
+| Retener arras y cuotas | HU3 | 2 y 3 |
+| Registrar el avance con huella digital (hash) | HU4 | 4 |
+| Certificar y liberar el porcentaje pactado | HU3 y HU4 | 5 y 6 |
+| Alertar por etapa vencida | HU5 | 6 |
 
-**Fuera del MVP: funcionalidad deseable**
+**Fuera: funcionalidad deseable**
 
 | Funcionalidad | Por qué después |
 |---|---|
-| Reembolso automático por incumplimiento | Exige validar reglas legales con las fiduciarias |
-| Votación de prórrogas entre compradores | No cambia la protección básica |
-| Retención del último 10% hasta la entrega | Depende de la escrituración final |
-| Panel de auditoría para la Superintendencia | El historial ya se puede consultar en la red |
-| Pagos en pesos conectados a bancos | Se usa la red de pruebas de Stellar |
+| Reembolso automático | Requiere validación legal con las fiduciarias |
+| Votación de prórrogas | No cambia la protección básica |
+| Retención del último 10% | Depende de la escrituración final |
+| Panel para la Superintendencia | El historial ya se puede consultar en la red |
 
-**Por qué el recorte sigue entregando valor.** El problema tiene dos causas: la compradora no sabe dónde está su dinero y no puede verificar si la obra avanza. Las seis funciones atacan ambas: cada peso queda registrado y retenido, y solo sale cuando hay evidencia certificada. Lo que queda fuera mejora la experiencia, pero no cambia el resultado central: si la obra se detiene, la compradora conserva todo lo no liberado.
+**Cómo sabremos que funciona**
+
+1. Ningún desembolso sale sin una certificación previa.
+2. La compradora ve cuánto aportó, cuánto sigue retenido y qué evidencia justificó cada salida.
+3. Una etapa vencida genera la alerta al día siguiente.
+
+**Por qué el recorte entrega valor.** Las seis funciones atacan las dos causas del problema: el dinero que no se ve y el avance que no se verifica. Lo que queda fuera mejora la experiencia, pero no cambia el resultado: si la obra se detiene, la compradora conserva todo lo no liberado.
 
 ## 5. Lean Canvas
 
