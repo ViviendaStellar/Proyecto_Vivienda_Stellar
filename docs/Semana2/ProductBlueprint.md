@@ -27,10 +27,27 @@ El problema tiene dos causas: las familias **no saben dónde está su dinero** y
 
 ## 2. Propuesta de valor
 
-<!-- Qué resultado obtiene el usuario y por qué elegiría esta solución.
-     En qué se diferencia de cómo resuelve hoy.
-     Conecta con el usuario del Problem Brief.
-     Extensión: 150 a 300 palabras. -->
+Para **Laura**, que lleva dos años pagando cumplido su primer apartamento con cesantías y ahorros sin ver avance real, la plataforma cambia la confianza por evidencia: su dinero solo se mueve cuando la obra avanza de verdad.
+
+**Qué resultado obtiene**
+
+- Antes de comprar, conoce las etapas de obra y cuánto dinero se libera en cada una (HU1).
+- Desde la primera cuota, su aporte queda registrado a su nombre y asociado a su apartamento (HU2).
+- Cada cuota queda retenida y solo pasa a la constructora cuando el interventor certifica la etapa con fotos fechadas y un reporte técnico que nadie puede modificar (HU3, HU4).
+- Si una etapa se retrasa, recibe una alerta inmediata, mientras su dinero sigue protegido (HU5).
+
+**En qué se diferencia de cómo lo resuelve hoy**
+
+| Hoy | Con la plataforma |
+|---|---|
+| Confía en la reputación de la constructora. | Confía en reglas públicas y evidencia verificable. |
+| La fiduciaria cobra entre 1 y 2% y guarda el dinero, pero no verifica la obra. | El dinero se libera solo contra una certificación de avance. |
+| Visita la obra un día al mes y recibe renders que no corresponden a la realidad. | Ve fotos fechadas y certificadas de cada etapa, sin desplazarse. |
+| Descubre el problema años después y termina en demandas. | Se entera a tiempo y tiene soporte de cada peso aportado. |
+
+**Por qué la elegiría**
+
+La plataforma no le pide confiar más, sino le permite verificar. Así reduce el triple costo que hoy paga Laura: protege sus ahorros, llega a cualquier reclamo con pruebas en lugar de años de trámites y cambia la angustia por información clara. Lo que en casos como Avi Puerto Colombia tardó nueve años o más en resolverse, aquí se detecta en la misma etapa en que ocurre.
 
 ## 3. Flujo de usuario
 
