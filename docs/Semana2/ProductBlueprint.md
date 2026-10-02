@@ -65,7 +65,7 @@ flowchart TD
     P7 --> S["SALIDA<br/>Ve el avance, el dinero liberado<br/>y la evidencia que lo justifica"]
     AL --> S
     S -.se repite por etapa.-> P3
-    S -.> SIC["8. Superintendencia<br/>Revisa el historial"]
+    S -.-> SIC["8. Superintendencia<br/>Revisa el historial"]
 
     style E fill:#1A3A6B,color:#fff,stroke:#1A3A6B
     style S fill:#0E6B4F,color:#fff,stroke:#0E6B4F
