@@ -157,11 +157,12 @@
   <rect x="68" y="400" width="144" height="4" rx="2" fill="#E8590C"/>
   <circle cx="72" cy="424" r="12" fill="#E8590C"/>
   <text x="72" y="428" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">4</text>
-  <circle cx="140" cy="450" r="24" fill="#FFF0E6"/>
-  <text x="140" y="459" font-size="24" text-anchor="middle">🏗️</text>
-  <text x="140" y="496" font-size="15" font-weight="700" fill="#1B2433" text-anchor="middle">Construir etapa</text>
-  <rect x="94" y="506" width="92" height="18" rx="9" fill="#FFF0E6"/>
-  <text x="140" y="519" font-size="10.5" font-weight="700" fill="#E8590C" text-anchor="middle">Constructora</text>
+  <circle cx="140" cy="444" r="22" fill="#FFF0E6"/>
+  <text x="140" y="452" font-size="22" text-anchor="middle">🏗️</text>
+  <text x="140" y="486" font-size="15" font-weight="700" fill="#1B2433" text-anchor="middle">Registrar avance</text>
+  <text x="140" y="502" font-size="10.5" fill="#7A5A35" text-anchor="middle" font-family="Consolas, Menlo, monospace"># huella digital (hash)</text>
+  <rect x="96" y="510" width="88" height="16" rx="8" fill="#FFF0E6"/>
+  <text x="140" y="522" font-size="10" font-weight="700" fill="#E8590C" text-anchor="middle">Constructora</text>
 
   <!-- Paso 5 -->
   <g filter="url(#sombra)">

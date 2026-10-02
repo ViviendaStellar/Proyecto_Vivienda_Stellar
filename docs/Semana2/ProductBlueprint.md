@@ -52,7 +52,7 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 ## 3. Flujo de usuario
 
 <p align="center">
-  <img src="img/flujo_usuario.svg" alt="Flujo de usuario: la constructora registra el proyecto, la compradora separa y paga, la fiduciaria retiene, la constructora construye, el interventor certifica; si la etapa se certifica a tiempo la plataforma libera el pago y la obra queda verificada, si no alerta a la compradora y el dinero queda protegido; la Superintendencia audita el historial" width="100%">
+  <img src="img/flujo_usuario_v2.svg" alt="Flujo de usuario: la constructora registra el proyecto, la compradora separa y paga, la fiduciaria retiene, la constructora registra el avance con su huella digital, el interventor certifica; si la etapa se certifica a tiempo la plataforma libera el pago y la obra queda verificada, si no alerta a la compradora y el dinero queda protegido; la Superintendencia audita el historial" width="100%">
 </p>
 
 | Etapa | Rol | Entra en | Qué hace |
@@ -60,7 +60,7 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 | Entrada | 🏗️ Constructora | Registrar proyecto | Registra licencia, matrícula, apartamentos, etapas de obra, fecha y porcentaje de cada etapa (deben sumar cien), interventor y fiduciaria. Sin un campo, no recibe dinero |
 | Aporte | 👩 Compradora | Pasos 1 y 2 | Revisa etapas, fechas y porcentajes. Separa con arras: queda a su nombre el derecho sobre el apartamento, no la propiedad, que llega con la escritura. Luego paga sus cuotas |
 | Aporte | 🏦 Fiduciaria | Paso 3 | Recibe arras y cuotas y las mantiene retenidas. No entrega nada a la constructora sin una etapa certificada |
-| Verificación | 🏗️ Constructora | Paso 4 | Ejecuta la etapa según el cronograma registrado y avisa en la plataforma que la terminó |
+| Verificación | 🏗️ Constructora | Paso 4 | Termina la etapa y registra el avance: la huella digital (hash) de fotos y documentos queda en la red, así nadie puede alterarlos después |
 | Verificación | 🦺 Interventor | Paso 5 | Visita la obra y certifica la etapa con fotos fechadas y reporte técnico. La certificación emitida no se puede modificar |
 | Verificación | 💻 Plataforma | Paso 6 | Si la etapa se certificó a tiempo, libera solo el porcentaje pactado. Si venció el plazo, alerta a la compradora y el dinero sigue retenido |
 | Salida | ⚖️ Superintendencia | Paso 7 | Revisa el historial del proyecto cuando lo necesita |
