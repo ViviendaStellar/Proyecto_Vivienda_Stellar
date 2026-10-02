@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <clipPath id="marco">
+      <rect x="0" y="0" width="960" height="600" rx="18"/>
+    </clipPath>
+    <clipPath id="foto">
+      <rect x="36" y="130" width="480" height="340" rx="12"/>
+    </clipPath>
+    <linearGradient id="cielo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9FD3FF"/>
+      <stop offset="1" stop-color="#E8F5FF"/>
+    </linearGradient>
+    <linearGradient id="miniatura" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#B7DDFB"/>
+      <stop offset="0.65" stop-color="#E8F5FF"/>
+      <stop offset="0.66" stop-color="#C9B79C"/>
+      <stop offset="1" stop-color="#B9A585"/>
+    </linearGradient>
+    <linearGradient id="boton" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#14306B"/>
+      <stop offset="1" stop-color="#3B5BDB"/>
+    </linearGradient>
+  </defs>
+
+  <g clip-path="url(#marco)">
+  <rect x="0" y="0" width="960" height="600" fill="#FFFFFF"/>
+  <rect x="0.75" y="0.75" width="958.5" height="598.5" rx="18" fill="none" stroke="#D9DFEA" stroke-width="1.5"/>
+
+  <!-- Barra de ventana -->
+  <rect x="0" y="0" width="960" height="44" fill="#F1F4F9"/>
+  <line x1="0" y1="44" x2="960" y2="44" stroke="#E1E6EF"/>
+  <circle cx="24" cy="22" r="6" fill="#FF6B6B"/>
+  <circle cx="44" cy="22" r="6" fill="#FCC419"/>
+  <circle cx="64" cy="22" r="6" fill="#51CF66"/>
+  <rect x="330" y="11" width="300" height="22" rx="11" fill="#FFFFFF" stroke="#E1E6EF"/>
+  <text x="480" y="26" font-size="11.5" fill="#6B7280" text-anchor="middle">vivienda-stellar / reportar-avance</text>
+
+  <!-- Encabezado -->
+  <text x="36" y="86" font-size="22" font-weight="700" fill="#12223D">Reportar avance de obra</text>
+  <text x="36" y="108" font-size="13" fill="#6B7280">🏗️  Lo sube la constructora cuando termina una etapa</text>
+  <rect x="770" y="68" width="154" height="26" rx="13" fill="#E7EEFC"/>
+  <text x="847" y="85" font-size="11.5" font-weight="700" fill="#3B5BDB" text-anchor="middle">Paso 4 del flujo</text>
+
+  <!-- ===== Foto del avance ===== -->
+  <g clip-path="url(#foto)">
+    <rect x="36" y="130" width="480" height="340" fill="url(#cielo)"/>
+    <circle cx="110" cy="190" r="26" fill="#FFE8A3"/>
+    <!-- montañas -->
+    <path d="M36,380 L120,320 L190,360 L270,300 L360,350 L440,310 L516,350 L516,420 L36,420 Z" fill="#9CC59A"/>
+    <!-- terreno -->
+    <rect x="36" y="410" width="480" height="60" fill="#C9B79C"/>
+    <rect x="36" y="410" width="480" height="6" fill="#B9A585"/>
+    <!-- estructura del edificio -->
+    <g fill="#8A9099">
+      <rect x="160" y="200" width="10" height="210"/>
+      <rect x="220" y="200" width="10" height="210"/>
+      <rect x="280" y="200" width="10" height="210"/>
+      <rect x="340" y="200" width="10" height="210"/>
+      <rect x="400" y="250" width="10" height="160"/>
+    </g>
+    <g fill="#A3A9B1">
+      <rect x="155" y="360" width="260" height="9"/>
+      <rect x="155" y="310" width="260" height="9"/>
+      <rect x="155" y="260" width="260" height="9"/>
+      <rect x="155" y="210" width="200" height="9"/>
+    </g>
+    <!-- varillas en la parte de arriba -->
+    <g stroke="#6B7280" stroke-width="1.5">
+      <line x1="163" y1="200" x2="163" y2="182"/>
+      <line x1="167" y1="200" x2="167" y2="182"/>
+      <line x1="223" y1="200" x2="223" y2="182"/>
+      <line x1="227" y1="200" x2="227" y2="182"/>
+      <line x1="283" y1="200" x2="283" y2="182"/>
+      <line x1="287" y1="200" x2="287" y2="182"/>
+      <line x1="343" y1="200" x2="343" y2="182"/>
+      <line x1="347" y1="200" x2="347" y2="182"/>
+    </g>
+    <!-- muros del primer piso -->
+    <rect x="170" y="369" width="50" height="41" fill="#C8754A"/>
+    <rect x="290" y="369" width="50" height="41" fill="#C8754A"/>
+    <!-- grua -->
+    <g fill="#F2B705">
+      <rect x="452" y="160" width="10" height="250"/>
+      <rect x="330" y="152" width="180" height="9"/>
+      <rect x="486" y="161" width="24" height="18"/>
+    </g>
+    <line x1="380" y1="161" x2="380" y2="214" stroke="#4B5563" stroke-width="1.5"/>
+    <rect x="370" y="214" width="20" height="10" fill="#6B7280"/>
+
+    <!-- etiquetas sobre la foto -->
+    <rect x="50" y="144" width="140" height="26" rx="13" fill="#FFFFFF" fill-opacity="0.9"/>
+    <text x="120" y="161" font-size="12" font-weight="700" fill="#12223D" text-anchor="middle">📷 Foto del avance</text>
+    <rect x="50" y="430" width="300" height="26" rx="13" fill="#12223D" fill-opacity="0.78"/>
+    <text x="200" y="447" font-size="11.5" fill="#FFFFFF" text-anchor="middle">12 dic 2027 · 10:42 a. m. · Bello, Antioquia</text>
+  </g>
+  <rect x="36" y="130" width="480" height="340" rx="12" fill="none" stroke="#D5DCE8"/>
+
+  <!-- miniaturas -->
+  <rect x="36" y="482" width="72" height="44" rx="8" fill="url(#miniatura)" stroke="#D5DCE8"/>
+  <rect x="116" y="482" width="72" height="44" rx="8" fill="url(#miniatura)" stroke="#D5DCE8"/>
+  <rect x="196" y="482" width="72" height="44" rx="8" fill="url(#miniatura)" stroke="#D5DCE8"/>
+  <rect x="276" y="482" width="72" height="44" rx="8" fill="#F3F6FE" stroke="#D5DCE8"/>
+  <text x="312" y="509" font-size="12.5" font-weight="700" fill="#3B5BDB" text-anchor="middle">+3 fotos</text>
+
+  <!-- ===== Datos del reporte ===== -->
+  <text x="548" y="146" font-size="11" font-weight="700" fill="#3B5BDB" letter-spacing="1.2">ETAPA QUE SE REPORTA</text>
+  <rect x="548" y="156" width="376" height="36" rx="8" fill="#F8FAFD" stroke="#D5DCE8"/>
+  <circle cx="570" cy="174" r="11" fill="#E8590C"/>
+  <text x="570" y="178" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">2</text>
+  <text x="590" y="179" font-size="14" font-weight="600" fill="#1B2433">Estructura</text>
+  <text x="908" y="179" font-size="13" font-weight="700" fill="#14306B" text-anchor="end">Desembolso: 30 %</text>
+
+  <text x="548" y="218" font-size="11" font-weight="700" fill="#3B5BDB" letter-spacing="1.2">FECHA LÍMITE</text>
+  <text x="548" y="242" font-size="14" fill="#1B2433">15 dic 2027</text>
+  <rect x="640" y="226" width="86" height="22" rx="11" fill="#E8F7EF"/>
+  <text x="683" y="241" font-size="11.5" font-weight="700" fill="#0E6B4F" text-anchor="middle">✓ A tiempo</text>
+
+  <text x="548" y="276" font-size="11" font-weight="700" fill="#3B5BDB" letter-spacing="1.2">INFORME DE OBRA</text>
+  <rect x="548" y="286" width="376" height="34" rx="8" fill="#F8FAFD" stroke="#D5DCE8"/>
+  <text x="562" y="308" font-size="13" fill="#1B2433">📄  Informe de estructura, diciembre.pdf</text>
+
+  <text x="548" y="346" font-size="11" font-weight="700" fill="#3B5BDB" letter-spacing="1.2">HUELLA DIGITAL (HASH) DE FOTOS E INFORME</text>
+  <rect x="548" y="356" width="376" height="54" rx="8" fill="#12223D"/>
+  <text x="564" y="379" font-size="13" fill="#9FE3C8" font-family="Consolas, Menlo, monospace">a3f9 c21b 7e04 d18f 5be0</text>
+  <text x="564" y="398" font-size="13" fill="#9FE3C8" font-family="Consolas, Menlo, monospace">9d5e 7a21 c3f0 66b2 e4a1</text>
+  <text x="548" y="430" font-size="11.5" fill="#6B7280">Si alguien cambia una foto o el informe, la huella ya no</text>
+  <text x="548" y="446" font-size="11.5" fill="#6B7280">coincide y se nota de inmediato.</text>
+
+  <rect x="548" y="462" width="376" height="56" rx="10" fill="#FFF8E1" stroke="#F1D78A"/>
+  <text x="564" y="486" font-size="13" font-weight="700" fill="#5C4A00">⏳  Pendiente de la interventoría</text>
+  <text x="564" y="505" font-size="11.5" fill="#7A6400">La plata no se suelta hasta que la interventoría lo apruebe.</text>
+
+  <!-- ===== Aviso y acción ===== -->
+  <rect x="36" y="544" width="640" height="40" rx="10" fill="#F4F6FA"/>
+  <text x="52" y="569" font-size="12.5" fill="#4A5874">🔒  La huella de las fotos y el informe queda guardada en Stellar con fecha y hora.</text>
+
+  <rect x="704" y="540" width="220" height="44" rx="10" fill="url(#boton)"/>
+  <text x="814" y="567" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">Enviar a la interventoría</text>
+  </g>
+</svg>

@@ -85,7 +85,11 @@ El MVP es un piloto en la red de pruebas de Stellar: un proyecto de cuatro etapa
 | Alertar por etapa vencida | HU5 | 6 |
 
 <p align="center">
-  <img src="img/registro_proyecto_v1.svg" alt="Pantalla de registro del proyecto con etapas, fechas y porcentajes" width="90%">
+  <img src="img/registro_proyecto_v2.svg" alt="Pantalla para registrar el proyecto con etapas, fechas y desembolso de cada una" width="90%">
+</p>
+
+<p align="center">
+  <img src="img/reporte_avance_v1.svg" alt="Pantalla para reportar el avance de obra con la foto, el informe y la huella digital" width="90%">
 </p>
 
 **Fuera: funcionalidad deseable**
