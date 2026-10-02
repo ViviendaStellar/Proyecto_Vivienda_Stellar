@@ -53,11 +53,11 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 
 ```mermaid
 flowchart LR
-    E(["Registrar"]) --> P1["1. Consultar"] --> P2["2. Separar"] --> P3["3. Pagar"] --> P4["4. Retener"] --> P5["5. Construir"] --> P6["6. Certificar"] --> D{"¿A tiempo?"}
-    D -- Sí --> P7["7. Liberar"] --> S1(["Obra verificada"])
-    D -- No --> AL["7. Alertar"] --> S2(["Dinero protegido"])
-    S1 --> P8["8. Auditar"]
-    S1 -. siguiente etapa .-> P3
+    E(["Registrar proyecto<br/>🏗️"]) --> P1["1. Separar apartamento<br/>👩"] --> P2["2. Pagar cuota<br/>👩"] --> P3["3. Retener dinero<br/>🏦"] --> P4["4. Construir etapa<br/>🏗️"] --> P5["5. Certificar avance<br/>🦺"] --> D{"¿A tiempo?"}
+    D -- Sí --> P6["6. Liberar pago<br/>💻"] --> S1(["Obra verificada"])
+    D -- No --> AL["6. Alertar compradora<br/>💻"] --> S2(["Dinero protegido"])
+    S1 --> P7["7. Auditar historial<br/>⚖️"]
+    S1 -. siguiente etapa .-> P2
 
     classDef extremo fill:#1A3A6B,stroke:#1A3A6B,color:#FFFFFF
     classDef paso fill:#EEF2F8,stroke:#5B7FB4,color:#12223D
@@ -66,7 +66,7 @@ flowchart LR
     classDef salida fill:#0E6B4F,stroke:#0E6B4F,color:#FFFFFF
 
     class E extremo
-    class P1,P2,P3,P4,P5,P6,P7,P8 paso
+    class P1,P2,P3,P4,P5,P6,P7 paso
     class D decision
     class AL alerta
     class S1,S2 salida
@@ -74,13 +74,13 @@ flowchart LR
 
 | Etapa | Rol | Entra en | Qué hace |
 |---|---|:---:|---|
-| Entrada | Constructora | Registrar | Registra licencia, matrícula, apartamentos, etapas de obra, fecha y porcentaje de cada etapa (deben sumar cien), interventor y fiduciaria. Sin un campo, no recibe dinero |
-| Aporte | Compradora | Pasos 1 a 3 | Consulta las reglas, separa con arras y paga sus cuotas |
-| Aporte | Fiduciaria | Paso 4 | Recibe el dinero y lo mantiene retenido |
-| Verificación | Constructora | Paso 5 | Construye la etapa |
-| Verificación | Interventor | Paso 6 | Certifica la etapa con fotos fechadas y reporte técnico |
-| Verificación | Plataforma | Paso 7 | Libera solo el porcentaje de esa etapa o, si venció el plazo, alerta a la compradora |
-| Salida | Superintendencia | Paso 8 | Revisa el historial del proyecto cuando lo necesita |
+| Entrada | 🏗️ Constructora | Registrar proyecto | Registra licencia, matrícula, apartamentos, etapas de obra, fecha y porcentaje de cada etapa (deben sumar cien), interventor y fiduciaria. Sin un campo, no recibe dinero |
+| Aporte | 👩 Compradora | Pasos 1 y 2 | Consulta las reglas, separa con arras y paga sus cuotas |
+| Aporte | 🏦 Fiduciaria | Paso 3 | Recibe el dinero y lo mantiene retenido |
+| Verificación | 🏗️ Constructora | Paso 4 | Construye la etapa |
+| Verificación | 🦺 Interventor | Paso 5 | Certifica la etapa con fotos fechadas y reporte técnico |
+| Verificación | 💻 Plataforma | Paso 6 | Libera solo el porcentaje de esa etapa o, si venció el plazo, alerta a la compradora |
+| Salida | ⚖️ Superintendencia | Paso 7 | Revisa el historial del proyecto cuando lo necesita |
 
 **Cómo se encadenan.** Ningún rol puede saltarse al anterior: la fiduciaria no retiene sin cuota, el interventor no certifica sin obra y la plataforma no libera sin certificación. Al separar, la compradora aún no es dueña, porque la propiedad llega con la escritura; lo que queda a su nombre es el derecho sobre ese apartamento.
 
