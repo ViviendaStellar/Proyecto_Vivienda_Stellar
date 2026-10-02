@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="540" viewBox="0 0 1120 540" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7C8BA5"/>
+    </marker>
+    <filter id="sombra" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#1A3A6B" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- Fondo -->
+  <rect x="1" y="1" width="1118" height="538" rx="18" fill="#FFFFFF" stroke="#E3E8F0" stroke-width="1.5"/>
+
+  <!-- Titulo -->
+  <text x="40" y="46" font-size="22" font-weight="700" fill="#12223D">Flujo de usuario</text>
+  <text x="40" y="70" font-size="13" fill="#5B6B85">Vivienda sobre planos: el dinero solo se mueve cuando la obra avanza</text>
+
+  <!-- ============ FASES ============ -->
+  <rect x="40" y="96" width="170" height="20" rx="10" fill="#1A3A6B"/>
+  <text x="125" y="110" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="1.5">ENTRADA</text>
+
+  <rect x="270" y="96" width="630" height="20" rx="10" fill="#E7EEFC"/>
+  <text x="585" y="110" font-size="11" font-weight="700" fill="#3B5BDB" text-anchor="middle" letter-spacing="1.5">APORTE · EL DINERO ENTRA Y QUEDA RETENIDO</text>
+
+  <rect x="40" y="252" width="690" height="20" rx="10" fill="#FFF4E0"/>
+  <text x="385" y="266" font-size="11" font-weight="700" fill="#B5650F" text-anchor="middle" letter-spacing="1.5">VERIFICACIÓN · LA OBRA SE COMPRUEBA Y EL DINERO SE LIBERA</text>
+
+  <rect x="780" y="252" width="310" height="20" rx="10" fill="#E3F5EE"/>
+  <text x="935" y="266" font-size="11" font-weight="700" fill="#0E6B4F" text-anchor="middle" letter-spacing="1.5">SALIDA · PROBLEMA RESUELTO</text>
+
+  <!-- ============ CONECTORES ============ -->
+  <g stroke="#7C8BA5" stroke-width="1.8" fill="none" marker-end="url(#flecha)">
+    <line x1="210" y1="168" x2="266" y2="168"/>
+    <line x1="440" y1="168" x2="496" y2="168"/>
+    <line x1="670" y1="168" x2="726" y2="168"/>
+    <path d="M815,216 V236 H22 V380 H36"/>
+    <line x1="200" y1="380" x2="226" y2="380"/>
+    <line x1="390" y1="380" x2="404" y2="380"/>
+    <path d="M532,380 H550 V320 H566"/>
+    <path d="M550,380 V440 H566"/>
+    <line x1="730" y1="320" x2="776" y2="320"/>
+    <line x1="730" y1="440" x2="776" y2="440"/>
+    <line x1="930" y1="320" x2="956" y2="320"/>
+  </g>
+  <text x="556" y="347" font-size="12" font-weight="700" fill="#0E6B4F">Sí</text>
+  <text x="556" y="420" font-size="12" font-weight="700" fill="#C8372D">No</text>
+
+  <!-- ============ FILA 1 ============ -->
+  <!-- Entrada -->
+  <g filter="url(#sombra)">
+    <rect x="40" y="120" width="170" height="96" rx="12" fill="#1A3A6B"/>
+  </g>
+  <text x="125" y="164" font-size="26" text-anchor="middle">🏗️</text>
+  <text x="125" y="190" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">Registrar proyecto</text>
+  <text x="125" y="207" font-size="11" fill="#C9D6EE" text-anchor="middle">Constructora</text>
+
+  <!-- Paso 1 -->
+  <g filter="url(#sombra)">
+    <rect x="270" y="120" width="170" height="96" rx="12" fill="#F6F8FD" stroke="#C7D3F2" stroke-width="1.2"/>
+  </g>
+  <circle cx="288" cy="138" r="11" fill="#3B5BDB"/>
+  <text x="288" y="142" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">1</text>
+  <text x="355" y="164" font-size="26" text-anchor="middle">👩</text>
+  <text x="355" y="190" font-size="14" font-weight="700" fill="#14254F" text-anchor="middle">Separar apartamento</text>
+  <text x="355" y="207" font-size="11" fill="#5B6B85" text-anchor="middle">Compradora</text>
+
+  <!-- Paso 2 -->
+  <g filter="url(#sombra)">
+    <rect x="500" y="120" width="170" height="96" rx="12" fill="#F6F8FD" stroke="#C7D3F2" stroke-width="1.2"/>
+  </g>
+  <circle cx="518" cy="138" r="11" fill="#3B5BDB"/>
+  <text x="518" y="142" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">2</text>
+  <text x="585" y="164" font-size="26" text-anchor="middle">👩</text>
+  <text x="585" y="190" font-size="14" font-weight="700" fill="#14254F" text-anchor="middle">Pagar cuota</text>
+  <text x="585" y="207" font-size="11" fill="#5B6B85" text-anchor="middle">Compradora</text>
+
+  <!-- Paso 3 -->
+  <g filter="url(#sombra)">
+    <rect x="730" y="120" width="170" height="96" rx="12" fill="#F6F8FD" stroke="#C7D3F2" stroke-width="1.2"/>
+  </g>
+  <circle cx="748" cy="138" r="11" fill="#3B5BDB"/>
+  <text x="748" y="142" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">3</text>
+  <text x="815" y="164" font-size="26" text-anchor="middle">🏦</text>
+  <text x="815" y="190" font-size="14" font-weight="700" fill="#14254F" text-anchor="middle">Retener dinero</text>
+  <text x="815" y="207" font-size="11" fill="#5B6B85" text-anchor="middle">Fiduciaria</text>
+
+  <!-- Leyenda de roles -->
+  <rect x="940" y="96" width="150" height="136" rx="12" fill="#FAFBFD" stroke="#E3E8F0" stroke-width="1.2"/>
+  <text x="956" y="116" font-size="12" font-weight="700" fill="#12223D">Roles</text>
+  <text x="956" y="135" font-size="12" fill="#33415C">🏗️  Constructora</text>
+  <text x="956" y="152" font-size="12" fill="#33415C">👩  Compradora</text>
+  <text x="956" y="169" font-size="12" fill="#33415C">🏦  Fiduciaria</text>
+  <text x="956" y="186" font-size="12" fill="#33415C">🦺  Interventor</text>
+  <text x="956" y="203" font-size="12" fill="#33415C">💻  Plataforma</text>
+  <text x="956" y="220" font-size="12" fill="#33415C">⚖️  Superintendencia</text>
+
+  <!-- ============ FILA 2 ============ -->
+  <!-- Paso 4 -->
+  <g filter="url(#sombra)">
+    <rect x="40" y="332" width="160" height="96" rx="12" fill="#FFF9F0" stroke="#F1D2A6" stroke-width="1.2"/>
+  </g>
+  <circle cx="58" cy="350" r="11" fill="#D9822B"/>
+  <text x="58" y="354" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">4</text>
+  <text x="120" y="376" font-size="26" text-anchor="middle">🏗️</text>
+  <text x="120" y="402" font-size="14" font-weight="700" fill="#4A2A05" text-anchor="middle">Construir etapa</text>
+  <text x="120" y="419" font-size="11" fill="#7A5A35" text-anchor="middle">Constructora</text>
+
+  <!-- Paso 5 -->
+  <g filter="url(#sombra)">
+    <rect x="230" y="332" width="160" height="96" rx="12" fill="#FFF9F0" stroke="#F1D2A6" stroke-width="1.2"/>
+  </g>
+  <circle cx="248" cy="350" r="11" fill="#D9822B"/>
+  <text x="248" y="354" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">5</text>
+  <text x="310" y="376" font-size="26" text-anchor="middle">🦺</text>
+  <text x="310" y="402" font-size="14" font-weight="700" fill="#4A2A05" text-anchor="middle">Certificar avance</text>
+  <text x="310" y="419" font-size="11" fill="#7A5A35" text-anchor="middle">Interventor</text>
+
+  <!-- Decision -->
+  <g filter="url(#sombra)">
+    <polygon points="470,330 532,380 470,430 408,380" fill="#FFF8E1" stroke="#C99A06" stroke-width="1.5"/>
+  </g>
+  <text x="470" y="378" font-size="12" font-weight="700" fill="#4A3A00" text-anchor="middle">¿A</text>
+  <text x="470" y="393" font-size="12" font-weight="700" fill="#4A3A00" text-anchor="middle">tiempo?</text>
+
+  <!-- Paso 6 Si -->
+  <g filter="url(#sombra)">
+    <rect x="570" y="280" width="160" height="80" rx="12" fill="#F6F8FD" stroke="#C7D3F2" stroke-width="1.2"/>
+  </g>
+  <circle cx="586" cy="296" r="10" fill="#1A3A6B"/>
+  <text x="586" y="300" font-size="10" font-weight="700" fill="#FFFFFF" text-anchor="middle">6</text>
+  <text x="650" y="310" font-size="22" text-anchor="middle">💻</text>
+  <text x="650" y="334" font-size="13" font-weight="700" fill="#14254F" text-anchor="middle">Liberar pago</text>
+  <text x="650" y="350" font-size="11" fill="#5B6B85" text-anchor="middle">Plataforma</text>
+
+  <!-- Paso 6 No -->
+  <g filter="url(#sombra)">
+    <rect x="570" y="400" width="160" height="80" rx="12" fill="#FDECEA" stroke="#E8A49E" stroke-width="1.2"/>
+  </g>
+  <circle cx="586" cy="416" r="10" fill="#C8372D"/>
+  <text x="586" y="420" font-size="10" font-weight="700" fill="#FFFFFF" text-anchor="middle">6</text>
+  <text x="650" y="430" font-size="22" text-anchor="middle">💻</text>
+  <text x="650" y="454" font-size="13" font-weight="700" fill="#5A1410" text-anchor="middle">Alertar compradora</text>
+  <text x="650" y="470" font-size="11" fill="#8A3A33" text-anchor="middle">Plataforma</text>
+
+  <!-- Salida: obra verificada -->
+  <g filter="url(#sombra)">
+    <rect x="780" y="280" width="150" height="80" rx="40" fill="#0E6B4F"/>
+  </g>
+  <text x="855" y="313" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">Obra verificada</text>
+  <text x="855" y="331" font-size="11" fill="#CDEBDF" text-anchor="middle">Ve la etapa certificada</text>
+  <text x="855" y="345" font-size="11" fill="#CDEBDF" text-anchor="middle">y con qué evidencia salió</text>
+
+  <!-- Salida: dinero protegido -->
+  <g filter="url(#sombra)">
+    <rect x="780" y="400" width="150" height="80" rx="40" fill="#0E6B4F"/>
+  </g>
+  <text x="855" y="433" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">Dinero protegido</text>
+  <text x="855" y="451" font-size="11" fill="#CDEBDF" text-anchor="middle">Conserva todo lo que</text>
+  <text x="855" y="465" font-size="11" fill="#CDEBDF" text-anchor="middle">aún no se liberó</text>
+
+  <!-- Paso 7 -->
+  <g filter="url(#sombra)">
+    <rect x="960" y="280" width="130" height="80" rx="12" fill="#F4F4F4" stroke="#CFCFCF" stroke-width="1.2"/>
+  </g>
+  <circle cx="976" cy="296" r="10" fill="#6B6B6B"/>
+  <text x="976" y="300" font-size="10" font-weight="700" fill="#FFFFFF" text-anchor="middle">7</text>
+  <text x="1025" y="310" font-size="22" text-anchor="middle">⚖️</text>
+  <text x="1025" y="334" font-size="13" font-weight="700" fill="#333333" text-anchor="middle">Auditar historial</text>
+  <text x="1025" y="350" font-size="11" fill="#6B6B6B" text-anchor="middle">Superintendencia</text>
+
+  <!-- Nota del ciclo -->
+  <text x="40" y="516" font-size="12" fill="#5B6B85">↻  El ciclo se repite en cada etapa de obra: con la siguiente cuota el recorrido vuelve al paso 2.</text>
+</svg>

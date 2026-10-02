@@ -51,26 +51,9 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 
 ## 3. Flujo de usuario
 
-```mermaid
-flowchart LR
-    E(["Registrar proyecto<br/>🏗️"]) --> P1["1. Separar apartamento<br/>👩"] --> P2["2. Pagar cuota<br/>👩"] --> P3["3. Retener dinero<br/>🏦"] --> P4["4. Construir etapa<br/>🏗️"] --> P5["5. Certificar avance<br/>🦺"] --> D{"¿A tiempo?"}
-    D -- Sí --> P6["6. Liberar pago<br/>💻"] --> S1(["Obra verificada"])
-    D -- No --> AL["6. Alertar compradora<br/>💻"] --> S2(["Dinero protegido"])
-    S1 --> P7["7. Auditar historial<br/>⚖️"]
-    S1 -. siguiente etapa .-> P2
-
-    classDef extremo fill:#1A3A6B,stroke:#1A3A6B,color:#FFFFFF
-    classDef paso fill:#EEF2F8,stroke:#5B7FB4,color:#12223D
-    classDef decision fill:#FFF8E1,stroke:#C99A06,color:#4A3A00
-    classDef alerta fill:#FDECEA,stroke:#C8372D,color:#5A1410
-    classDef salida fill:#0E6B4F,stroke:#0E6B4F,color:#FFFFFF
-
-    class E extremo
-    class P1,P2,P3,P4,P5,P6,P7 paso
-    class D decision
-    class AL alerta
-    class S1,S2 salida
-```
+<p align="center">
+  <img src="img/flujo_usuario.svg" alt="Flujo de usuario: la constructora registra el proyecto, la compradora separa y paga, la fiduciaria retiene, la constructora construye, el interventor certifica; si la etapa se certifica a tiempo la plataforma libera el pago y la obra queda verificada, si no alerta a la compradora y el dinero queda protegido; la Superintendencia audita el historial" width="100%">
+</p>
 
 | Etapa | Rol | Entra en | Qué hace |
 |---|---|:---:|---|
