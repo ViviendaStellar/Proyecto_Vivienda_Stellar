@@ -53,41 +53,51 @@ La plataforma no le pide confiar más, sino le permite verificar. Así reduce el
 
 ```mermaid
 flowchart LR
-    subgraph ENT["ENTRADA. La constructora fija las reglas antes de vender"]
-        E["Registra el proyecto:<br/>licencia, apartamentos,<br/>etapas, fechas y el<br/>porcentaje de cada una"]
+    subgraph ENT["ENTRADA<br/>Se fijan las reglas"]
+        direction TB
+        E["La constructora registra<br/>el proyecto: licencia,<br/>apartamentos, etapas,<br/>fechas y porcentajes"]
     end
 
-    subgraph CIC["PASOS INTERMEDIOS. El ciclo se repite en cada etapa de obra"]
-        P1["1. Compradora<br/>Consulta<br/>las reglas"]
-        P2["2. Compradora<br/>Separa y<br/>paga arras"]
-        P3["3. Compradora<br/>Paga<br/>su cuota"]
-        P4["4. Fiduciaria<br/>Retiene<br/>el dinero"]
-        P5["5. Constructora<br/>Construye<br/>la etapa"]
-        P6["6. Interventor<br/>Certifica con<br/>fotos fechadas"]
+    subgraph APO["PASOS 1 a 4<br/>El dinero entra y queda retenido"]
+        direction TB
+        P1["1. Compradora<br/>Consulta las reglas"]
+        P2["2. Compradora<br/>Separa y paga arras"]
+        P3["3. Compradora<br/>Paga su cuota"]
+        P4["4. Fiduciaria<br/>Retiene el dinero"]
+        P1 --> P2 --> P3 --> P4
+    end
+
+    subgraph VER["PASOS 5 a 7<br/>La obra se verifica y el dinero se libera"]
+        direction TB
+        P5["5. Constructora<br/>Construye la etapa"]
+        P6["6. Interventor<br/>Certifica con fotos fechadas"]
         D{"Certificada<br/>a tiempo"}
-        P7["7. Plataforma<br/>Libera solo<br/>ese porcentaje"]
-        AL["7b. Alerta<br/>El dinero<br/>sigue retenido"]
-        P1 --> P2 --> P3 --> P4 --> P5 --> P6 --> D
+        P7["7. Plataforma<br/>Libera ese porcentaje"]
+        AL["7b. Alerta<br/>El dinero sigue retenido"]
+        P5 --> P6 --> D
         D -->|Si| P7
         D -->|No| AL
     end
 
-    subgraph SAL["SALIDA. El problema queda resuelto en los dos escenarios"]
+    subgraph SAL["SALIDA<br/>El problema queda resuelto"]
         direction TB
-        S1["La obra avanzo<br/>Ve que etapa se certifico,<br/>cuanto dinero salio<br/>y con que evidencia"]
-        S2["La obra se detuvo<br/>Conserva todo el dinero<br/>que aun no se<br/>habia liberado"]
+        S1["La obra avanzo<br/>Ve la etapa certificada,<br/>cuanto dinero salio<br/>y con que evidencia"]
+        S2["La obra se detuvo<br/>Conserva todo lo que<br/>aun no se habia liberado"]
+        SIC["8. Superintendencia<br/>Revisa el historial completo"]
     end
 
     E --> P1
+    P4 --> P5
     P7 --> S1
     AL --> S2
+    S1 --> SIC
     S1 -.siguiente etapa.-> P3
-    S1 --> SIC["8. Superintendencia<br/>Revisa el historial completo<br/>sin pedirle permiso a nadie"]
 
     style E fill:#1A3A6B,color:#fff,stroke:#1A3A6B
+    style D fill:#FCF2E3,color:#12223D,stroke:#C97A12
+    style AL fill:#F5EAD4,color:#12223D,stroke:#B07A1A
     style S1 fill:#0E6B4F,color:#fff,stroke:#0E6B4F
     style S2 fill:#0E6B4F,color:#fff,stroke:#0E6B4F
-    style AL fill:#F5EAD4,color:#12223D,stroke:#B07A1A
     style SIC fill:#EFEFEF,color:#333,stroke:#999
 ```
 
