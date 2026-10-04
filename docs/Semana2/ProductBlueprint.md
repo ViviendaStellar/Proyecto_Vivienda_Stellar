@@ -125,65 +125,43 @@ El MVP es un piloto en la red de pruebas de Stellar: un proyecto de cuatro etapa
 
 ## 6. Backlog priorizado (Kanban)
 
-**Tablero:** [Backlog Kanban · Vivienda sobre planos](https://github.com/users/Nany1993/projects/2)
+**Tablero:** [Backlog Vivienda Stellar](https://github.com/users/Nany1993/projects/2)
 
-Construido con las historias priorizadas del equipo, en columnas Kanban, con criterios de aceptación por tarjeta.
+Backlog priorizado del equipo con las historias del ciclo mínimo y las complementarias que atacan capacidades nuevas. Cada tarjeta incluye el enunciado *Como / Quiero / Para*, los criterios de aceptación y el enlace al documento fuente en este repositorio.
 
 ### Columnas
 
 | Columna | Contenido |
 |---|---|
-| **Backlog** | HU1–HU5 (ciclo mínimo de protección: reglas, aporte registrado, retención, certificación y alerta) + historias complementarias priorizadas |
-| **En progreso** | Historias en construcción del piloto |
-| **En revisión** | Historias con evidencia esperando validación |
-| **Hecho** | Historias entregadas y verificadas |
-| **Fuera de alcance** | Historias diferidas del MVP (reembolso automático, votación de prórrogas, retención del último 10%, agenda del interventor, panel de la Superintendencia, historial para cesión) |
+| **Backlog** | Historias priorizadas listas para planificar |
+| **Ready** | Preparadas para arrancar |
+| **In progress** | En construcción del piloto |
+| **In review** | Con evidencia esperando validación |
+| **Done** | Entregadas y verificadas |
 
 ### Campos del tablero
 
-- **Prioridad:** Crítica · Alta · Media · Baja
-- **Rol:** Constructora · Compradora · Comprador · Fiduciaria · Interventor · Superintendencia · Inversionista
+- **Columna:** Backlog · Ready · In progress · In review · Done
+- **Nivel:** P0 · P1 · P2
+- **Responsable:** integrante asignado a la tarjeta
+- **Rol:** Constructora · Compradora · Fiduciaria · Interventor
 
-### Tarjetas (22)
+### Tarjetas (8) — 2 por integrante
 
-**Backlog — ciclo mínimo (HU1–HU5)**
+| Tarjeta | Nivel | Rol | Responsable |
+|---|---|---|---|
+| HU1 · Registro del proyecto con etapas y reglas de liberación | P0 | Constructora | Johan Castañeda (`dotcom2409`) |
+| HU2 · Vinculación de la compradora a su apartamento | P0 | Compradora | Ana María (`Nany1993`) |
+| HU3 · Retención de cuotas hasta certificación de etapa | P0 | Compradora | Diana Carolina (`Diana1295Dev`) |
+| HU4 · Certificación de etapa con evidencia inalterable | P0 | Interventor | Diana Carolina (`Diana1295Dev`) |
+| HU5 · Alerta de retraso cuando la etapa vence sin certificar | P1 | Compradora | Julián Correa (`Slider00`) |
+| HU-A03 · Reclamo sobre una certificación | P1 | Compradora | Ana María (`Nany1993`) |
+| HU-A04 · Congelamiento de pagos durante un reclamo | P1 | Fiduciaria | Johan Castañeda (`dotcom2409`) |
+| HU-D04 · Condiciones de devolución en lenguaje claro | P1 | Compradora | Julián Correa (`Slider00`) |
 
-| Tarjeta | Prioridad | Rol |
-|---|---|---|
-| HU1 · Registro del proyecto con etapas y reglas de liberación | Crítica | Constructora |
-| HU2 · Vinculación de la compradora a su apartamento | Crítica | Compradora |
-| HU3 · Retención de cuotas hasta certificación de etapa | Crítica | Compradora |
-| HU4 · Certificación de etapa con evidencia inalterable | Crítica | Interventor |
-| HU5 · Alerta de retraso cuando la etapa vence sin certificar | Alta | Compradora |
+**Distribución:** 2 tarjetas por integrante. P0 = ciclo mínimo de protección (HU1–HU4); P1 = complementarias priorizadas (HU5, HU-A03, HU-A04, HU-D04).
 
-**Backlog — complementarias priorizadas**
-
-| Tarjeta | Prioridad | Rol |
-|---|---|---|
-| HU-A03 · Reclamo sobre una certificación | Alta | Compradora |
-| HU-A04 · Congelamiento de pagos durante un reclamo | Alta | Fiduciaria |
-| HU-D04 · Condiciones de devolución en lenguaje claro | Alta | Compradora |
-| HU-D05 · Solicitud de desembolso de etapa certificada | Media | Constructora |
-| HU-A05 · Soporte verificable de cada cuota | Media | Compradora |
-| HU-J03 · Comparador visual render vs fotos certificadas | Alta | Comprador |
-| HU-J04 · Pago por PSE/banco sin fricción cripto | Alta | Comprador |
-| Johan-03 · Recursos protegidos en fiducia | Alta | Constructora |
-| Johan-01 · Consultar documentos legales del proyecto | Alta | Comprador |
-| HU-J06 · Notificaciones móviles de novedades | Media | Compradora |
-
-**Fuera de alcance (diferidas o descartadas)**
-
-| Tarjeta | Motivo |
-|---|---|
-| HU-J01 · Reembolso automático por incumplimiento | Requiere validación legal con fiduciarias |
-| HU-J02 · Retención último 10% hasta acta de satisfacción | Depende de la escrituración final |
-| HU-J05 · Votación de prórrogas de cronograma | No cambia la protección básica |
-| HU-A06 · Agenda de etapas por vencer | Calendario puede llevarse por fuera |
-| HU-D06 · Auditoría para Superintendencia | Requiere acuerdos con la entidad |
-| Johan-06 · Historial de pagos para cesión de derechos | Solo casos de cesión |
-| Johan-02 · Ver cuánto he pagado | Redundante: cubierto por HU2 y HU3 |
-
-Cada tarjeta incluye el enunciado *Como / Quiero / Para*, los criterios de aceptación y el enlace al documento fuente en este repositorio.
+Las historias diferidas del MVP (reembolso automático, votación de prórrogas, retención del último 10%, agenda del interventor, panel de la Superintendencia, historial para cesión) quedan documentadas en la sección 4 de este documento y no compiten en el tablero activo.
 
 ## 7. Arquitectura inicial
 
