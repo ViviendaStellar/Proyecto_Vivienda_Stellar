@@ -111,16 +111,79 @@ El MVP es un piloto en la red de pruebas de Stellar: un proyecto de cuatro etapa
 
 ## 5. Lean Canvas
 
-<!-- Lienzo de una página con el modelo del producto: problema, segmento de usuarios,
-     propuesta de valor única, solución, canales, métricas clave, ventaja diferencial
-     y estructura de costos e ingresos.
-     Formato: imagen o enlace. -->
+| Bloque | Contenido |
+|---|---|
+| **Problema** | Familias de Colombia pierden el control de sus ahorros cuando pagan cuota inicial de viviendas sobre planos. En 2026 hay +70.000 viviendas sin entregar; la SIC registra +6.000 reclamaciones anuales; 38 constructoras sancionadas; 11 fiduciarias condenadas entre 2025 y 2026. No hay forma real de verificar si la obra avanza ni dónde se usa el dinero. |
+| **Segmentos de usuarios** | **Primario:** compradores de primera vivienda con cesantías, subsidios o ahorros de toda la vida (ej. Laura, 31 años, auxiliar contable en Medellín comprando en Bello). **Secundarios:** constructoras medianas que quieren un sello de confianza; fiduciarias obligadas por el Decreto 0510 a informar de forma clara; interventores con reportes dispersos. |
+| **Propuesta de valor única** | *Tu cuota inicial solo se mueve cuando la obra avanza.* La plataforma reemplaza la confianza en la reputación de la constructora por evidencia verificable: el dinero se libera solo cuando un interventor independiente certifica el avance con fotos fechadas y reporte técnico inalterables. |
+| **Solución** | Plataforma sobre la red Stellar: (1) registro público del proyecto con etapas, fechas y porcentajes de liberación que suman 100%; (2) vinculación de cada compradora a su apartamento desde la primera cuota; (3) retención de arras y cuotas en fiduciaria hasta certificación; (4) certificación de etapa con huella digital (hash) de evidencia; (5) liberación automática del porcentaje pactado al certificar; (6) alerta a la compradora cuando la etapa vence sin certificar. |
+| **Canales** | Sala de ventas de constructoras (punto de captación natural); alianzas con fiduciarias (obligación informativa del Decreto 0510); entidades que financian con cesantías o subsidios; boca a boca entre compradores de primera vivienda; web móvil como canal de consulta y alertas. |
+| **Métricas clave** | 1) Ningún desembolso sale sin una certificación previa. 2) La compradora ve cuánto aportó, cuánto sigue retenido y qué evidencia justificó cada salida. 3) Una etapa vencida genera la alerta al día siguiente. |
+| **Ventaja diferencial** | Blockchain no es magia: son tres características muy específicas. (1) **Registro inalterable** que todos ven (constructora, fiduciaria, interventor, compradora); (2) **Liberación condicionada** — la plata sigue a la obra, no al revés; (3) **Propiedad única** por unidad (NFT) — imposible de duplicar ni ocultar. Una base de datos tradicional no da confianza sin intermediarios ni verificación permanente. |
+| **Estructura de costos** | Desarrollo de contratos inteligentes e interfaz; integración con fiduciarias y canales de pago (PSE); auditoría y validación de evidencia fotográfica; costos de transacción en Stellar (mínimos comparados con comisiones fiduciarias actuales del 1–2%); soporte y operación del piloto. |
+| **Estructura de ingresos** | Comisión SaaS a constructoras por proyecto activado en la plataforma; licencia de uso del módulo de retención condicionada a fiduciarias; fee por cesión de derechos (casos de inversionistas); en etapa madura, porcentaje sobre el ahorro de comisión fiduciaria que la plataforma hace innecesaria o más eficiente. |
 
 ## 6. Backlog priorizado (Kanban)
 
-<!-- Enlace al tablero en GitHub Projects, construido con las historias priorizadas,
-     en columnas y con criterios de aceptación por tarjeta.
-     Formato: enlace al tablero. -->
+**Tablero:** [Backlog Kanban · Vivienda sobre planos](https://github.com/users/Nany1993/projects/2)
+
+Construido con las historias priorizadas del equipo, en columnas Kanban, con criterios de aceptación por tarjeta.
+
+### Columnas
+
+| Columna | Contenido |
+|---|---|
+| **Backlog** | HU1–HU5 (ciclo mínimo de protección: reglas, aporte registrado, retención, certificación y alerta) + historias complementarias priorizadas |
+| **En progreso** | Historias en construcción del piloto |
+| **En revisión** | Historias con evidencia esperando validación |
+| **Hecho** | Historias entregadas y verificadas |
+| **Fuera de alcance** | Historias diferidas del MVP (reembolso automático, votación de prórrogas, retención del último 10%, agenda del interventor, panel de la Superintendencia, historial para cesión) |
+
+### Campos del tablero
+
+- **Prioridad:** Crítica · Alta · Media · Baja
+- **Rol:** Constructora · Compradora · Comprador · Fiduciaria · Interventor · Superintendencia · Inversionista
+
+### Tarjetas (22)
+
+**Backlog — ciclo mínimo (HU1–HU5)**
+
+| Tarjeta | Prioridad | Rol |
+|---|---|---|
+| HU1 · Registro del proyecto con etapas y reglas de liberación | Crítica | Constructora |
+| HU2 · Vinculación de la compradora a su apartamento | Crítica | Compradora |
+| HU3 · Retención de cuotas hasta certificación de etapa | Crítica | Compradora |
+| HU4 · Certificación de etapa con evidencia inalterable | Crítica | Interventor |
+| HU5 · Alerta de retraso cuando la etapa vence sin certificar | Alta | Compradora |
+
+**Backlog — complementarias priorizadas**
+
+| Tarjeta | Prioridad | Rol |
+|---|---|---|
+| HU-A03 · Reclamo sobre una certificación | Alta | Compradora |
+| HU-A04 · Congelamiento de pagos durante un reclamo | Alta | Fiduciaria |
+| HU-D04 · Condiciones de devolución en lenguaje claro | Alta | Compradora |
+| HU-D05 · Solicitud de desembolso de etapa certificada | Media | Constructora |
+| HU-A05 · Soporte verificable de cada cuota | Media | Compradora |
+| HU-J03 · Comparador visual render vs fotos certificadas | Alta | Comprador |
+| HU-J04 · Pago por PSE/banco sin fricción cripto | Alta | Comprador |
+| Johan-03 · Recursos protegidos en fiducia | Alta | Constructora |
+| Johan-01 · Consultar documentos legales del proyecto | Alta | Comprador |
+| HU-J06 · Notificaciones móviles de novedades | Media | Compradora |
+
+**Fuera de alcance (diferidas o descartadas)**
+
+| Tarjeta | Motivo |
+|---|---|
+| HU-J01 · Reembolso automático por incumplimiento | Requiere validación legal con fiduciarias |
+| HU-J02 · Retención último 10% hasta acta de satisfacción | Depende de la escrituración final |
+| HU-J05 · Votación de prórrogas de cronograma | No cambia la protección básica |
+| HU-A06 · Agenda de etapas por vencer | Calendario puede llevarse por fuera |
+| HU-D06 · Auditoría para Superintendencia | Requiere acuerdos con la entidad |
+| Johan-06 · Historial de pagos para cesión de derechos | Solo casos de cesión |
+| Johan-02 · Ver cuánto he pagado | Redundante: cubierto por HU2 y HU3 |
+
+Cada tarjeta incluye el enunciado *Como / Quiero / Para*, los criterios de aceptación y el enlace al documento fuente en este repositorio.
 
 ## 7. Arquitectura inicial
 
