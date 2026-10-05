@@ -165,12 +165,34 @@ Las historias diferidas del MVP (reembolso automático, votación de prórrogas,
 
 ## 7. Arquitectura inicial
 
-<!-- Cómo se conectan las partes (interfaz, lógica, Stellar) y en qué punto entra la red.
-     Diagrama simple.
-     Extensión: 150 a 300 palabras. -->
+<p align="center">
+  <img src="img/arquitectura_inicial_v1.svg" alt="Diagrama de arquitectura inicial: Interfaz de usuario, Backend y lógica de integración, Red Stellar con contratos Soroban y almacenamiento inmutable" width="100%">
+</p>
+
+La solución se estructura en tres capas desacopladas para mantener la simpleza de uso sin sacrificar las garantías de custodia:
+
+1. **Capa de Interfaz (Frontend Web/PWA):** Aplicación web responsiva en React y TypeScript diseñada para dispositivos móviles. Expone vistas diferenciadas según el rol: portal de consulta clara para Laura (con autenticación sin fricción vía Web3Auth o Passkeys para no obligarla a custodiar llaves), panel técnico para el interventor y consola de administración para la constructora y la fiduciaria.
+
+2. **Capa de Lógica y Servicios (Backend & Orquestación):** Servicio en Node.js que actúa como puente operativo. Gestiona la integración con la pasarela bancaria tradicional (PSE) de la fiduciaria, orquesta el servicio de notificaciones proactivas (WhatsApp y SMS) y procesa los expedientes de obra. Antes de tocar la red, este módulo toma las fotos georreferenciadas y los informes de interventoría, los preserva en almacenamiento inmutable distribuido (IPFS) y calcula su huella criptográfica SHA-256.
+
+3. **Capa Blockchain (Red Stellar & Soroban):** La red pública entra exactamente en tres puntos críticos donde no se puede tolerar la intermediación arbitraria ni la manipulación de datos:
+   - **Registro de obra y títulos:** Ancla las etapas, hitos porcentuales y emite el certificado digital intransferible de separación por cada apartamento (HU1 y HU2).
+   - **Contrato de custodia (Escrow en Soroban):** Retiene el estado de los fondos aportados por la compradora y bloquea su desembolso directo (HU3).
+   - **Liquidación por evidencia:** Cuando el interventor firma la transacción con el hash del reporte pericial (HU4), el contrato inteligente valida el cumplimiento del hito y ejecuta la dispersión del porcentaje exacto a la constructora. Si el plazo expira sin certificación, los indexadores (Stellar RPC) detectan el evento y disparan las alertas a la compradora (HU5).
 
 ## 8. Uso de Stellar y justificación
 
-<!-- Qué componentes de Stellar usaría y por qué cada uno.
-     Apoyado en el criterio de pertinencia del Problem Brief.
-     Extensión: 150 a 300 palabras. -->
+Seleccionamos componentes específicos de la red Stellar que responden directamente a las tres necesidades identificadas en el criterio de pertinencia del Problem Brief:
+
+1. **Smart Contracts en Soroban (Rust/WASM) — Liberación condicionada:**
+   Implementamos un contrato de custodia programable (*Escrow*) donde las reglas de negocio son inalterables. En lugar de confiar en que la fiduciaria revise manualmente informes que no entiende, Soroban retiene el saldo de las cuotas y condiciona el desembolso a una precondición criptográfica: la invocación válida por parte de la cuenta acreditada del interventor. La plata sigue al ladrillo; si no hay hito certificado, el capital no se transfiere.
+
+2. **Stellar Assets y Tokens No Fungibles (SAC) — Propiedad única e inalterable:**
+   Emitimos un token no fungible por cada apartamento registrado contra su matrícula inmobiliaria y número de unidad. Al vincular a Laura con este identificador desde su primera cuota de separación (HU2), imposibilitamos la doble venta o la reasignación fraudulenta del inmueble sobre planos, resolviendo el vacío documental que hoy causa estafas millonarias en Colombia.
+
+3. **Soroban Auth y Cuentas Multifirma — Registro inalterable y neutralidad:**
+   Aprovechamos el esquema criptográfico de Stellar para que ninguna parte pueda modificar unilateralmente los acuerdos. El peritaje técnico exige la firma digital del interventor independiente, cuya transacción estampa en el ledger el hash de las fotos y bitácoras.
+
+4. **Stellar RPC, Horizon y Comisiones Mínimas — Viabilidad operativa:**
+   Stellar procesa transacciones en 3 a 5 segundos con costos de microcentavos de dólar. Esto permite trazar cuotas mensuales, registrar micro-certificaciones y emitir eventos auditables para el Decreto 0510 sin encarecer las comisiones a las familias ni requerir la costosa infraestructura de redes como Ethereum.
+

@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="860" viewBox="0 0 1240 860" font-family="'Plus Jakarta Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif">
+  <defs>
+    <!-- Gradientes Principales -->
+    <linearGradient id="bgFondo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#080D1A"/>
+      <stop offset="50%" stop-color="#0D1527"/>
+      <stop offset="100%" stop-color="#070B14"/>
+    </linearGradient>
+
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1D4ED8"/>
+      <stop offset="50%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#0EA5E9"/>
+    </linearGradient>
+
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#151F36"/>
+      <stop offset="100%" stop-color="#0E1626"/>
+    </linearGradient>
+
+    <linearGradient id="cardGradDarker" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A2640"/>
+      <stop offset="100%" stop-color="#10192C"/>
+    </linearGradient>
+
+    <linearGradient id="stellarGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="50%" stop-color="#132347"/>
+      <stop offset="100%" stop-color="#0F1E3D"/>
+    </linearGradient>
+
+    <linearGradient id="cyanBadge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+
+    <linearGradient id="greenBadge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+
+    <linearGradient id="amberBadge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+
+    <linearGradient id="purpleGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#6366F1"/>
+    </linearGradient>
+
+    <linearGradient id="phoneScreen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+
+    <!-- Sombras y Filtros Neón -->
+    <filter id="neonGlowBlue" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#38BDF8" flood-opacity="0.35"/>
+    </filter>
+
+    <filter id="neonGlowGreen" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#10B981" flood-opacity="0.35"/>
+    </filter>
+
+    <filter id="sombraCard" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+
+    <filter id="sombraModal" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+
+    <!-- Marcadores de Flechas -->
+    <marker id="arrowCyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,1 L9,5 L0,9 z" fill="#38BDF8"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,1 L9,5 L0,9 z" fill="#34D399"/>
+    </marker>
+    <marker id="arrowAmber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,1 L9,5 L0,9 z" fill="#FBBF24"/>
+    </marker>
+
+    <!-- Patrón de Cuadrícula Sutil para estética Tech -->
+    <pattern id="techGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1E293B" stroke-width="0.5" stroke-opacity="0.6"/>
+    </pattern>
+
+    <clipPath id="marcoPrincipal">
+      <rect x="0" y="0" width="1240" height="860" rx="20"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#marcoPrincipal)">
+    <!-- Lienzo Fondo -->
+    <rect x="0" y="0" width="1240" height="860" fill="url(#bgFondo)"/>
+    <rect x="0" y="0" width="1240" height="860" fill="url(#techGrid)"/>
+
+    <!-- Brillos de fondo ambientales -->
+    <circle cx="150" cy="150" r="180" fill="#1D4ED8" fill-opacity="0.12" filter="blur(50px)"/>
+    <circle cx="1080" cy="550" r="220" fill="#0EA5E9" fill-opacity="0.1" filter="blur(60px)"/>
+    <circle cx="620" cy="700" r="200" fill="#059669" fill-opacity="0.08" filter="blur(60px)"/>
+
+    <!-- ================= 1. CABECERA MODERNA ================= -->
+    <rect x="0" y="0" width="1240" height="92" fill="#0B132B" fill-opacity="0.85"/>
+    <line x1="0" y1="92" x2="1240" y2="92" stroke="#1E293B" stroke-width="1.5"/>
+
+    <!-- Indicador de estado y título -->
+    <circle cx="36" cy="46" r="14" fill="url(#headerGrad)"/>
+    <path d="M 31 46 L 35 50 L 42 42" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round"/>
+    
+    <text x="62" y="42" font-size="22" font-weight="800" fill="#FFFFFF" letter-spacing="-0.3">Arquitectura Inicial de la Solución</text>
+    <text x="62" y="66" font-size="13" font-weight="500" fill="#94A3B8">Vivienda sobre planos: Cómo viaja el dinero, cómo se valida la obra y en qué puntos entra Stellar</text>
+
+    <!-- Badges Superiores con Guía Rápida -->
+    <g transform="translate(730, 26)">
+      <rect x="0" y="0" width="474" height="40" rx="10" fill="#131F37" stroke="#253556"/>
+      <circle cx="22" cy="20" r="5" fill="#38BDF8"/>
+      <text x="34" y="24" font-size="11.5" font-weight="700" fill="#38BDF8">Puntos de Red Stellar</text>
+      <circle cx="180" cy="20" r="5" fill="#34D399"/>
+      <text x="192" y="24" font-size="11.5" font-weight="700" fill="#34D399">Flujo de Fondos (PSE)</text>
+      <circle cx="340" cy="20" r="5" fill="#FBBF24"/>
+      <text x="352" y="24" font-size="11.5" font-weight="700" fill="#FBBF24">Evidencia &amp; Alerta</text>
+    </g>
+
+    <!-- ================= 2. CAPA 1: INTERFAZ DE USUARIOS (FRONTEND) ================= -->
+    <g transform="translate(24, 110)">
+      <!-- Marco de Capa -->
+      <rect x="0" y="0" width="1192" height="196" rx="16" fill="url(#cardGrad)" stroke="#233554" stroke-width="1.2" filter="url(#sombraCard)"/>
+      
+      <!-- Tag de Capa -->
+      <rect x="18" y="14" width="220" height="24" rx="6" fill="#1E3A8A"/>
+      <text x="128" y="30" font-size="11" font-weight="800" fill="#93C5FD" text-anchor="middle" letter-spacing="0.8">CAPA 1: INTERFAZ &amp; EXPERIENCIA</text>
+      <text x="254" y="31" font-size="12" fill="#64748B">Web App Móvil &amp; Consolas de Gestión · Sin fricción Web3 para compradores</text>
+
+      <!-- Tarjeta 1: Laura en Smartphone UI -->
+      <g transform="translate(18, 50)">
+        <rect x="0" y="0" width="276" height="130" rx="12" fill="#0C1322" stroke="#263A5E" stroke-width="1.2"/>
+        <!-- Mini barra superior del teléfono -->
+        <rect x="12" y="10" width="252" height="24" rx="6" fill="#172239"/>
+        <text x="22" y="26" font-size="11" font-weight="700" fill="#F8FAFC">📱 Laura · Compradora</text>
+        <rect x="202" y="13" width="56" height="18" rx="4" fill="#065F46"/>
+        <text x="230" y="26" font-size="9" font-weight="700" fill="#34D399" text-anchor="middle">Apto 402</text>
+
+        <!-- Contenido UI Laura -->
+        <text x="14" y="52" font-size="11" fill="#94A3B8">Aporte cuota inicial (Bello):</text>
+        <text x="14" y="70" font-size="14" font-weight="800" fill="#38BDF8">$ 1.200.000 COP</text>
+
+        <!-- Pill de estado del dinero -->
+        <rect x="14" y="80" width="248" height="22" rx="5" fill="#162947" stroke="#1E40AF" stroke-width="0.8"/>
+        <circle cx="26" cy="91" r="4" fill="#38BDF8"/>
+        <text x="36" y="95" font-size="10" font-weight="600" fill="#BAE6FD">Estado: 100% Retenido en Escrow</text>
+
+        <!-- Botón PSE simulado -->
+        <rect x="14" y="106" width="118" height="16" rx="4" fill="#0284C7"/>
+        <text x="73" y="118" font-size="9" font-weight="700" fill="#FFFFFF" text-anchor="middle">💳 Pagar con PSE</text>
+        <text x="142" y="118" font-size="9.5" fill="#64748B">Web3Auth / Passkeys</text>
+      </g>
+
+      <!-- Tarjeta 2: Constructora -->
+      <g transform="translate(312, 50)">
+        <rect x="0" y="0" width="276" height="130" rx="12" fill="#0C1322" stroke="#263A5E" stroke-width="1.2"/>
+        <rect x="12" y="10" width="252" height="24" rx="6" fill="#172239"/>
+        <text x="22" y="26" font-size="11" font-weight="700" fill="#F8FAFC">🏗️ Constructora</text>
+        <rect x="194" y="13" width="64" height="18" rx="4" fill="#854D0E"/>
+        <text x="226" y="26" font-size="9" font-weight="700" fill="#FDE047" text-anchor="middle">Obra Activa</text>
+
+        <text x="14" y="52" font-size="11" fill="#94A3B8">Consola de Proyecto (HU1):</text>
+        <text x="14" y="68" font-size="12" font-weight="700" fill="#E2E8F0">• Registro de Licencia y Etapas</text>
+        <text x="14" y="84" font-size="11" fill="#94A3B8">• Reglas de % antes de vender</text>
+        
+        <!-- UI subida fotos -->
+        <rect x="14" y="96" width="248" height="24" rx="5" fill="#1C1917" stroke="#44403C" stroke-dasharray="3 3"/>
+        <text x="138" y="112" font-size="10" font-weight="600" fill="#F59E0B" text-anchor="middle">📸 Carga de fotos reales de avance</text>
+      </g>
+
+      <!-- Tarjeta 3: Interventor Técnico -->
+      <g transform="translate(606, 50)">
+        <rect x="0" y="0" width="276" height="130" rx="12" fill="#0C1322" stroke="#263A5E" stroke-width="1.2"/>
+        <rect x="12" y="10" width="252" height="24" rx="6" fill="#172239"/>
+        <text x="22" y="26" font-size="11" font-weight="700" fill="#F8FAFC">🦺 Interventor Independiente</text>
+        <rect x="190" y="13" width="68" height="18" rx="4" fill="#065F46"/>
+        <text x="224" y="26" font-size="9" font-weight="700" fill="#6EE7B7" text-anchor="middle">Auditor Técnico</text>
+
+        <text x="14" y="52" font-size="11" fill="#94A3B8">Módulo Pericial en Terreno (HU4):</text>
+        <text x="14" y="68" font-size="12" font-weight="700" fill="#E2E8F0">• Inspección física de cimientos/obra</text>
+        <text x="14" y="84" font-size="11" fill="#94A3B8">• Cotejo fotos vs. avance contractual</text>
+
+        <!-- Botón firma digital -->
+        <rect x="14" y="96" width="248" height="24" rx="5" fill="#064E3B" stroke="#059669"/>
+        <text x="138" y="112" font-size="10.5" font-weight="700" fill="#A7F3D0" text-anchor="middle">🔏 Firmar Certificación Criptográfica</text>
+      </g>
+
+      <!-- Tarjeta 4: Fiduciaria & SIC -->
+      <g transform="translate(900, 50)">
+        <rect x="0" y="0" width="274" height="130" rx="12" fill="#0C1322" stroke="#263A5E" stroke-width="1.2"/>
+        <rect x="12" y="10" width="250" height="24" rx="6" fill="#172239"/>
+        <text x="22" y="26" font-size="11" font-weight="700" fill="#F8FAFC">🏦 Fiduciaria  |  ⚖️ SIC</text>
+        <rect x="180" y="13" width="76" height="18" rx="4" fill="#312E81"/>
+        <text x="218" y="26" font-size="8.5" font-weight="700" fill="#C7D2FE" text-anchor="middle">Decreto 0510</text>
+
+        <text x="14" y="52" font-size="11" fill="#94A3B8">Panel de Cumplimiento Legal:</text>
+        <text x="14" y="68" font-size="12" font-weight="700" fill="#E2E8F0">• Auditoría de saldos retenidos</text>
+        <text x="14" y="84" font-size="11" fill="#94A3B8">• Reporte inmutable de desembolsos</text>
+        <text x="14" y="100" font-size="11" fill="#94A3B8">• Sin riesgo de demandas tardías</text>
+      </g>
+    </g>
+
+    <!-- Conexiones Capa 1 -> Capa 2 -->
+    <g stroke-linecap="round">
+      <path d="M 156 306 L 156 342" stroke="#38BDF8" stroke-width="2.5" fill="none" marker-end="url(#arrowCyan)"/>
+      <path d="M 450 306 L 450 342" stroke="#FBBF24" stroke-width="2" stroke-dasharray="4 4" fill="none"/>
+      <path d="M 744 306 L 744 342" stroke="#34D399" stroke-width="2.5" fill="none" marker-end="url(#arrowGreen)"/>
+      <path d="M 1036 342 L 1036 306" stroke="#94A3B8" stroke-width="2" fill="none"/>
+    </g>
+
+    <!-- ================= 3. CAPA 2: LÓGICA Y SERVICIOS OFF-CHAIN ================= -->
+    <g transform="translate(24, 344)">
+      <rect x="0" y="0" width="1192" height="174" rx="16" fill="url(#cardGrad)" stroke="#233554" stroke-width="1.2" filter="url(#sombraCard)"/>
+      
+      <rect x="18" y="14" width="270" height="24" rx="6" fill="#854D0E"/>
+      <text x="153" y="30" font-size="11" font-weight="800" fill="#FEF08A" text-anchor="middle" letter-spacing="0.8">CAPA 2: LÓGICA &amp; SERVICIOS OFF-CHAIN</text>
+      <text x="304" y="31" font-size="12" fill="#64748B">Orquestación de pagos en pesos, cálculo de hashes SHA-256 e indexación de eventos</text>
+
+      <!-- Servicio 1: Pasarela Bancaria PSE -->
+      <g transform="translate(18, 50)">
+        <rect x="0" y="0" width="276" height="110" rx="10" fill="#111B2E" stroke="#253556"/>
+        <text x="14" y="24" font-size="12.5" font-weight="700" fill="#38BDF8">💳 Pasarela PSE &amp; Conciliación</text>
+        <text x="14" y="42" font-size="10.5" fill="#94A3B8">Core Fiduciario Bancario:</text>
+        <text x="14" y="60" font-size="11" fill="#E2E8F0">1. Recauda cuotas en Pesos (COP)</text>
+        <text x="14" y="76" font-size="11" fill="#E2E8F0">2. Emite orden de custodia al contrato</text>
+        <text x="14" y="94" font-size="10" font-weight="600" fill="#34D399">✓ Laura nunca tiene que comprar cripto</text>
+      </g>
+
+      <!-- Servicio 2: Motor de Hashing SHA-256 & IPFS -->
+      <g transform="translate(312, 50)">
+        <rect x="0" y="0" width="410" height="110" rx="10" fill="#111B2E" stroke="#253556"/>
+        <text x="14" y="24" font-size="12.5" font-weight="700" fill="#FBBF24">📦 Almacenamiento &amp; Hashing (SHA-256)</text>
+        <text x="14" y="42" font-size="10.5" fill="#94A3B8">Gestión de Evidencia Pesada (Fotos y Renders):</text>
+        <text x="14" y="60" font-size="11" fill="#E2E8F0">• Fotos con metadatos EXIF preservadas en IPFS / S3 inmutable</text>
+        
+        <!-- Simulación visual de hash -->
+        <rect x="14" y="70" width="382" height="28" rx="6" fill="#0B1322" stroke="#334155"/>
+        <text x="24" y="88" font-size="10.5" font-family="monospace" fill="#FBBF24">SHA256: e3b0c44298fc1c149afbf4c8996fb92427...</text>
+      </g>
+
+      <!-- Servicio 3: Indexador & Alertas WhatsApp (HU5) -->
+      <g transform="translate(740, 50)">
+        <rect x="0" y="0" width="434" height="110" rx="10" fill="#111B2E" stroke="#253556"/>
+        <text x="14" y="24" font-size="12.5" font-weight="700" fill="#F87171">🔔 Indexador &amp; Alertas Proactivas (HU5)</text>
+        <text x="14" y="42" font-size="10.5" fill="#94A3B8">Worker asíncrono conectado a Stellar RPC:</text>
+
+        <!-- Mensaje tipo WhatsApp -->
+        <rect x="14" y="52" width="406" height="48" rx="8" fill="#064E3B" stroke="#059669" stroke-width="0.8"/>
+        <text x="24" y="70" font-size="10" font-weight="700" fill="#6EE7B7">💬 Notificación WhatsApp para Laura:</text>
+        <text x="24" y="86" font-size="10.5" fill="#ECFDF5">"⚠️ Etapa vencida sin peritaje. Tu dinero sigue 100% protegido."</text>
+      </g>
+    </g>
+
+    <!-- Conexiones Capa 2 -> Capa 3: Puntos de Red Stellar -->
+    <g>
+      <!-- Punto 1 -->
+      <path d="M 156 518 L 156 558" stroke="#38BDF8" stroke-width="3" fill="none" marker-end="url(#arrowCyan)"/>
+      <g transform="translate(180, 526)">
+        <rect x="0" y="0" width="168" height="22" rx="11" fill="url(#cyanBadge)" filter="url(#neonGlowBlue)"/>
+        <text x="84" y="15" font-size="10.5" font-weight="800" fill="#FFFFFF" text-anchor="middle">⚡ PUNTO 1: Fondeo Escrow</text>
+      </g>
+
+      <!-- Punto 2 -->
+      <path d="M 520 518 L 520 558" stroke="#34D399" stroke-width="3" fill="none" marker-end="url(#arrowGreen)"/>
+      <g transform="translate(544, 526)">
+        <rect x="0" y="0" width="176" height="22" rx="11" fill="url(#greenBadge)" filter="url(#neonGlowGreen)"/>
+        <text x="88" y="15" font-size="10.5" font-weight="800" fill="#FFFFFF" text-anchor="middle">⚡ PUNTO 2: Firma &amp; Hash Hito</text>
+      </g>
+
+      <!-- Punto 3 -->
+      <path d="M 960 558 L 960 522" stroke="#FBBF24" stroke-width="3" fill="none" marker-end="url(#arrowAmber)"/>
+      <g transform="translate(984, 526)">
+        <rect x="0" y="0" width="168" height="22" rx="11" fill="url(#amberBadge)"/>
+        <text x="84" y="15" font-size="10.5" font-weight="800" fill="#FFFFFF" text-anchor="middle">⚡ PUNTO 3: Evento Timeout</text>
+      </g>
+    </g>
+
+    <!-- ================= 4. CAPA 3: RED STELLAR & SOROBAN (EL NÚCLEO INMUTABLE) ================= -->
+    <g transform="translate(24, 560)">
+      <!-- Fondo Stellar con borde neón -->
+      <rect x="0" y="0" width="1192" height="274" rx="16" fill="url(#stellarGrad)" stroke="#38BDF8" stroke-width="1.8" filter="url(#sombraModal)"/>
+      
+      <!-- Encabezado Stellar -->
+      <rect x="18" y="14" width="310" height="26" rx="8" fill="url(#cyanBadge)"/>
+      <text x="173" y="32" font-size="12" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">CAPA 3: RED STELLAR &amp; SMART CONTRACTS</text>
+      
+      <g transform="translate(340, 16)">
+        <rect x="0" y="0" width="834" height="22" rx="6" fill="#0B132B" stroke="#1D4ED8"/>
+        <text x="14" y="16" font-size="11" font-weight="600" fill="#93C5FD">Motor Soroban (Rust / WASM)  ·  Finalidad: 3 a 5 seg  ·  Costo: &lt; $0.0001 USD  ·  Ledger Público Inalterable</text>
+      </g>
+
+      <!-- Contrato 1: Registro & NFT de Separación -->
+      <g transform="translate(18, 54)">
+        <rect x="0" y="0" width="276" height="204" rx="12" fill="#091122" stroke="#1E3A8A" stroke-width="1.2"/>
+        <rect x="12" y="12" width="252" height="26" rx="6" fill="#1E293B"/>
+        <text x="138" y="29" font-size="11.5" font-weight="700" fill="#60A5FA" text-anchor="middle">Registro &amp; NFT Separación (HU2)</text>
+
+        <!-- Representación Visual de NFT -->
+        <g transform="translate(14, 46)">
+          <rect x="0" y="0" width="248" height="66" rx="8" fill="#131F37" stroke="#3B82F6" stroke-width="0.8"/>
+          <text x="12" y="20" font-size="10.5" font-weight="700" fill="#FFFFFF">🏛️ Título Digital Intransferible</text>
+          <text x="12" y="36" font-size="10" fill="#94A3B8">Apto 402 · Matrícula: 012-345678</text>
+          <text x="12" y="52" font-size="10" font-weight="600" fill="#38BDF8">Titular Criptográfico: Laura</text>
+          <rect x="180" y="12" width="56" height="42" rx="4" fill="#1E3A8A"/>
+          <text x="208" y="38" font-size="20" text-anchor="middle">🛡️</text>
+        </g>
+
+        <text x="14" y="132" font-size="11" font-weight="700" fill="#E2E8F0">Valor que aporta:</text>
+        <text x="14" y="150" font-size="10.5" fill="#94A3B8">• Resuelve la asimetría de papel</text>
+        <text x="14" y="166" font-size="10.5" fill="#94A3B8">• Imposible vender dos veces el apto</text>
+        <text x="14" y="182" font-size="10.5" fill="#94A3B8">• Reglas públicas de etapas (HU1)</text>
+      </g>
+
+      <!-- Contrato 2: Smart Contract ESCROW (El Candado Inteligente) -->
+      <g transform="translate(312, 54)">
+        <rect x="0" y="0" width="410" height="204" rx="12" fill="#0A1428" stroke="#10B981" stroke-width="1.8" filter="url(#sombraCard)"/>
+        
+        <rect x="12" y="12" width="386" height="26" rx="6" fill="#064E3B"/>
+        <text x="205" y="29" font-size="12" font-weight="800" fill="#6EE7B7" text-anchor="middle">🔒 Smart Contract Escrow Condicionado (HU3)</text>
+
+        <!-- Diagrama Visual de la Bóveda -->
+        <g transform="translate(14, 46)">
+          <rect x="0" y="0" width="382" height="74" rx="8" fill="#09201D" stroke="#059669"/>
+          
+          <!-- Candado -->
+          <circle cx="40" cy="37" r="22" fill="#064E3B" stroke="#34D399" stroke-width="1.5"/>
+          <text x="40" y="45" font-size="22" text-anchor="middle">🔒</text>
+          
+          <text x="76" y="24" font-size="11.5" font-weight="800" fill="#A7F3D0">REGLA MATEMÁTICA PROGRAMADA:</text>
+          <text x="76" y="42" font-size="11" fill="#F0FDF4">Saldo Retenido = $14.400.000 COP</text>
+          <text x="76" y="60" font-size="10.5" font-weight="700" fill="#38BDF8">CERO desembolsos directos a la constructora</text>
+        </g>
+
+        <!-- Condición de Liberación -->
+        <text x="14" y="140" font-size="11" font-weight="700" fill="#FDE047">Condición estricta de apertura (Soroban Auth):</text>
+        <text x="14" y="158" font-size="10.5" fill="#D1D5DB">1. Firma digital del Interventor registrado en contrato</text>
+        <text x="14" y="174" font-size="10.5" fill="#D1D5DB">2. Anclaje inmutable del Hash SHA-256 de las fotos y acta</text>
+        <text x="14" y="190" font-size="10.5" font-weight="700" fill="#34D399">➔ Solo al cumplirse 1 y 2, se transfiere el 30% a la constructora</text>
+      </g>
+
+      <!-- Contrato 3: Dispersión, Ledger & Eventos Auditables -->
+      <g transform="translate(740, 54)">
+        <rect x="0" y="0" width="434" height="204" rx="12" fill="#091122" stroke="#1E3A8A" stroke-width="1.2"/>
+        <rect x="12" y="12" width="410" height="26" rx="6" fill="#1E293B"/>
+        <text x="217" y="29" font-size="11.5" font-weight="700" fill="#FBBF24" text-anchor="middle">Liquidación &amp; Eventos de Ledger (HU5)</text>
+
+        <!-- Bloques de Ledger Simulado -->
+        <g transform="translate(14, 46)">
+          <rect x="0" y="0" width="406" height="74" rx="8" fill="#131F37" stroke="#334155"/>
+          
+          <g transform="translate(12, 10)">
+            <rect x="0" y="0" width="118" height="54" rx="6" fill="#1E293B" stroke="#3B82F6"/>
+            <text x="10" y="18" font-size="9" font-weight="700" fill="#60A5FA">Bloque #5849102</text>
+            <text x="10" y="32" font-size="8.5" fill="#94A3B8">Tx: Fondeo Cuota</text>
+            <text x="10" y="46" font-size="8.5" fill="#34D399">+ $1.2M Laura</text>
+          </g>
+
+          <g transform="translate(144, 10)">
+            <rect x="0" y="0" width="118" height="54" rx="6" fill="#1E293B" stroke="#10B981"/>
+            <text x="10" y="18" font-size="9" font-weight="700" fill="#34D399">Bloque #5849880</text>
+            <text x="10" y="32" font-size="8.5" fill="#94A3B8">Tx: Certificación</text>
+            <text x="10" y="46" font-size="8.5" fill="#A7F3D0">Hash Aprobado</text>
+          </g>
+
+          <g transform="translate(276, 10)">
+            <rect x="0" y="0" width="118" height="54" rx="6" fill="#1E293B" stroke="#F59E0B"/>
+            <text x="10" y="18" font-size="9" font-weight="700" fill="#FBBF24">Bloque #5850400</text>
+            <text x="10" y="32" font-size="8.5" fill="#94A3B8">Tx: Dispersión %</text>
+            <text x="10" y="46" font-size="8.5" fill="#FDE047">Salida Obra Real</text>
+          </g>
+        </g>
+
+        <text x="14" y="140" font-size="11" font-weight="700" fill="#E2E8F0">Garantías Públicas:</text>
+        <text x="14" y="158" font-size="10.5" fill="#94A3B8">• Historial permanente abierto a la Superintendencia (SIC)</text>
+        <text x="14" y="174" font-size="10.5" fill="#94A3B8">• El dinero no depende de la voluntad de la constructora</text>
+        <text x="14" y="190" font-size="10.5" font-weight="700" fill="#38BDF8">• Si vence el plazo sin peritaje: Alerta y congelación inmediata</text>
+      </g>
+    </g>
+  </g>
+</svg>
