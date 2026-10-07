@@ -1,0 +1,60 @@
+.project-hero {
+  position: relative; overflow: hidden; border-radius: var(--radius); color: #e8eaee;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px) 0 0 / 28px 28px,
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px) 0 0 / 28px 28px,
+    radial-gradient(700px 300px at 85% 0%, rgba(245, 158, 11, 0.16), transparent 60%),
+    var(--asphalt);
+  box-shadow: var(--shadow-lg);
+}
+/* Franja de precaución */
+.ph-stripe { height: 8px; background: repeating-linear-gradient(-45deg, var(--safety) 0 14px, var(--asphalt) 14px 28px); }
+
+.ph-body { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: center; padding: 28px 32px 30px; }
+.ph-info { display: grid; gap: 10px; }
+.ph-info h1 { color: #fff; font-size: 34px; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.ph-info p { color: #aeb5c2; max-width: 600px; }
+
+.ph-status {
+  justify-self: start; display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-condensed); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; font-size: 13px;
+  padding: 4px 12px; border-radius: 6px;
+  background: rgba(245, 183, 0, 0.14); color: #fbc531; border: 1px solid rgba(245, 183, 0, 0.3);
+}
+.ph-status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.ph-status.prog { background: rgba(59, 130, 246, 0.16); color: #7cb2ff; border-color: rgba(59, 130, 246, 0.35); }
+.ph-status.prog .ph-status-dot { animation: pulse 1.6s infinite; }
+.ph-status.done { background: rgba(16, 185, 129, 0.16); color: #4ade9b; border-color: rgba(16, 185, 129, 0.35); }
+
+.ph-meta { display: flex; flex-wrap: wrap; row-gap: 12px; margin-top: 8px; }
+.ph-meta > div { display: grid; gap: 2px; padding: 0 22px; border-left: 1px solid rgba(255, 255, 255, 0.12); }
+.ph-meta > div:first-child { padding-left: 0; border-left: 0; }
+.ph-meta span { font-size: 12px; color: #8a93a3; }
+.ph-meta strong { font-family: var(--font-display); font-size: 17px; color: #fff; font-weight: 600; }
+
+/* Anillo de avance */
+.ph-ring { position: relative; width: 168px; height: 168px; }
+.ph-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ph-ring circle { fill: none; stroke-width: 10; }
+.ring-track { stroke: rgba(255, 255, 255, 0.1); }
+.ring-fill {
+  stroke: var(--safety); stroke-linecap: round;
+  stroke-dasharray: 326.73; stroke-dashoffset: 326.73;
+  transition: stroke-dashoffset 1s var(--ease-out), stroke 0.4s, opacity 0.3s;
+}
+.ring-fill.complete { stroke: var(--ok-bar); }
+.ring-center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+.ring-value { font-family: var(--font-display); font-size: 40px; font-weight: 700; color: #fff; line-height: 1; font-variant-numeric: tabular-nums; }
+.ring-caption { font-size: 12px; color: #8a93a3; margin-top: 4px; }
+
+@media (max-width: 900px) {
+  .ph-body { grid-template-columns: 1fr; gap: 22px; padding: 22px 20px 24px; }
+  .ph-ring { justify-self: center; order: -1; }
+  .ph-info h1 { font-size: 28px; }
+}
+@media (max-width: 640px) {
+  .ph-meta > div { padding: 0 14px; }
+  .ph-net { display: none !important; } /* la red ya se ve en el menú */
+  .ph-ring { width: 140px; height: 140px; }
+  .ring-value { font-size: 32px; }
+}

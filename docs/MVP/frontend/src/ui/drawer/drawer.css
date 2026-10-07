@@ -1,0 +1,24 @@
+.drawer-wrap { position: fixed; inset: 0; z-index: var(--z-drawer); }
+.drawer-scrim {
+  position: absolute; inset: 0; background: var(--scrim);
+  backdrop-filter: blur(2px); animation: fade-in 0.2s both;
+}
+.drawer {
+  position: absolute; top: 0; right: 0; bottom: 0; width: min(460px, 100%);
+  background: var(--surface); border-left: 1px solid var(--border); box-shadow: var(--shadow-lg);
+  display: flex; flex-direction: column; animation: drawer-in 0.28s var(--ease-out) both;
+}
+@keyframes drawer-in { from { transform: translateX(40px); opacity: 0; } }
+.drawer-head {
+  display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: start;
+  padding: 22px 22px 18px; border-bottom: 1px solid var(--border);
+}
+.drawer-ico { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; }
+.drawer-body { flex: 1; overflow: auto; padding: 22px; display: grid; gap: 20px; align-content: start; }
+.drawer-foot {
+  display: flex; justify-content: flex-end; gap: 10px;
+  padding: 16px 22px; border-top: 1px solid var(--border); background: var(--surface-2);
+}
+@media (max-width: 640px) {
+  .drawer-foot .btn { flex: 1; }
+}

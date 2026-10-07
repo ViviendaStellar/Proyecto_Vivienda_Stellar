@@ -1,0 +1,94 @@
+/* Filtros por estado */
+.filter-bar { display: flex; gap: 4px; padding: 0 20px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+.filter-bar button {
+  display: inline-flex; gap: 6px; align-items: center; white-space: nowrap;
+  border: 0; background: none; padding: 10px 10px 12px; margin-bottom: -1px;
+  font-size: 13px; font-weight: 600; color: var(--text-2); border-bottom: 2px solid transparent;
+}
+.filter-bar button:hover { color: var(--text); }
+.filter-bar button.active { color: var(--text); border-bottom-color: var(--brand); }
+.filter-bar button span {
+  font-size: 11.5px; line-height: 18px; padding: 0 7px; border-radius: 999px;
+  background: var(--neutral-soft); color: var(--text-2);
+}
+.filter-bar button.active span { background: var(--brand-soft); color: var(--brand-strong); }
+
+/* Tabla */
+.table-wrap { overflow-x: auto; }
+.stage-table { width: 100%; border-collapse: collapse; }
+.stage-table th {
+  text-align: left; font-size: 12.5px; color: var(--text-3);
+  padding: 11px 20px; background: var(--surface-2); border-bottom: 1px solid var(--border);
+}
+.stage-table td { padding: 14px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.stage-table th:last-child, .stage-table td:last-child { padding-left: 8px; }
+.stage-table tbody tr { transition: background 0.12s; animation: rise-in 0.3s ease both; }
+.stage-table tbody tr:hover { background: var(--surface-2); }
+.stage-table tbody tr:last-child td { border-bottom: 0; }
+.col-progress { width: 24%; min-width: 150px; }
+.col-actions { width: 1%; }
+
+/* Celdas */
+.st-cell { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.st-cell > div { min-width: 0; }
+.phase-no {
+  width: 34px; height: 34px; border-radius: 8px; flex: none; display: grid; place-items: center;
+  font-family: var(--font-condensed); font-weight: 700; font-size: 15px; letter-spacing: 0.02em;
+  background: var(--neutral-soft); color: var(--text-2); border: 1px solid var(--border);
+}
+.phase-no.prog { background: var(--info-soft); color: var(--info); border-color: transparent; }
+.phase-no.done { background: var(--ok-soft); color: var(--ok); border-color: transparent; }
+.st-title { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; }
+.st-title .badge { font-size: 11.5px; padding: 1px 8px 1px 7px; }
+.st-name { font-weight: 600; font-size: 14px; }
+.st-obs {
+  font-size: 12.5px; color: var(--text-3); margin-top: 2px; max-width: 300px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.person { display: flex; align-items: center; gap: 9px; white-space: nowrap; font-size: 13.5px; }
+.person-none { color: var(--text-3); font-style: italic; }
+.progress { display: flex; align-items: center; gap: 12px; }
+.progress strong { font-size: 13.5px; font-weight: 600; font-variant-numeric: tabular-nums; min-width: 38px; text-align: right; }
+.row-actions { display: flex; align-items: center; gap: 4px; justify-content: flex-end; }
+.row-actions .btn { height: 32px; padding: 0 11px; font-size: 12.5px; }
+.row-actions .lbl-long { display: none; }
+
+/* Menú de fila */
+.row-menu {
+  position: fixed; z-index: var(--z-menu); min-width: 210px; padding: 5px; display: grid;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 11px; box-shadow: var(--shadow-lg);
+  animation: pop-in 0.14s ease both;
+}
+.row-menu button {
+  display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 7px; border: 0;
+  background: none; text-align: left; font-size: 13px; white-space: nowrap;
+}
+.row-menu button:hover, .row-menu button:focus-visible { background: var(--neutral-soft); outline: none; }
+.row-menu button .ico { width: 16px; height: 16px; color: var(--text-2); }
+.row-menu button.danger, .row-menu button.danger .ico { color: var(--danger); }
+.row-menu hr { border: 0; border-top: 1px solid var(--border); margin: 4px 0; }
+
+/* Estado vacío */
+.empty { padding: 52px 24px 56px; text-align: center; display: grid; justify-items: center; gap: 6px; }
+.empty-ico { width: 54px; height: 54px; border-radius: 15px; background: var(--brand-soft); display: grid; place-items: center; margin-bottom: 8px; }
+.empty-ico .ico { width: 26px; height: 26px; color: var(--brand-strong); }
+.empty .btn { margin-top: 12px; }
+
+/* En el celular la tabla se convierte en tarjetas */
+@media (max-width: 640px) {
+  .table-card .card-head { padding: 16px; }
+  .table-card .search { width: 100%; }
+  .filter-bar { padding: 0 12px; }
+  .stage-table thead { display: none; }
+  .stage-table, .stage-table tbody, .stage-table td { display: block; width: 100%; }
+  .stage-table tr {
+    display: grid; grid-template-columns: 1fr auto; gap: 10px;
+    padding: 14px 16px; border-bottom: 1px solid var(--border);
+  }
+  .stage-table td { padding: 0; border: 0; }
+  .stage-table td { grid-column: 1 / -1; }
+  .row-actions .btn { flex: 1; }
+  .row-actions .lbl-long { display: inline; }
+  .row-actions .lbl-short { display: none; }
+  .st-obs { max-width: none; white-space: normal; }
+}

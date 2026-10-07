@@ -1,0 +1,15 @@
+.side-card { overflow: hidden; }
+.timeline { list-style: none; margin: 0; padding: 4px 18px 10px; max-height: 340px; overflow: auto; }
+.timeline li { display: grid; grid-template-columns: 30px 1fr; gap: 11px; padding: 10px 0; position: relative; }
+/* Línea vertical que une los eventos */
+.timeline li:not(:last-child)::after {
+  content: ""; position: absolute; left: 14.5px; top: 42px; bottom: -2px; width: 1px; background: var(--border);
+}
+.tl-ico { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; }
+.tl-ico .ico { width: 14px; height: 14px; }
+.tl-title { font-size: 13px; line-height: 1.4; }
+.tl-title b { font-weight: 650; }
+.tl-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; font-size: 12px; color: var(--text-3); }
+.tl-meta a { color: var(--info); text-decoration: none; }
+.tl-meta a:hover { text-decoration: underline; }
+.empty-line { padding: 4px 18px 18px; }

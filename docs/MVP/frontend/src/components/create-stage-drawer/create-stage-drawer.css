@@ -1,0 +1,7 @@
+.suggest { display: flex; flex-wrap: wrap; gap: 6px; }
+.suggest button {
+  border: 1px solid var(--border); background: var(--surface-2); color: var(--text-2);
+  padding: 5px 11px; border-radius: 999px; font-size: 12.5px; font-weight: 500; transition: 0.15s;
+}
+.suggest button:hover:not(:disabled) { border-color: var(--brand); color: var(--text); background: var(--brand-soft); }
+.suggest button:disabled { opacity: 0.4; cursor: not-allowed; text-decoration: line-through; }
