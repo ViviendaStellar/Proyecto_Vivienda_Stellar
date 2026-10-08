@@ -45,12 +45,13 @@
     p.monthsData.forEach((m) => { if (m.actualCum != null && (m.status === 'desembolsado' || m.status === 'revision')) last = m.actualCum; });
     return last;
   }
-  function plannedNow(p) { const m = p.monthsData[Math.max(0, p.currentMonth - 2)]; return m ? m.plannedCum : 0; }
+  function plannedNow(p) { if (p.currentMonth <= 1) return 0; const m = p.monthsData[p.currentMonth - 2]; return m ? m.plannedCum : 0; }
   function releasedPct(p) { return p.monthsData.filter((m) => m.status === 'desembolsado').reduce((s, m) => s + m.tranchePct, 0); }
 
   /* ---------- ilustración arquitectónica procedural ---------- */
   function art(p, progress, opts) {
     opts = opts || {};
+    if (p.photo) return `<svg class="art ${opts.cls || ''}" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Foto de ${esc(p.name)}"><rect width="800" height="500" fill="#0B2A6F"/><image href="${p.photo}" width="800" height="500" preserveAspectRatio="xMidYMid slice"/></svg>`;
     const r = rng(p.seed * 31 + 7), sc = p.scene, n = sc.towers;
     const prog = Math.max(0.06, Math.min(1, (progress == null ? progressOf(p) : progress) / 100));
     const skies = [['#1B3A8C', '#6D5BC9', '#FFB26B'], ['#4A9BF0', '#9BCBFA', '#EAF4FF'], ['#0F6E9E', '#3DB5C9', '#FFD58A']];

@@ -10,13 +10,14 @@
   const KEY = 'innlock.demo.v1';
   const store = {
     get(k, d) { try { const v = (localStorage.getItem(k) ?? sessionStorage.getItem(k)); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
-    set(k, v, session) { try { (session ? sessionStorage : localStorage).setItem(k, JSON.stringify(v)); } catch (e) { /* modo privado */ } },
+    set(k, v, session) { try { (session ? sessionStorage : localStorage).setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
     del(k) { try { localStorage.removeItem(k); sessionStorage.removeItem(k); } catch (e) { /* noop */ } }
   };
   const db = store.get(KEY, { months: {}, docs: {}, log: [], read: 0 });
   const state = { user: null, pid: null, theme: store.get('innlock.theme', null) };
   const persist = () => store.set(KEY, db);
 
+  window.Wizard.hydrate(db, PROJECTS); db.evidence = db.evidence || {};
   // reaplica cambios guardados sobre los datos
   Object.entries(db.months).forEach(([k, v]) => { const [pid, n] = k.split(':'); const p = PROJECTS.find((x) => x.id === pid); if (p) Object.assign(p.monthsData[+n - 1], v); });
   Object.entries(db.docs).forEach(([k, v]) => { const [cid, key] = k.split(':'); const c = CONSTRUCTORAS.find((x) => x.id === cid); const d = c && c.docs.find((x) => x.key === key); if (d) { Object.assign(d, v); if (!('status' in v)) delete d.status; } });
@@ -31,17 +32,39 @@
   const company = (id) => CONSTRUCTORAS.find((c) => c.id === id);
   const interv = (id) => INTERVENTORES.find((c) => c.id === id);
   const projById = (id) => PROJECTS.find((p) => p.id === id);
-  const myProjects = () => PROJECTS.filter((p) => state.user.projects.includes(p.id));
+  const isActive = (p) => !p.reg || p.reg.stage === 'activo';
+  const myProjects = () => { const u = state.user; if (u.role === 'admin') return PROJECTS.slice(); if (u.role === 'constructora') return PROJECTS.filter((p) => p.constructora === u.company); if (u.role === 'interventor') return PROJECTS.filter((p) => p.interventor === u.interventor); return PROJECTS.filter((p) => u.projects.includes(p.id) && isActive(p)); };
+  const ensurePid = () => { if (!myProjects().some((p) => p.id === state.pid)) { const f = myProjects()[0]; state.pid = f ? f.id : null; } };
   const proj = () => projById(state.pid) || myProjects()[0];
   const compliance = (c) => { const req = c.docs.filter((d) => d.req); const ok = req.filter((d) => ['vigente', 'por_vencer'].includes(docStatus(d))).length; return { ok, total: req.length, pct: (ok / req.length) * 100, blocked: req.filter((d) => ['vencido', 'faltante'].includes(docStatus(d))), issues: req.filter((d) => docStatus(d) !== 'vigente') }; };
   const funds = (p) => { const rel = U.releasedPct(p), review = p.monthsData.filter((m) => m.status === 'revision').reduce((s, m) => s + m.tranchePct, 0); return { released: (p.budget * rel) / 100, review: (p.budget * review) / 100, custody: (p.budget * (100 - rel)) / 100, relPct: rel, revPct: review, custPct: 100 - rel - review }; };
   const tranche = (p, m) => (p.budget * m.tranchePct) / 100;
-  const pendingReviews = () => myProjects().filter((p) => state.user.role === 'admin' || state.user.projects.includes(p.id)).flatMap((p) => p.monthsData.filter((m) => m.status === 'revision').map((m) => ({ p, m })));
+  const pendingReviews = () => myProjects().filter(isActive).flatMap((p) => p.monthsData.filter((m) => m.status === 'revision').map((m) => ({ p, m })));
   const log = (text, icon, pid) => { db.log.unshift({ d: new Date().toISOString(), who: state.user.name, role: state.user.role, pid: pid || state.pid, text, icon: icon || 'activity' }); persist(); };
   const allLog = () => db.log.concat(D.SEED_LOG).sort((a, b) => (a.d < b.d ? 1 : -1));
   const roleLabel = (r) => (ROLES[r] ? ROLES[r].label : 'Sistema');
   const greeting = () => { const h = new Date().getHours(); return h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches'; };
-  const saveMonth = (p, m) => { db.months[p.id + ':' + m.n] = { status: m.status, tx: m.tx, releasedOn: m.releasedOn, ledger: m.ledger, history: m.history, actualCum: m.actualCum, photos: m.photos, videos: m.videos }; persist(); };
+  const saveMonth = (p, m) => { db.months[p.id + ':' + m.n] = { status: m.status, tx: m.tx, releasedOn: m.releasedOn, ledger: m.ledger, history: m.history, actualCum: m.actualCum, photos: m.photos, videos: m.videos, report: m.report, tranchePct: m.tranchePct, plannedCum: m.plannedCum, changed: m.changed }; return persist(); };
+  /* ---------- evidencias del mes ---------- */
+  const evKey = (p, m) => p.id + ':' + m.n;
+  const evOf = (p, m) => db.evidence[evKey(p, m)] || [];
+  const KB = (b) => (b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB');
+  function fileThumb(file, max, q) {
+    return new Promise((res, rej) => { const r = new FileReader(); r.onerror = rej; r.onload = () => { const img = new Image(); img.onerror = rej; img.onload = () => { const k = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', q)); }; img.src = r.result; }; r.readAsDataURL(file); });
+  }
+  function evTiles(items, o) {
+    o = o || {};
+    return `<div class="ev-grid">${items.map((x, i) => x.kind === 'img'
+      ? `<div class="ev-tile"><button type="button" ${o.view ? `data-act="ev-view" data-id="${o.view[0]}" data-n="${o.view[1]}" data-i="${i}"` : ''} aria-label="Ver ${U.esc(x.name)}"><img src="${x.thumb}" alt="${U.esc(x.name)}" loading="lazy"></button>${o.remove ? `<button type="button" class="ev-x" data-ev-rm="${i}" aria-label="Quitar">${I('x')}</button>` : ''}</div>`
+      : `<div class="ev-tile file"><span class="di ic-blue" style="width:38px;height:38px;border-radius:11px;display:grid;place-items:center">${I(x.kind === 'video' ? 'camera' : 'file-text')}</span><b>${U.esc(x.name)}</b><small>${x.kind === 'video' ? 'Video' : 'Informe'} · ${U.esc(x.size)}</small>${o.remove ? `<button type="button" class="ev-x" data-ev-rm="${i}" aria-label="Quitar">${I('x')}</button>` : ''}</div>`).join('')}</div>`;
+  }
+  const evSection = (p, m) => { const it = evOf(p, m); return it.length ? `<div class="eyebrow" style="margin:14px 0 8px">Evidencias cargadas (${it.length})</div>${evTiles(it, { view: [p.id, m.n] })}` : ''; };
+  function evViewer(p, m, i0) {
+    const imgs = evOf(p, m).map((x, i) => Object.assign({ i }, x)).filter((x) => x.kind === 'img'); let k = Math.max(0, imgs.findIndex((x) => x.i === i0));
+    U.modal({ title: 'Evidencia · <span style="text-transform:capitalize">' + m.label + '</span>', wide: true, body: '<div id="evv"></div>', footer: `<button class="btn btn-ghost" id="evp">${I('chevron-left')}Anterior</button><button class="btn btn-ghost" id="evn">Siguiente${I('chevron-right')}</button><button class="btn btn-primary" data-close>Cerrar</button>`,
+      onMount: (mm) => { const show = () => { $('#evv', mm).innerHTML = `<img src="${imgs[k].thumb}" alt="${U.esc(imgs[k].name)}" style="width:100%;max-height:60vh;object-fit:contain;border-radius:14px;background:#0B2A6F"><div class="muted" style="margin-top:10px;font-size:13px">${U.esc(imgs[k].name)} · ${k + 1} de ${imgs.length}</div>`; }; $('#evp', mm).addEventListener('click', () => { k = (k + imgs.length - 1) % imgs.length; show(); }); $('#evn', mm).addEventListener('click', () => { k = (k + 1) % imgs.length; show(); }); show(); } });
+  }
+
   const saveDoc = (c, d) => { db.docs[c.id + ':' + d.key] = { status: d.status === undefined ? undefined : d.status, pending: d.pending, issued: d.issued, expires: d.expires, number: d.number, size: d.size, file: d.file }; persist(); };
 
   /* ============ Navegación por rol ============ */
@@ -50,6 +73,8 @@
     const base = [{ t: 'General', items: [['panel', 'layout-dashboard', 'Panel general'], ['proyectos', 'building-2', 'Proyectos']] },
       { t: 'Proyecto seleccionado', items: [['info', 'home', 'Información'], ['legal', 'file-check-2', 'Constructora y legal'], ['obra', 'hard-hat', 'Avance de obra'], ['fondos', 'coins', 'Desembolsos']] }];
     const extra = { comprador: [['mi-inversion', 'key-round', 'Mi inversión']], interventor: [['revisiones', 'clipboard-check', 'Revisiones', n]], constructora: [['revisiones', 'clipboard-check', 'Mis hitos']], admin: [['revisiones', 'clipboard-check', 'Hitos en revisión', n], ['usuarios', 'users', 'Usuarios'], ['auditoria', 'history', 'Auditoría']] }[role];
+    if (role === 'constructora') extra.push(['nuevo', 'plus', 'Registrar proyecto']);
+    if (role === 'interventor' || role === 'admin') extra.unshift(['solicitudes', 'file-signature', 'Solicitudes', W.pendingCount()]);
     if (extra) base.push({ t: role === 'admin' ? 'Administración' : 'Mi espacio', items: extra });
     return base;
   }
@@ -96,7 +121,7 @@
       const user = USERS.find((x) => x.email === em && x.password === pw && x.role === role);
       if (!user) { $('#login-err').innerHTML = `<div class="form-error">${I('alert-triangle')} Correo o contraseña incorrectos para el perfil ${ROLES[role].label}.</div>`; return; }
       const btn = $('button[type=submit]'); btn.disabled = true; btn.innerHTML = `${I('loader', 'spin')} Verificando…`;
-      setTimeout(() => { state.user = user; store.set('innlock.session', user.id, !$('#remember').checked); if (!state.pid || !user.projects.includes(state.pid)) state.pid = user.projects[0]; store.set('innlock.pid', state.pid); location.hash = '#/panel'; route(); }, 650);
+      setTimeout(() => { state.user = user; store.set('innlock.session', user.id, !$('#remember').checked); ensurePid(); store.set('innlock.pid', state.pid); location.hash = '#/panel'; route(); }, 650);
     });
   }
 
@@ -132,7 +157,7 @@
     pendingReviews().forEach(({ p, m }) => { if (u.role === 'interventor' || u.role === 'admin') out.push({ i: 'clipboard-check', c: 'ic-gold', t: `<b>${p.name}</b> · el hito de <span style="text-transform:capitalize">${m.label}</span> espera revisión del interventor.`, s: 'Pendiente', r: 'revisiones' }); });
     myProjects().forEach((p) => { const c = company(p.constructora); c.docs.filter((d) => d.req).forEach((d) => { const s = docStatus(d); if (s === 'vencido') out.push({ i: 'alert-triangle', c: 'ic-bad', t: `<b>${c.short}</b> · ${d.title} está vencido. Los desembolsos quedan bloqueados.`, s: 'Crítico', r: 'legal', pid: p.id }); else if (s === 'por_vencer') out.push({ i: 'clock', c: 'ic-gold', t: `<b>${c.short}</b> · ${d.title} vence en ${U.daysTo(d.expires)} días.`, s: 'Atención', r: 'legal', pid: p.id }); }); });
     if (u.role === 'comprador') out.push({ i: 'calendar-check', c: 'ic-blue', t: `Tu próxima cuota de <b>${U.money(u.unit.nextAmount)}</b> vence el ${U.fmtDate(u.unit.next)}.`, s: 'Recordatorio', r: 'mi-inversion' });
-    return out;
+    return out.concat(W.notifications());
   }
   function updateBell() { const b = $('#bell'); if (!b) return; $('.ping', b)?.remove(); if (notifications().length > (db.read || 0)) b.insertAdjacentHTML('beforeend', '<span class="ping"></span>'); }
 
@@ -170,7 +195,7 @@
     const next = p.monthsData.find((m) => ['revision', 'en_curso', 'observado'].includes(m.status)) || p.monthsData.find((m) => m.status === 'pendiente');
     const alerts = notifications().filter((n) => n.r === 'legal' && n.pid === p.id);
     let h = pageHead(`${greeting()}, ${u.name.split(' ')[0]} 👋`, `Resumen de <b>${p.name}</b> · ${p.city}. ${{ admin: 'Visión global de la plataforma.', comprador: 'Así avanza la obra de tu futuro hogar.', constructora: 'Gestiona tu cumplimiento y tus desembolsos.', interventor: 'Audita el avance y autoriza los desembolsos.' }[u.role]}`, `<a class="btn btn-ghost" href="#/info">${I('home')}Ver proyecto</a><a class="btn btn-primary" href="#/obra">${I('hard-hat')}Avance de obra</a>`);
-    h += `<div class="grid g-4" style="margin-bottom:22px">
+    h += W.banner(p) + `<div class="grid g-4" style="margin-bottom:22px">
       ${kpi('trending-up', 'ic-blue', 'Avance real de obra', U.pct(prog), `<span class="${dev >= 0 ? 'up' : 'down'}">${dev >= 0 ? '▲' : '▼'} ${U.fmtN(Math.abs(dev), 1)} pts</span> vs. plan (${U.pct(plan)})`)}
       ${kpi('lock', 'ic-sky', 'Fondos en custodia', U.moneyM(f.custody), `${U.pct(f.custPct + f.revPct, 0)} del presupuesto protegido`)}
       ${kpi('banknote', 'ic-ok', 'Desembolsado a la fecha', U.moneyM(f.released), `${p.monthsData.filter((m) => m.status === 'desembolsado').length} hitos aprobados`)}
@@ -211,7 +236,7 @@
   /* ---------- Proyectos ---------- */
   function vProyectos() {
     const list = myProjects();
-    return pageHead('Proyectos', `${list.length} proyecto${list.length === 1 ? '' : 's'} bajo custodia y auditoría.`, '', '') +
+    return pageHead('Proyectos', `${list.length} proyecto${list.length === 1 ? '' : 's'} bajo custodia y auditoría.`, state.user.role === 'constructora' ? `<a class="btn btn-primary" href="#/nuevo">${I('plus')}Registrar proyecto</a>` : '', '') +
       `<div class="grid g-3">${list.map(projectCard).join('')}</div>`;
   }
 
@@ -219,7 +244,7 @@
   function vInfo() {
     const p = proj(), c = company(p.constructora), it = interv(p.interventor), prog = U.progressOf(p), sold = (p.sold / p.units) * 100;
     const fact = (ic, l, v) => `<div class="fact"><small>${I(ic)}${l}</small><b>${v}</b></div>`;
-    return `<div class="crumbs">${projCrumb(p, 'Información')}</div>
+    return `<div class="crumbs">${projCrumb(p, 'Información')}</div>${W.banner(p)}
       <section class="hero reveal">${U.art(p, null, { hero: true, shift: 170, cls: 'art-wide' })}${U.art(p, null, { hero: true, cls: 'art-narrow' })}<div class="hero-in"><div class="row row-wrap" style="gap:8px"><span class="badge">${I('hard-hat')}${p.status}</span><span class="badge">${I('badge-check')}Fondos en custodia</span></div>
         <div><h1>${p.name}</h1><div class="loc">${I('map-pin')}${p.address} · ${p.zone}, ${p.city}</div><p style="color:rgba(255,255,255,.82);margin-top:8px;max-width:60ch">${p.tagline}</p></div>
         <div class="stats"><div class="stat"><small>Avance de obra</small><b class="num">${U.pct(prog, 0)}</b></div><div class="stat"><small>Desde</small><b class="num">${U.moneyM(p.priceFrom)}</b></div><div class="stat"><small>Unidades</small><b class="num">${p.units}</b></div><div class="stat"><small>Entrega estimada</small><b>${U.fmtMY(p.end)}</b></div></div></div></section>
@@ -227,7 +252,7 @@
         <div class="stack">
           <div class="card card-pad reveal"><div class="card-head"><h3>Descripción</h3></div><p style="color:var(--text-2);font-size:15.5px">${p.description}</p><hr class="divider"><div class="row row-wrap" style="gap:8px">${p.amenities.map((a) => `<span class="chip">${I('check')}${a}</span>`).join('')}</div></div>
           <div class="card card-pad reveal"><div class="card-head"><div><h3>Ficha del proyecto</h3><div class="sub">Datos clave verificados por la plataforma</div></div></div><div class="facts">
-            ${fact('map-pin', 'Ubicación', p.zone + ', ' + p.city)}${fact('building-2', 'Torres', p.towers + (p.towers > 1 ? ' torres' : ' torre'))}${fact('layers', 'Pisos', p.floors + ' por torre')}${fact('home', 'Unidades', p.units + ' apartamentos')}${fact('maximize', 'Áreas', p.area)}${fact('car', 'Parqueaderos', p.parking)}${fact('star', 'Estrato', p.strata)}${fact('calendar', 'Inicio de obra', U.fmtDate(p.start))}${fact('flag', 'Entrega', U.fmtDate(p.end))}${fact('coins', 'Presupuesto de obra', U.moneyM(p.budget))}${fact('file-badge', 'Licencia', c.docs.find((d) => d.key === 'licencia').number)}${fact('handshake', 'Fiducia', c.docs.find((d) => d.key === 'fiducia').issuer)}
+            ${fact('map-pin', 'Ubicación', p.zone + ', ' + p.city)}${fact('building-2', 'Torres', p.towers + (p.towers > 1 ? ' torres' : ' torre'))}${fact('layers', 'Pisos', p.floors + ' por torre')}${fact('home', 'Unidades', p.units + ' apartamentos')}${fact('maximize', 'Áreas', p.area)}${fact('car', 'Parqueaderos', p.parking)}${fact('star', 'Estrato', p.strata)}${fact('calendar', 'Inicio de obra', U.fmtDate(p.start))}${fact('flag', 'Entrega', U.fmtDate(p.end))}${fact('coins', 'Presupuesto de obra', U.moneyM(p.budget))}${fact('file-badge', 'Licencia', p.lic ? p.lic.number : c.docs.find((d) => d.key === 'licencia').number)}${fact('handshake', 'Fiducia', p.fidu ? p.fidu.issuer : c.docs.find((d) => d.key === 'fiducia').issuer)}
           </div></div>
           <div class="card card-pad reveal"><div class="card-head"><div><h3>Tipologías disponibles</h3><div class="sub">${p.units - p.sold} unidades disponibles</div></div></div><div class="grid g-3">${p.typologies.map((t) => `<div class="typo"><h4>${t.name}</h4><div class="specs"><span>${I('maximize')}${t.area} m²</span><span>${I('bed-double')}${t.beds}</span><span>${I('bath')}${t.baths}</span><span>${I('car')}${t.parking}</span></div><div class="price">Desde<b class="num">${U.money(t.price)}</b></div></div>`).join('')}</div></div>
         </div>
@@ -237,7 +262,7 @@
             <a href="#/legal" class="btn btn-soft btn-block" style="margin:14px 0">${I('file-check-2')}Ver cumplimiento legal</a><hr class="divider" style="margin:6px 0 16px">
             <div class="row" style="gap:14px"><span class="avatar" style="width:54px;height:54px;border-radius:16px;font-size:17px;box-shadow:none;background:linear-gradient(135deg,#FFD54A,#FF9A00);color:#3B2500">${U.initials(it.name.replace('Ing. ', ''))}</span><div class="grow"><div class="eyebrow">Interventor</div><b>${it.name}</b><div class="muted" style="font-size:13px">${it.firm}</div><div class="muted" style="font-size:12px">${it.license}</div></div></div></div>
           <div class="card card-pad reveal"><div class="card-head"><h3>Ventas</h3><span class="badge b-info">${U.pct(sold, 0)} vendido</span></div><div class="bar gold"><i data-w="${sold}"></i></div><div class="row between muted" style="font-size:13px;margin-top:10px"><span>${p.sold} vendidas</span><span>${p.units - p.sold} disponibles</span></div></div>
-          <div class="card reveal" style="overflow:hidden"><div class="map">${U.mapSvg(p)}<div class="overlay"><b>${p.name}</b>${p.address}</div></div><div style="padding:14px 18px" class="row between"><span class="muted" style="font-size:13px">${p.zone}, ${p.city}</span><a class="link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}">Abrir mapa ${I('external-link')}</a></div></div>
+          <div class="card reveal" style="overflow:hidden"><div class="map">${U.mapSvg(p)}<div class="overlay"><b>${p.name}</b>${p.address}</div></div><div style="padding:14px 18px" class="row between"><span class="muted" style="font-size:13px">${p.zone}, ${p.city}</span><a class="link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${p.lat ? p.lat + ',' + p.lng : encodeURIComponent(p.address + ', ' + p.city)}">Abrir mapa ${I('external-link')}</a></div></div>
         </div></div>`;
   }
 
@@ -266,19 +291,20 @@
     if (u.role === 'constructora' && ['en_curso', 'observado'].includes(m.status)) acts = `<button class="btn btn-primary btn-sm" data-act="submit-month" data-id="${p.id}" data-n="${m.n}">${I('send')}${m.status === 'observado' ? 'Subsanar y reenviar' : 'Cerrar mes y enviar a interventoría'}</button>`;
     if ((u.role === 'interventor' || u.role === 'admin') && m.status === 'revision') acts = `<button class="btn btn-ok btn-sm" data-act="approve-month" data-id="${p.id}" data-n="${m.n}">${I('check-circle-2')}Revisar y aprobar</button><button class="btn btn-bad btn-sm" data-act="observe-month" data-id="${p.id}" data-n="${m.n}">${I('alert-triangle')}Observar</button>`;
     const hist = m.history && m.history.length ? `<div class="hist">${m.history.map((x) => `<div><b style="color:${x.t === 'observado' ? 'var(--bad)' : x.t === 'aprobado' ? 'var(--ok)' : 'var(--info)'}">${x.t}</b> · <span class="muted">${x.by}</span><div style="color:var(--text-2)">${U.esc(x.text)}</div></div>`).join('')}</div>` : '';
-    return `<div class="tl-item ${cls} reveal"><div class="tl-dot">${I(icon)}</div><div class="card tl-card ${open ? 'open' : ''}" data-act="toggle-month"><div class="top"><div><h4>${m.label}<small>Mes ${m.n} de ${p.months}</small></h4><div class="phase">${m.phaseName}</div></div><div class="row row-wrap" style="gap:8px">${badge(MST, m.status)}${I('chevron-down')}</div></div>
+    return `<div class="tl-item ${cls} reveal"><div class="tl-dot">${I(icon)}</div><div class="card tl-card ${open ? 'open' : ''}" data-act="toggle-month"><div class="top"><div><h4>${m.label}<small>Mes ${m.n} de ${p.months}</small></h4><div class="phase">${m.phaseName}</div></div><div class="row row-wrap" style="gap:8px">${m.changed ? '<span class="badge b-info">Ajustado</span>' : ''}${badge(MST, m.status)}${I('chevron-down')}</div></div>
       <div class="row between" style="margin-top:14px;gap:16px;font-size:13px"><div class="grow"><div class="row between" style="margin-bottom:6px"><span class="muted">Avance acumulado</span><b class="num">${m.actualCum != null ? U.pct(m.actualCum) : '—'} <span class="muted" style="font-weight:600">/ plan ${U.pct(m.plannedCum)}</span></b></div><div class="bar thin ${m.actualCum != null && m.actualCum + 0.3 < m.plannedCum ? 'gold' : ''}"><i data-w="${m.actualCum != null ? m.actualCum : 0}"></i><span class="plan" style="left:${m.plannedCum}%"></span></div></div></div>
-      <div class="tl-body"><div class="tl-meta"><div><small>Desembolso del hito</small><b class="num">${U.moneyM(tranche(p, m))}</b></div><div><small>% del presupuesto</small><b class="num">${U.pct(m.tranchePct, 2)}</b></div><div><small>Evidencias</small><b>${m.photos} fotos · ${m.videos} videos</b></div><div><small>Interventor</small><b style="font-size:13.5px">${interv(p.interventor).name}</b></div></div>
-        <ul class="acts-list">${m.activities.map((a) => `<li>${I(m.status === 'desembolsado' ? 'check-circle-2' : 'circle-dashed')}${a}</li>`).join('')}</ul>${hist}
+      <div class="tl-body"><div class="tl-meta"><div><small>Desembolso del hito</small><b class="num">${U.moneyM(tranche(p, m))}</b></div><div><small>% del presupuesto</small><b class="num">${U.pct(m.tranchePct, 2)}</b></div><div><small>Evidencias</small><b>${m.photos} fotos · ${m.videos} videos${m.report ? ' · informe' : ''}</b></div><div><small>Interventor</small><b style="font-size:13.5px">${interv(p.interventor).name}</b></div></div>
+        ${evSection(p, m)}<ul class="acts-list">${m.activities.map((a) => `<li>${I(m.status === 'desembolsado' ? 'check-circle-2' : 'circle-dashed')}${a}</li>`).join('')}</ul>${hist}
         ${m.tx ? `<div class="tx" style="margin-top:16px">${I('link-2')}<span class="h mono">${U.short(m.tx, 14, 12)}</span><button class="btn btn-ghost btn-sm" data-act="tx" data-id="${p.id}" data-n="${m.n}" style="margin-left:auto">Ver registro</button></div>` : ''}
         ${m.status === 'revision' && cm.blocked.length ? `<div class="alert a-bad" style="margin-top:14px">${I('shield-alert')}<p>Desembolso bloqueado: la constructora tiene documentación vencida.</p></div>` : ''}
         ${acts ? `<div class="row row-wrap" style="margin-top:16px">${acts}</div>` : ''}</div></div></div>`;
   }
   function vObra() {
     const p = proj(), prog = U.progressOf(p), plan = U.plannedNow(p), dev = prog - plan, cur = p.monthsData.find((m) => ['en_curso', 'observado', 'revision'].includes(m.status)) || p.monthsData[0];
-    let h = `<div class="crumbs">${projCrumb(p, 'Avance de obra')}</div>` + pageHead('Avance de obra', 'Seguimiento mes a mes, consolidado y auditado por el interventor.', '');
+    let h = `<div class="crumbs">${projCrumb(p, 'Avance de obra')}</div>` + pageHead('Avance de obra', 'Seguimiento mes a mes, consolidado y auditado por el interventor.', W.changeButton(p));
     h += `<div class="grid g-4" style="margin-bottom:22px">${kpi('trending-up', 'ic-blue', 'Avance real', U.pct(prog), `Plan a la fecha: ${U.pct(plan)}`)}${kpi('activity', dev >= 0 ? 'ic-ok' : 'ic-gold', 'Desviación', (dev >= 0 ? '+' : '') + U.fmtN(dev, 1) + ' pts', dev >= 0 ? '<span class="up">Adelantado respecto al plan</span>' : '<span style="color:var(--warn);font-weight:700">Ligero retraso, dentro de tolerancia</span>')}${kpi('calendar', 'ic-sky', 'Mes en curso', `${p.currentMonth} / ${p.months}`, `<span style="text-transform:capitalize">${cur.label}</span>`)}${kpi('flag', 'ic-gold', 'Entrega estimada', U.fmtMY(p.end), `${U.daysTo(p.end) > 0 ? 'Faltan ' + U.fmtN(Math.round(U.daysTo(p.end) / 30)) + ' meses' : 'Entregado'}`)}</div>`;
     h += `<div class="card card-pad reveal" style="margin-bottom:8px"><div class="card-head"><div><h3>Curva S del proyecto</h3><div class="sub">Pasa el cursor sobre cada punto para ver el detalle del mes</div></div><div class="legend"><span><i style="background:var(--muted);opacity:.7"></i>Planificado</span><span><i style="background:linear-gradient(90deg,#12A8F0,#1450C8)"></i>Real</span></div></div>${U.sCurve(p)}</div>`;
+    h += W.changesCard(p);
     let yr = null; const grouped = [];
     p.monthsData.forEach((m) => { if (m.year !== yr) { yr = m.year; grouped.push(`<div class="year-lbl">${yr}</div>`); } grouped.push(monthCard(p, m, ['revision', 'observado'].includes(m.status) || m === cur && m.status === 'en_curso')); });
     return h + `<div class="tl">${grouped.join('')}</div>`;
@@ -330,7 +356,7 @@
   }
 
   const ROUTES = { panel: vPanel, proyectos: vProyectos, info: vInfo, legal: vLegal, obra: vObra, fondos: vFondos, revisiones: vRevisiones, 'mi-inversion': vMiInversion, usuarios: vUsuarios, auditoria: vAuditoria };
-  const ALLOWED = { comprador: ['mi-inversion'], interventor: [], constructora: [], admin: ['usuarios', 'auditoria'] };
+  const ALLOWED = { comprador: ['mi-inversion'], interventor: ['solicitudes'], constructora: ['nuevo'], admin: ['usuarios', 'auditoria', 'solicitudes'] };
 
   /* ============ Enrutador ============ */
   function route() {
@@ -339,14 +365,16 @@
     if (!state.user) { if (name !== 'login' && location.hash !== '#/login') location.hash = '#/login'; renderLogin(); return; }
     if (name === 'login' || !name) { location.hash = '#/panel'; return; }
     if (!$('#view')) renderShell();
-    const restricted = ['mi-inversion', 'usuarios', 'auditoria']; if (name === 'revisiones' && state.user.role === 'comprador') { location.hash = '#/panel'; return; }
+    const restricted = ['mi-inversion', 'usuarios', 'auditoria', 'nuevo', 'solicitudes']; if (name === 'revisiones' && state.user.role === 'comprador') { location.hash = '#/panel'; return; }
     const key = ROUTES[name] && (!restricted.includes(name) || ALLOWED[state.user.role].includes(name)) ? name : 'panel';
     if (key !== name) { location.hash = '#/' + key; return; }
     const view = $('#view'); view.style.animation = 'none'; void view.offsetWidth; view.style.animation = '';
+    state.route = key; ensurePid();
     view.innerHTML = ROUTES[key]();
+    if (W.mount[key]) W.mount[key](view);
     $$('#nav a').forEach((a) => a.classList.toggle('active', a.dataset.route === key));
     closeMenus(); closeSidebar(); window.scrollTo({ top: 0 });
-    document.title = ({ panel: 'Panel', proyectos: 'Proyectos', info: 'Información', legal: 'Constructora y legal', obra: 'Avance de obra', fondos: 'Desembolsos', revisiones: 'Revisiones', 'mi-inversion': 'Mi inversión', usuarios: 'Usuarios', auditoria: 'Auditoría' })[key] + ' · INN-LOCK';
+    document.title = ({ panel: 'Panel', proyectos: 'Proyectos', info: 'Información', legal: 'Constructora y legal', obra: 'Avance de obra', fondos: 'Desembolsos', revisiones: 'Revisiones', 'mi-inversion': 'Mi inversión', usuarios: 'Usuarios', auditoria: 'Auditoría', nuevo: 'Registrar proyecto', solicitudes: 'Solicitudes' })[key] + ' · INN-LOCK';
     animateBars(); view.focus({ preventScroll: true });
   }
   function animateBars() { requestAnimationFrame(() => requestAnimationFrame(() => $$('[data-w]').forEach((el) => { el.style.width = Math.max(0, Math.min(100, +el.dataset.w)) + '%'; }))); }
@@ -398,7 +426,7 @@
     const cm = compliance(company(p.constructora)), tr = tranche(p, m);
     const checks = ['Visité la obra y verifiqué las actividades del mes', 'La evidencia fotográfica corresponde al avance reportado', 'Los ensayos y controles de calidad están completos', 'El avance reportado coincide con el medido en sitio'];
     U.modal({ title: 'Aprobar hito · <span style="text-transform:capitalize">' + m.label + '</span>', body: cm.blocked.length ? `<div class="alert a-bad">${I('shield-alert')}<div><b>No se puede aprobar</b><p>${cm.blocked.map((d) => d.title).join(', ')} ${cm.blocked.length > 1 ? 'están vencidos' : 'está vencido'}. La constructora debe renovarlo antes de recibir el desembolso.</p></div></div>` :
-      `<div class="alert a-info" style="margin-bottom:16px">${I('coins')}<div><b>Se liberarán ${U.money(tr)}</b><p>${U.pct(m.tranchePct, 2)} del presupuesto de ${p.name}, a favor de ${company(p.constructora).short}.</p></div></div><div class="stack" style="gap:10px">${checks.map((t, i) => `<label class="check" style="padding:12px 14px;border:1px solid var(--line);border-radius:12px"><input type="checkbox" class="ck" data-i="${i}"> ${t}</label>`).join('')}</div><div class="field" style="margin:16px 0 0"><label for="note">Comentario del interventor (opcional)</label><textarea class="input" id="note" placeholder="Observaciones generales de la visita…"></textarea></div>`,
+      `${evOf(p, m).length ? `<div class="eyebrow" style="margin-bottom:8px">Evidencias enviadas (${evOf(p, m).length})</div>${evTiles(evOf(p, m), { view: [p.id, m.n] })}<div style="height:16px"></div>` : `<div class="alert a-warn" style="margin-bottom:16px">${I('info')}<p>El mes tiene ${m.photos} fotos y ${m.videos} videos archivados.</p></div>`}<div class="alert a-info" style="margin-bottom:16px">${I('coins')}<div><b>Se liberarán ${U.money(tr)}</b><p>${U.pct(m.tranchePct, 2)} del presupuesto de ${p.name}, a favor de ${company(p.constructora).short}.</p></div></div><div class="stack" style="gap:10px">${checks.map((t, i) => `<label class="check" style="padding:12px 14px;border:1px solid var(--line);border-radius:12px"><input type="checkbox" class="ck" data-i="${i}"> ${t}</label>`).join('')}</div><div class="field" style="margin:16px 0 0"><label for="note">Comentario del interventor (opcional)</label><textarea class="input" id="note" placeholder="Observaciones generales de la visita…"></textarea></div>`,
       footer: cm.blocked.length ? '<button class="btn btn-ghost" data-close>Entendido</button>' : `<button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-ok" id="go" disabled>${I('fingerprint')}Firmar y liberar desembolso</button>`,
       onMount: (mm, close) => {
         if (cm.blocked.length) return; const go = $('#go', mm), cks = $$('.ck', mm); cks.forEach((k) => k.addEventListener('change', () => { go.disabled = !cks.every((x) => x.checked); }));
@@ -417,9 +445,39 @@
       onMount: (mm, close) => $('#go', mm).addEventListener('click', () => { const t = $('#obs', mm).value.trim(); if (t.length < 8) { U.toast('Describe brevemente las observaciones', 'err'); return; } m.status = 'observado'; m.history = (m.history || []).concat([{ t: 'observado', by: 'interventor', text: t }]); saveMonth(p, m); log('Observó el hito de ' + m.label, 'alert-triangle', p.id); close(); U.toast('Observaciones enviadas a la constructora'); refresh(); }) });
   }
   function submitModal(p, m) {
-    U.modal({ title: 'Enviar a interventoría', body: `<p class="muted" style="margin-bottom:14px">Adjunta las evidencias del mes de <b style="text-transform:capitalize">${m.label}</b>. El interventor recibirá una notificación.</p><label class="drop" id="drop" for="ev">${I('camera')}<b id="fname">Fotos, videos e informe técnico</b><div style="font-size:12.5px;margin-top:4px">Selecciona varios archivos</div><input type="file" id="ev" multiple hidden></label><div class="field" style="margin:16px 0 0"><label for="rep">Resumen del mes</label><textarea class="input" id="rep" placeholder="Actividades ejecutadas, novedades y pendientes…"></textarea></div>`, footer: `<button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-primary" id="go">${I('send')}Enviar hito</button>`,
-      onMount: (mm, close) => { $('#ev', mm).addEventListener('change', (e) => { $('#fname', mm).textContent = e.target.files.length + ' archivo(s) seleccionado(s)'; }); $('#go', mm).addEventListener('click', () => { const prev = m.status; m.status = 'revision'; if (m.actualCum == null) m.actualCum = Math.max(0, m.plannedCum - p.drift); const t = $('#rep', mm).value.trim(); m.history = (m.history || []).concat([{ t: prev === 'observado' ? 'subsanado' : 'enviado', by: 'constructora', text: t || 'Evidencias del mes cargadas para revisión.' }]); saveMonth(p, m); log('Envió el hito de ' + m.label + ' a interventoría', 'send', p.id); close(); U.toast('Hito enviado a interventoría'); refresh(); }); } });
+    let items = evOf(p, m).slice(); const nImg = () => items.filter((x) => x.kind === 'img').length;
+    U.modal({ title: 'Enviar a interventoría', wide: true, body: `<p class="muted" style="margin-bottom:14px">Adjunta las evidencias del mes de <b style="text-transform:capitalize">${m.label}</b>. El interventor las revisará antes de autorizar el desembolso.</p>
+      <label class="drop" id="drop" for="ev">${I('camera')}<b>Arrastra o selecciona fotos, videos e informe técnico</b><div style="font-size:12.5px;margin-top:4px">Mínimo 3 fotos · hasta 8 fotos · videos y PDF opcionales</div><input type="file" id="ev" multiple accept="image/*,video/*,.pdf" hidden></label>
+      <div id="ev-list" style="margin-top:16px"></div>
+      <div class="field" style="margin:16px 0 0"><label for="rep">Resumen del mes</label><textarea class="input" id="rep" placeholder="Actividades ejecutadas, novedades y pendientes…"></textarea></div>`,
+      footer: `<button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-primary" id="go" disabled>${I('send')}Enviar hito</button>`,
+      onMount: (mm, close) => {
+        const list = $('#ev-list', mm), go = $('#go', mm);
+        function paint() { const n = nImg(); list.innerHTML = `<div class="row row-wrap" style="gap:8px;margin-bottom:10px"><span class="badge ${n >= 3 ? 'b-ok' : 'b-warn'}">${I('image')}${n} foto${n === 1 ? '' : 's'} (mín. 3)</span><span class="badge b-mute">${items.filter((x) => x.kind === 'video').length} video(s)</span><span class="badge b-mute">${items.filter((x) => x.kind === 'pdf').length} informe(s)</span></div>${items.length ? evTiles(items, { remove: true }) : ''}`; go.disabled = n < 3; }
+        async function add(files) {
+          for (const f of Array.from(files)) {
+            try {
+              if (/^image\//.test(f.type)) { if (nImg() >= 8) { U.toast('Máximo 8 fotos por hito', 'err'); continue; } items.push({ kind: 'img', name: f.name, size: KB(f.size), thumb: await fileThumb(f, 720, 0.6) }); }
+              else if (/^video\//.test(f.type) || /\.pdf$/i.test(f.name)) { if (items.filter((x) => x.kind !== 'img').length >= 5) { U.toast('Máximo 5 videos/informes', 'err'); continue; } items.push({ kind: /^video\//.test(f.type) ? 'video' : 'pdf', name: f.name, size: KB(f.size) }); }
+              else U.toast('«' + f.name + '» no es una imagen, video ni PDF', 'err');
+            } catch (e) { U.toast('No se pudo leer «' + f.name + '»', 'err'); }
+          }
+          paint();
+        }
+        $('#ev', mm).addEventListener('change', (e) => { add(e.target.files); e.target.value = ''; });
+        const dz = $('#drop', mm); ['dragover', 'dragenter'].forEach((ev) => dz.addEventListener(ev, (e) => { e.preventDefault(); dz.classList.add('over'); })); ['dragleave', 'drop'].forEach((ev) => dz.addEventListener(ev, () => dz.classList.remove('over'))); dz.addEventListener('drop', (e) => { e.preventDefault(); add(e.dataTransfer.files); });
+        list.addEventListener('click', (e) => { const b = e.target.closest('[data-ev-rm]'); if (b) { items.splice(+b.dataset.evRm, 1); paint(); } });
+        paint();
+        go.addEventListener('click', () => {
+          const prev = m.status; m.status = 'revision'; if (m.actualCum == null) m.actualCum = Math.max(0, m.plannedCum - p.drift);
+          db.evidence[evKey(p, m)] = items; m.photos = nImg(); m.videos = items.filter((x) => x.kind === 'video').length; m.report = items.some((x) => x.kind === 'pdf');
+          const t = $('#rep', mm).value.trim(); m.history = (m.history || []).concat([{ t: prev === 'observado' ? 'subsanado' : 'enviado', by: 'constructora', text: t || 'Evidencias del mes cargadas para revisión.' }]);
+          const ok = saveMonth(p, m); log('Envió el hito de ' + m.label + ' a interventoría', 'send', p.id); close();
+          U.toast(ok ? 'Hito enviado a interventoría' : 'Hito enviado, pero el navegador no tiene espacio para guardar todas las fotos', ok ? '' : 'err'); refresh();
+        });
+      } });
   }
+
   function certModal() {
     const u = state.user, p = proj();
     U.modal({ title: 'Certificado de protección', wide: true, body: `<div class="docview"><div class="wm">INN-LOCK</div><div style="text-align:center"><div style="width:62px;margin:0 auto 10px">${U.logoMark()}</div><h4 style="font-size:20px">CERTIFICADO DE PROTECCIÓN DE INVERSIÓN</h4></div><hr><p style="line-height:1.8">INN-LOCK certifica que <b>${u.name}</b> es titular de una inversión sobre el inmueble <b>${u.unit.code}</b> del proyecto <b>${p.name}</b> (${p.city}), con aportes de <b>${U.money(u.unit.paid)}</b>, los cuales permanecen en custodia y serán liberados a la constructora únicamente contra hitos de obra aprobados por interventoría independiente.</p><p style="margin-top:12px;color:#66779a">Expedido el ${U.fmtDate(D.DEMO_TODAY, true)} · Documento ilustrativo de la versión de demostración.</p><div class="seal">INN-LOCK<br>CERTIFICADO</div><div style="height:50px"></div></div>`, footer: `<button class="btn btn-ghost" data-close>Cerrar</button><button class="btn btn-primary" onclick="window.print()">${I('download')}Imprimir</button>` });
@@ -457,6 +515,7 @@
       case 'observe-month': observeModal(...mo(t.dataset.id, t.dataset.n)); break;
       case 'submit-month': submitModal(...mo(t.dataset.id, t.dataset.n)); break;
       case 'cert': certModal(); break;
+      case 'ev-view': evViewer(...mo(t.dataset.id, t.dataset.n), +t.dataset.i); break;
       case 'copy': navigator.clipboard && navigator.clipboard.writeText(t.dataset.v).then(() => U.toast('Hash copiado')).catch(() => {}); break;
       case 'invite': U.toast('Invitaciones disponibles al conectar el backend'); break;
     }
@@ -469,7 +528,10 @@
   /* ============ Arranque ============ */
   const sid = store.get('innlock.session', null);
   if (sid) { state.user = USERS.find((x) => x.id === sid) || null; }
-  const savedPid = store.get('innlock.pid', null); state.pid = state.user && state.user.projects.includes(savedPid) ? savedPid : state.user ? state.user.projects[0] : null;
+  state.pid = store.get('innlock.pid', null);
+  const W = window.Wizard.init({ state, db, persist, company, interv, compliance, docStatus, badge, DST, DICON, INTERVENTORES, PROJECTS, projById, log, setProject, refresh, saveMonth });
+  Object.assign(ROUTES, W.views);
+  if (state.user) { ensurePid(); store.set('innlock.pid', state.pid); }
   applyTheme(); route();
   if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
 })();
