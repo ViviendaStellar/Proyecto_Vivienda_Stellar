@@ -55,90 +55,113 @@ Tres cosas más que vale la pena saber:
 
 ## 3. Flujo del contrato, paso a paso
 
-Todas las funciones viven en `contracts/escrow/contracts/escrow/src/lib.rs`. Los estados de un hito son: `Pendiente → EnCurso → Reportado → (Observado → Reportado)* → Certificado/Desembolsado`.
+En resumen: la constructora **reporta** avance con fotos, el interventor lo **certifica** (o lo rechaza), y solo al certificar se **libera el dinero**. Cada función de abajo es un paso de ese ciclo, repetido una vez por cada hito del cronograma. Todas viven en `contracts/escrow/contracts/escrow/src/lib.rs`. Un hito recorre estos estados:
 
-### 3.1 `register_project` — registrar el proyecto
+<p align="center">
+<code>Pendiente</code> → <code>EnCurso</code> → <code>Reportado</code> → ( <code>Observado</code> → <code>Reportado</code> )* → <code>Certificado</code> / <code>Desembolsado</code>
+</p>
 
-| | |
-|---|---|
-| **Firma** | Constructora **+** interventor **+** administrador (las 3, en la misma invocación) |
-| **Rechaza si** | el `project_id` ya existe (`YaRegistrado`) · presupuesto ≤ 0 (`PresupuestoInvalido`) · menos de 6 o más de 60 hitos (`CantidadHitosInvalida`) · un hito supera el tope `max(1500, 20000/cantidad_hitos)` puntos base (`HitoExcedeTope`) · la primera fecha límite no es posterior a ahora (`FechaPasada`) · las fechas no son estrictamente crecientes (`FechasNoCrecientes`) · los porcentajes no suman exactamente 10000 bps / 100 % (`SumaPorcentajesInvalida`) |
-| **Resultado** | Crea el `Project` (`activo = true`, `congelado = false`), fija `compliance = true`, y crea cada `Milestone`: el hito 0 nace `EnCurso`, el resto `Pendiente`, cada uno con su `cumulative_bps` precalculado. El cronograma queda bloqueado — no se puede volver a registrar el mismo `project_id`. |
+> 🏗️ constructora · 🦺 interventor · ⚖️ administrador · 🌐 nadie (pública, sin firma)
 
-### 3.2 `deposit` — depósito de fondos
+<br>
 
-| | |
-|---|---|
-| **Firma** | **Administrador** únicamente. La compradora **no firma** esta operación — el comentario del código es explícito: *"la fiduciaria confirma que el dinero llegó"*. |
-| **Rechaza si** | el proyecto no existe (`ProyectoNoExiste`) · el monto es ≤ 0 (`MontoInvalido`) |
-| **Resultado** | Transfiere `amount` del token del proyecto desde el administrador hacia el contrato, suma el saldo en custodia (`EscrowBalance`) y el aporte acumulado de esa compra (`Contribution`, identificada por `purchase_id`). Funciona **aunque el proyecto esté congelado** (que entre dinero no es un riesgo). |
+### 🏗️🦺⚖️ 3.1 `register_project` — registrar el proyecto
 
-### 3.3 `report_milestone` — reporte de avance de un hito
+> **Firma:** constructora **+** interventor **+** administrador, los 3 en la misma invocación.
 
 | | |
 |---|---|
-| **Firma** | **Constructora** |
-| **Condiciones** | el hito debe estar `EnCurso` u `Observado` (`HitoNoEnCurso` en cualquier otro caso) · al menos 3 fotos (`MIN_FOTOS`, `FotosInsuficientes`) · el `evidence_hash` no puede ser todo ceros (`EvidenciaVacia`) |
-| **Resultado** | El hito pasa a `Reportado`, guarda el `Report` (hash de evidencia, cantidad de fotos, momento del reporte) y emite el evento `MilestoneReported`. Se puede reportar después de la fecha límite (queda constancia del atraso más adelante, al certificar). |
+| ❌ **Rechaza si** | el `project_id` ya existe (`YaRegistrado`) · presupuesto ≤ 0 (`PresupuestoInvalido`) · menos de 6 o más de 60 hitos (`CantidadHitosInvalida`) · un hito supera el tope `max(1500, 20000/cantidad_hitos)` puntos base (`HitoExcedeTope`) · la primera fecha límite no es posterior a ahora (`FechaPasada`) · las fechas no son estrictamente crecientes (`FechasNoCrecientes`) · los porcentajes no suman exactamente 10000 bps / 100 % (`SumaPorcentajesInvalida`) |
+| ✅ **Resultado** | Crea el `Project` (`activo = true`, `congelado = false`), fija `compliance = true`, y crea cada `Milestone`: el hito 0 nace `EnCurso`, el resto `Pendiente`, cada uno con su `cumulative_bps` precalculado. El cronograma queda bloqueado — no se puede volver a registrar el mismo `project_id`. |
 
-### 3.4 Observación o certificación por el interventor
+---
 
-**`observe_milestone`** (rechaza el reporte):
+### ⚖️ 3.2 `deposit` — depósito de fondos
 
-| | |
-|---|---|
-| **Firma** | **Interventor** |
-| **Condiciones** | el hito debe estar `Reportado` (`HitoNoReportado` si no) |
-| **Resultado** | El hito pasa a `Observado`; la constructora debe corregir y volver a reportar (`report_milestone` acepta hitos `Observado`). Emite `MilestoneObserved`. |
-
-**`certify_milestone`** (aprueba y libera fondos):
+> **Firma:** administrador únicamente. La compradora **no firma** esta operación — el comentario del código es explícito: *"la fiduciaria confirma que el dinero llegó"*.
 
 | | |
 |---|---|
-| **Firma** | **Interventor** |
-| **Condiciones** | proyecto no congelado (`ProyectoCongelado`) · `compliance = true` (`DocumentosVencidos`) · el hito debe estar `Reportado` (`HitoNoReportado`) · el `evidence_hash` que se pasa debe coincidir con el que reportó la constructora (`HashNoCoincide`) |
-| **Resultado** | Calcula el monto exacto del hito (reparto proporcional sin perder centavos, aritmética verificada) y paga `min(monto, saldo_en_custodia)`. Si alcanza para todo, el hito queda `Desembolsado`; si no, queda `Certificado` con un `pending` que se cobra después con `claim_pending`. Abre el siguiente hito (`Pendiente → EnCurso`) en el mismo momento, sin esperar a que el pago esté completo. Si era el último hito y quedó `Desembolsado`, cierra el proyecto (`activo = false`, evento `ProjectFinished`). Registra si fue tarde y cuántos segundos de atraso. Emite `MilestoneCertified` y `Disbursed`. |
+| ❌ **Rechaza si** | el proyecto no existe (`ProyectoNoExiste`) · el monto es ≤ 0 (`MontoInvalido`) |
+| ✅ **Resultado** | Transfiere `amount` del token del proyecto desde el administrador hacia el contrato, suma el saldo en custodia (`EscrowBalance`) y el aporte acumulado de esa compra (`Contribution`, identificada por `purchase_id`). Funciona **aunque el proyecto esté congelado** (que entre dinero no es un riesgo). |
 
-### 3.5 `claim_pending` — cobro de la constructora
+---
 
-| | |
-|---|---|
-| **Firma** | **Constructora** |
-| **Condiciones** | proyecto no congelado · `compliance = true` · el hito debe estar `Certificado` con `pending > 0` (`HitoSinPendiente` en cualquier otro caso) |
-| **Resultado** | Paga `min(pending, saldo_en_custodia)`. Si el pendiente llega a 0, el hito pasa a `Desembolsado` (y cierra el proyecto si era el último). Emite `Disbursed`. |
+### 🏗️ 3.3 `report_milestone` — reporte de avance de un hito
 
-### 3.6 Cambios de cronograma
-
-**`request_schedule_change`** (propone el cambio):
+> **Firma:** constructora.
 
 | | |
 |---|---|
-| **Firma** | **Constructora** |
-| **Condiciones** | solo una solicitud pendiente a la vez (`SolicitudPendiente`) · cada hito tocado debe existir y estar `Pendiente` (`HitoNoModificable`) · índices no repetidos (`IndiceRepetido`) · respeta el mismo tope por hito · las nuevas fechas son posteriores a ahora · el porcentaje total de los hitos tocados debe conservarse exactamente (`TotalNoConservado`) · el cronograma completo (con los cambios aplicados en memoria) debe seguir con fechas estrictamente crecientes (`FechasNoCrecientes`) |
-| **Resultado** | Guarda la `ScheduleChangeRequest` (ítems, motivo, nuevo hash de cronograma) y emite `ScheduleChangeRequested`. |
+| ❌ **Rechaza si** | el hito no está `EnCurso` ni `Observado` (`HitoNoEnCurso`) · menos de 3 fotos (`MIN_FOTOS`, `FotosInsuficientes`) · el `evidence_hash` es todo ceros (`EvidenciaVacia`) |
+| ✅ **Resultado** | El hito pasa a `Reportado`, guarda el `Report` (hash de evidencia, cantidad de fotos, momento del reporte) y emite `MilestoneReported`. Se puede reportar después de la fecha límite (queda constancia del atraso al certificar). |
 
-**`resolve_schedule_change`** (la resuelve):
+---
+
+### 🦺 3.4 Observación o certificación por el interventor
+
+**`observe_milestone`** — rechaza el reporte y lo devuelve a corregir:
 
 | | |
 |---|---|
-| **Firma** | **Interventor** |
-| **Condiciones** | debe existir una solicitud pendiente (`SinSolicitud`) |
-| **Resultado** | Si **aprueba**: aplica los cambios a cada hito, recalcula el `cumulative_bps` de todos los hitos (un cambio desplaza a los que siguen) y actualiza `hash_cronograma` del proyecto; emite `ScheduleChanged`. Si **rechaza**: no cambia nada, emite `ScheduleChangeRejected`. En ambos casos borra la solicitud pendiente. |
+| ❌ **Rechaza si** | el hito no está `Reportado` (`HitoNoReportado`) |
+| ✅ **Resultado** | El hito pasa a `Observado`; la constructora corrige y vuelve a reportar (`report_milestone` acepta hitos `Observado`). Emite `MilestoneObserved`. |
 
-### 3.7 Congelar, descongelar y marcar vencidos
+**`certify_milestone`** — aprueba el hito y libera fondos:
+
+| | |
+|---|---|
+| ❌ **Rechaza si** | proyecto congelado (`ProyectoCongelado`) · `compliance = false` (`DocumentosVencidos`) · el hito no está `Reportado` (`HitoNoReportado`) · el `evidence_hash` no coincide con el que reportó la constructora (`HashNoCoincide`) |
+| ✅ **Resultado** | Calcula el monto exacto del hito (reparto proporcional sin perder centavos, aritmética verificada) y paga `min(monto, saldo_en_custodia)`. Si alcanza para todo, el hito queda `Desembolsado`; si no, queda `Certificado` con un `pending` que se cobra después con `claim_pending`. Abre el hito siguiente en el mismo momento, sin esperar a que el pago esté completo. Si era el último y quedó `Desembolsado`, cierra el proyecto (`ProjectFinished`). Registra si fue tarde y cuántos segundos. Emite `MilestoneCertified` y `Disbursed`. |
+
+---
+
+### 🏗️ 3.5 `claim_pending` — cobro de la constructora
+
+> **Firma:** constructora.
+
+| | |
+|---|---|
+| ❌ **Rechaza si** | proyecto congelado · `compliance = false` · el hito no está `Certificado` con `pending > 0` (`HitoSinPendiente`) |
+| ✅ **Resultado** | Paga `min(pending, saldo_en_custodia)`. Si el pendiente llega a 0, el hito pasa a `Desembolsado` (y cierra el proyecto si era el último). Emite `Disbursed`. |
+
+---
+
+### 🏗️🦺 3.6 Cambios de cronograma
+
+**`request_schedule_change`** (🏗️ constructora propone):
+
+| | |
+|---|---|
+| ❌ **Rechaza si** | ya hay una solicitud pendiente (`SolicitudPendiente`) · un hito tocado no existe o no está `Pendiente` (`HitoNoModificable`) · índices repetidos (`IndiceRepetido`) · supera el tope por hito · nueva fecha ya pasada · el porcentaje total de los hitos tocados no se conserva (`TotalNoConservado`) · el cronograma resultante deja de ser estrictamente creciente (`FechasNoCrecientes`) |
+| ✅ **Resultado** | Guarda la `ScheduleChangeRequest` (ítems, motivo, nuevo hash de cronograma) y emite `ScheduleChangeRequested`. |
+
+**`resolve_schedule_change`** (🦺 interventor decide):
+
+| | |
+|---|---|
+| ❌ **Rechaza si** | no hay solicitud pendiente (`SinSolicitud`) |
+| ✅ **Resultado** | Si **aprueba**: aplica los cambios, recalcula el `cumulative_bps` de todos los hitos y actualiza `hash_cronograma`; emite `ScheduleChanged`. Si **rechaza**: no cambia nada, emite `ScheduleChangeRejected`. En ambos casos borra la solicitud pendiente. |
+
+---
+
+### ⚖️🌐 3.7 Congelar, descongelar y marcar vencidos
 
 | Función | Firma | Qué hace |
 |---|---|---|
-| `freeze` | Administrador | `congelado = true`. Bloquea `certify_milestone` y `claim_pending`; **no** bloquea `deposit`, `report_milestone` ni `observe_milestone`. Rechaza si ya estaba congelado (`YaCongelado`). Guarda el motivo y emite `ProjectFrozen`. |
-| `unfreeze` | Administrador | `congelado = false`. Rechaza si no estaba congelado (`NoCongelado`). Marca `unfrozen_at` en el historial y emite `ProjectUnfrozen`. |
-| `check_overdue` | **Nadie** (sin `require_auth`) | Cualquiera puede llamarla. Solo aplica a un hito `EnCurso`, `Reportado` u `Observado` (`HitoNoVencible`); exige que ya haya pasado la fecha límite (`AunNoVence`) y que no se haya marcado antes (`YaMarcadoVencido`). No cambia el estado del hito ni mueve dinero: solo deja un registro auditable (`Overdue`) y emite `MilestoneOverdue`. Es la función que usaría el servicio `services/keeper/` (pendiente de implementar). |
+| `freeze` | ⚖️ Administrador | `congelado = true`. Bloquea `certify_milestone` y `claim_pending`; **no** bloquea `deposit`, `report_milestone` ni `observe_milestone`. Rechaza si ya estaba congelado (`YaCongelado`). |
+| `unfreeze` | ⚖️ Administrador | `congelado = false`. Rechaza si no estaba congelado (`NoCongelado`). |
+| `check_overdue` | 🌐 Nadie (sin firma) | Cualquiera puede llamarla. Solo aplica a un hito abierto (`EnCurso`, `Reportado` u `Observado`); exige que ya venció y que no se haya marcado antes. No mueve dinero: solo deja un registro auditable (`Overdue`). Es la función que usaría `services/keeper/` (pendiente de implementar). |
 
-### 3.8 `set_compliance`
+---
+
+### ⚖️ 3.8 `set_compliance`
+
+> **Firma:** administrador.
 
 | | |
 |---|---|
-| **Firma** | **Administrador** |
-| **Resultado** | Fija si la constructora tiene su documentación legal vigente (`true`/`false`). Al registrar el proyecto empieza en `true`; si el administrador detecta un documento vencido, lo pasa a `false`, lo que bloquea de inmediato `certify_milestone` y `claim_pending` hasta que vuelva a `true`. |
+| ✅ **Resultado** | Fija si la constructora tiene su documentación legal vigente (`true`/`false`). Nace en `true`; si el administrador detecta un documento vencido, lo pasa a `false`, lo que bloquea de inmediato `certify_milestone` y `claim_pending` hasta que vuelva a `true`. |
 
 <br>
 
@@ -148,10 +171,10 @@ Nombres exactos tal como aparecen en el código (`lib.rs`, `register.js`, `test-
 
 | Rol en el contrato | Firma (`require_auth`) en | No firma |
 |---|---|---|
-| **`constructora`** | `register_project` (junto con interventor y administrador), `report_milestone`, `request_schedule_change`, `claim_pending` | `deposit`, `certify_milestone`, `observe_milestone`, `freeze`/`unfreeze`, `resolve_schedule_change`, `set_compliance` |
-| **`interventor`** | `register_project` (junto con constructora y administrador), `certify_milestone`, `observe_milestone`, `resolve_schedule_change` | `deposit`, `report_milestone`, `freeze`/`unfreeze`, `claim_pending`, `set_compliance` |
-| **`administrador`** | `register_project` (junto con constructora e interventor), `deposit`, `set_compliance`, `freeze`, `unfreeze` | `report_milestone`, `certify_milestone`, `observe_milestone`, `request_schedule_change`/`resolve_schedule_change`, `claim_pending` |
-| **`check_overdue`** | — sin firma, cualquiera puede llamarla | — |
+| 🏗️ **`constructora`** | `register_project` (junto con interventor y administrador), `report_milestone`, `request_schedule_change`, `claim_pending` | `deposit`, `certify_milestone`, `observe_milestone`, `freeze`/`unfreeze`, `resolve_schedule_change`, `set_compliance` |
+| 🦺 **`interventor`** | `register_project` (junto con constructora y administrador), `certify_milestone`, `observe_milestone`, `resolve_schedule_change` | `deposit`, `report_milestone`, `freeze`/`unfreeze`, `claim_pending`, `set_compliance` |
+| ⚖️ **`administrador`** | `register_project` (junto con constructora e interventor), `deposit`, `set_compliance`, `freeze`, `unfreeze` | `report_milestone`, `certify_milestone`, `observe_milestone`, `request_schedule_change`/`resolve_schedule_change`, `claim_pending` |
+| 🌐 **`check_overdue`** | — sin firma, cualquiera puede llamarla | — |
 
 El contrato **no tiene un rol `comprador`**: la persona que compra aporta dinero, pero quien firma `deposit` es el administrador/fiduciaria (confirma que el pago llegó). El comprador participa solo como lector (`get_balance`, `get_contribution`, etc.), nunca como firmante on-chain en este contrato.
 
@@ -175,9 +198,9 @@ Esto solo ocurre en **modo testnet** (`?chain=testnet` en la URL); en modo simul
 
 | Rol | Pantalla / ruta | Botón | Proveedor de firma |
 |---|---|---|---|
-| **Constructora** | "Registrar proyecto" (`#/nuevo`), paso 4 "Resumen y envío" | `Enviar a interventoría` (o `Reenviar a interventoría` si edita) | Freighter, o 🧪 el servicio de pruebas si la casilla está marcada |
-| **Interventor** | "Solicitudes" (`#/solicitudes`), tarjeta del proyecto → modal "Aprobar cronograma" | `Aprobar y firmar` | Freighter, o 🧪 el servicio de pruebas |
-| **Administrador** | "Solicitudes" (`#/solicitudes`), tarjeta del proyecto → modal "Validar y activar" | `Activar proyecto` | Freighter, o 🧪 el servicio de pruebas (firma y envía la transacción) |
+| 🏗️ **Constructora** | "Registrar proyecto" (`#/nuevo`), paso 4 "Resumen y envío" | `Enviar a interventoría` (o `Reenviar a interventoría` si edita) | Freighter, o 🧪 el servicio de pruebas si la casilla está marcada |
+| 🦺 **Interventor** | "Solicitudes" (`#/solicitudes`), tarjeta del proyecto → modal "Aprobar cronograma" | `Aprobar y firmar` | Freighter, o 🧪 el servicio de pruebas |
+| ⚖️ **Administrador** | "Solicitudes" (`#/solicitudes`), tarjeta del proyecto → modal "Validar y activar" | `Activar proyecto` | Freighter, o 🧪 el servicio de pruebas (firma y envía la transacción) |
 
 Cada una de esas pantallas, en modo testnet, muestra una casilla **"🧪 Firmar con el servicio de pruebas"** (`toggleFirmaPruebaHtml()` en `wizard.js`) que, si está marcada y `tools/test-signer` está corriendo, usa ese servicio en vez de abrir Freighter — útil para no cambiar de cuenta en la extensión en cada prueba manual.
 
@@ -192,15 +215,15 @@ Además:
 
 ### 6.1 Requisitos
 
-| Herramienta | Para qué | Confirmado en |
-|---|---|---|
-| **Git** | Clonar el repositorio | — |
-| **Rust + el target `wasm32v1-none`** (Rust 1.84 o más nuevo; 1.82/1.83 no compilan) | Compilar el contrato | `contracts/escrow/AGENTS.md` |
-| **Stellar CLI** (`stellar`) | Compilar, probar, desplegar el contrato y obtener llaves para `test-signer`/`e2e-testnet` | `contracts/escrow/AGENTS.md`, `tools/test-signer/lib/claves.js` |
-| **Python 3** | Servir el frontend estático | `frontend/README.md` |
-| **Node.js 18+** | Correr `tools/e2e-testnet` y `tools/test-signer` (usan `fetch` nativo) | `tools/e2e-testnet/package.json`, `tools/test-signer/package.json` |
-| **Freighter** (extensión de navegador), configurada en **Testnet** | Firmar de verdad desde la interfaz | `frontend/js/chain/freighter.js` |
-| Un navegador (Chrome, Edge o Firefox) | Abrir la página | `frontend/README.md` |
+| | Herramienta | Para qué | Confirmado en |
+|---|---|---|---|
+| 🔧 | **Git** | Clonar el repositorio | — |
+| 🦀 | **Rust + el target `wasm32v1-none`** (Rust 1.84 o más nuevo; 1.82/1.83 no compilan) | Compilar el contrato | `contracts/escrow/AGENTS.md` |
+| ⭐ | **Stellar CLI** (`stellar`) | Compilar, probar, desplegar el contrato y obtener llaves para `test-signer`/`e2e-testnet` | `contracts/escrow/AGENTS.md`, `tools/test-signer/lib/claves.js` |
+| 🐍 | **Python 3** | Servir el frontend estático | `frontend/README.md` |
+| 🟢 | **Node.js 18+** | Correr `tools/e2e-testnet` y `tools/test-signer` (usan `fetch` nativo) | `tools/e2e-testnet/package.json`, `tools/test-signer/package.json` |
+| 👛 | **Freighter** (extensión de navegador), configurada en **Testnet** | Firmar de verdad desde la interfaz | `frontend/js/chain/freighter.js` |
+| 🌐 | Un navegador (Chrome, Edge o Firefox) | Abrir la página | `frontend/README.md` |
 
 No hace falta instalar ninguna librería de JavaScript para el frontend: no usa CDN ni empaquetador (por confirmar si se agregan dependencias nuevas más adelante).
 
@@ -259,10 +282,12 @@ Escucha en `http://127.0.0.1:4181`. Exige que existan las identidades `inn-const
 
 ### 6.6 Probar el flujo de las 3 firmas en la interfaz
 
-1. Entra como **Constructora** (`constructora@inn-lock.co` / `demo1234`), ve a "Registrar proyecto", completa el asistente (o usa "Rellenar con datos de ejemplo") y en el paso 4 haz clic en "Enviar a interventoría".
-2. Entra como **Interventor** (`interventor@inn-lock.co`), ve a "Solicitudes" y haz clic en "Aprobar cronograma" → "Aprobar y firmar".
-3. Entra como **Administrador** (`admin@inn-lock.co`), ve a "Solicitudes" y haz clic en "Validar y activar" → "Activar proyecto". Este paso firma, envía la transacción real a testnet y la confirma.
-4. Verifica el resultado: la ficha del proyecto muestra "Activo en cadena" con un enlace a Stellar Expert; o corre el script de verificación (sección 6.8).
+| Paso | Rol | Qué hacer |
+|---|---|---|
+| 1️⃣ | 🏗️ **Constructora** (`constructora@inn-lock.co` / `demo1234`) | Ve a "Registrar proyecto", completa el asistente (o usa "Rellenar con datos de ejemplo") y en el paso 4 haz clic en **"Enviar a interventoría"**. |
+| 2️⃣ | 🦺 **Interventor** (`interventor@inn-lock.co`) | Ve a "Solicitudes" → **"Aprobar cronograma"** → **"Aprobar y firmar"**. |
+| 3️⃣ | ⚖️ **Administrador** (`admin@inn-lock.co`) | Ve a "Solicitudes" → **"Validar y activar"** → **"Activar proyecto"**. Este paso firma, envía la transacción real a testnet y la confirma. |
+| ✅ | — | La ficha del proyecto muestra **"Activo en cadena"** con un enlace a Stellar Expert. También puedes correr el script de verificación (sección 6.8). |
 
 ### 6.7 Alternativa automatizada (sin interfaz, sin Freighter)
 
@@ -287,16 +312,16 @@ node docs/semana3/verificar-registro.js estado.json
 
 De `contracts/escrow/deployments/testnet.json`:
 
-| Campo | Valor |
-|---|---|
-| Red | `testnet` |
-| Network passphrase | `Test SDF Network ; September 2015` |
-| ID del contrato escrow | `CBS57WMMUYBWCLFGEKOZYWPRAHHBFP432AJ57P5HFWK6DD7GRI5WJOBT` |
-| ID del contrato del token | `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` (SAC del activo nativo, `token_asset: "native"`) |
-| Hash del Wasm | `0e4c459b058e8f5359decb6b65cac210c6aee589eefc337f0c6068a3eba5a957` |
-| Desplegado | `2026-10-09T15:11:20Z`, con la cuenta `inn-admin` |
+| | Campo | Valor |
+|---|---|---|
+| 🌐 | Red | `testnet` |
+| 🔑 | Network passphrase | `Test SDF Network ; September 2015` |
+| 📜 | ID del contrato escrow | `CBS57WMMUYBWCLFGEKOZYWPRAHHBFP432AJ57P5HFWK6DD7GRI5WJOBT` |
+| 💰 | ID del contrato del token | `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` (SAC del activo nativo, `token_asset: "native"`) |
+| #️⃣ | Hash del Wasm | `0e4c459b058e8f5359decb6b65cac210c6aee589eefc337f0c6068a3eba5a957` |
+| 📅 | Desplegado | `2026-10-09T15:11:20Z`, con la cuenta `inn-admin` |
 
-Explorador: [stellar.expert/explorer/testnet/contract/CBS57WMMUYBWCLFGEKOZYWPRAHHBFP432AJ57P5HFWK6DD7GRI5WJOBT](https://stellar.expert/explorer/testnet/contract/CBS57WMMUYBWCLFGEKOZYWPRAHHBFP432AJ57P5HFWK6DD7GRI5WJOBT)
+🔗 **Explorador:** [stellar.expert/explorer/testnet/contract/CBS57WMMUYBWCLFGEKOZYWPRAHHBFP432AJ57P5HFWK6DD7GRI5WJOBT](https://stellar.expert/explorer/testnet/contract/CBS57WMMUYBWCLFGEKOZYWPRAHHBFP432AJ57P5HFWK6DD7GRI5WJOBT)
 
 <br>
 
@@ -353,14 +378,22 @@ Explorador: [stellar.expert/explorer/testnet/contract/CBS57WMMUYBWCLFGEKOZYWPRAH
 
 ## 9. Problemas conocidos y limitaciones
 
-- **Solo `register_project` está conectado a la cadena desde el frontend.** El resto de funciones del contrato (`deposit`, `report_milestone`, `certify_milestone`, `observe_milestone`, `freeze`/`unfreeze`, cambios de cronograma, `claim_pending`) existen y están probadas en el contrato (`src/test.rs`), pero en la interfaz de demostración todavía se simulan con datos locales (`js/data.js`), no con transacciones reales. Así lo dice el propio `frontend/README.md`: *"Pendiente para la fase blockchain: reemplazar... los registros simulados... por transacciones reales Stellar/Soroban"*.
-- **`services/keeper/` y `services/verifier/` no tienen código todavía** — son carpetas con su rol documentado (`services/README.md`, cada `services/<nombre>/README.md` dice explícitamente *"Pendiente de implementar (fuera de este paso)"*).
-- **Las 3 direcciones de prueba son compartidas**, no una por constructora/interventor real (`frontend/js/config.js`, `testRoles`); una dirección por usuario llega con una migración de base de datos futura (ver `docs/semana3/ARQUITECTURA_ONCHAIN.md`).
-- **El presupuesto no tiene una conversión real a stroops/moneda**: el frontend usa el número que captura el asistente directamente como unidades del token de prueba. El token de testnet (SAC del activo nativo) no representa dinero real.
-- **El guardado del registro confirmado en la base de datos real (Supabase)** está fuera de alcance de este paso — el flujo on-chain solo corre en modo demostración + testnet, nunca toca `ctx.LIVE`.
-- **No hay un tope duro documentado del protocolo** para `signatureExpirationLedger` (la ventana de vigencia de una firma); `register.js` usa 7 días para constructora/interventor y ~5 minutos para el administrador como una elección razonable, no como un límite garantizado por la red (ver `docs/semana3/ARQUITECTURA_ONCHAIN.md`).
+#### 🚧 Qué falta por conectar
+
+- **Solo `register_project` está conectado a la cadena desde el frontend.** El resto de funciones (`deposit`, `report_milestone`, `certify_milestone`, `observe_milestone`, `freeze`/`unfreeze`, cambios de cronograma, `claim_pending`) ya existen y están probadas en el contrato (`src/test.rs`), pero en la demo todavía se simulan con datos locales (`js/data.js`), no con transacciones reales. El propio `frontend/README.md` lo dice: *"Pendiente para la fase blockchain: reemplazar... los registros simulados... por transacciones reales Stellar/Soroban"*.
+- **`services/keeper/` y `services/verifier/` no tienen código todavía** — son carpetas con su rol documentado; cada `services/<nombre>/README.md` dice explícitamente *"Pendiente de implementar (fuera de este paso)"*.
+- **El guardado del registro confirmado en Supabase** (la base de datos real) no está hecho — el flujo on-chain solo corre en modo demostración + testnet, nunca toca el modo real (`ctx.LIVE`).
+
+#### 🧪 Limitaciones propias del piloto
+
+- **Las 3 direcciones de prueba son compartidas**, no una por constructora/interventor real (`frontend/js/config.js`, `testRoles`). Una dirección por usuario llegará con una migración de base de datos futura.
+- **El presupuesto no tiene una conversión real a stroops/moneda**: se usa el número que captura el asistente directamente como unidades del token de prueba, que no representa dinero real.
+- `tools/test-signer` y `tools/e2e-testnet` son **solo para testnet/localhost** — no deben usarse ni adaptarse para producción (manejan secretos solo en memoria, nunca los imprimen ni los escriben a disco).
+
+#### 📎 Datos técnicos confirmados (no son errores, pero vale la pena saberlos)
+
+- **No hay un tope duro documentado del protocolo** para `signatureExpirationLedger` (la ventana de vigencia de una firma); `register.js` usa 7 días para constructora/interventor y ~5 minutos para el administrador como una elección razonable, no como un límite garantizado por la red.
 - El techo real de TTL de almacenamiento en testnet se confirmó en 180 días (`max_entry_ttl` = 3.110.400 ledgers, protocolo 29); el contrato extiende hasta 120 días cada vez (`TTL_EXTENDER_LEDGERS` en `lib.rs`), dejando margen por debajo de ese techo.
-- `tools/test-signer` y `tools/e2e-testnet` están explícitamente marcados como herramientas de **solo testnet/localhost** — no deben usarse ni adaptarse para producción (manejan secretos solo en memoria, nunca los imprimen ni los escriben a disco).
 
 <br>
 
