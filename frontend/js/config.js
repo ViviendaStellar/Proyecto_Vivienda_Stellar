@@ -18,5 +18,15 @@ window.INNLOCK_CONFIG = {
   horizonUrl: 'https://horizon-testnet.stellar.org',
   escrowContractId: 'CBS57WMMUYBWCLFGEKOZYWPRAHHBFP432AJ57P5HFWK6DD7GRI5WJOBT',
   tokenContractId: 'CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC',
-  explorerUrl: 'https://stellar.expert/explorer/testnet'
+  explorerUrl: 'https://stellar.expert/explorer/testnet',
+
+  // Roles de prueba (Paso 6): direcciones públicas de las 3 identidades de
+  // testnet creadas con `stellar keys generate`. Cada una vive en Freighter
+  // en el navegador de quien prueba; aquí solo guardamos la dirección G...
+  // pública para que la app sepa a quién le toca firmar cada paso.
+  testRoles: {
+    constructora: 'GCYQDJ6UO3EHEL4GXLVMGTVTJEOV3OTWDJQPGSFTHPS2BCLRLT4OYRJS',
+    interventor: 'GAGEYZHS5LQPGQSK5YNQBCR6RKUJLSPO7ET4K76UJXZJUH6QZZ5PWEIW',
+    administrador: 'GBP3BRO5XE3EG7YVSE74OQVFCK4XCOOCWCGXHTFEBTBLZCQ576EVMI7M'
+  }
 };

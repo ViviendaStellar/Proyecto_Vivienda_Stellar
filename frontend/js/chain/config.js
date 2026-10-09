@@ -41,6 +41,7 @@
     escrowContractId: cfg.escrowContractId || '',
     tokenContractId: cfg.tokenContractId || '',
     explorerUrl: cfg.explorerUrl || 'https://stellar.expert/explorer/testnet',
+    testRoles: cfg.testRoles || { constructora: '', interventor: '', administrador: '' },
     // Resuelve cuando el SDK está disponible (de inmediato en modo simulado,
     // donde nunca se necesita); los demás módulos de chain/ lo esperan antes
     // de tocar window.StellarSdk o window.freighterApi.

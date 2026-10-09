@@ -1,7 +1,10 @@
 /* INN-LOCK · Conversión entre UUID (los que ya usa Supabase) y BytesN<16>
    (lo que espera contracts/escrow). Un UUID son 32 caracteres hex sin los
    guiones = 16 bytes exactos: no hay cálculo, solo texto -> bytes. */
-(function () {
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.ChainUuid = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
 
   function uuidToBytes(uuid) {
@@ -18,5 +21,5 @@
     return [hex.slice(0, 8), hex.slice(8, 12), hex.slice(12, 16), hex.slice(16, 20), hex.slice(20)].join('-');
   }
 
-  window.ChainUuid = { uuidToBytes, bytesToUuid };
-})();
+  return { uuidToBytes, bytesToUuid };
+});
