@@ -63,6 +63,18 @@ await ok('perfiles de demo con sus roles', async () => { const r = await rows(nu
 await ok('el libro de custodia cuadra con los desembolsos', async () => { const r = await one(null, `select (select -sum(amount) from escrow_ledger where kind = 'desembolso') a, (select sum(amount) from disbursements) b`); eq(+r.a, +r.b); });
 await ok('estado documental: c1 por vencer, c2 vencido (bloqueada), c3 vigente', async () => { const r = await rows(null, `select company_id, effective_status from v_company_documents where type_key = 'camara' order by company_id`); eq(r.map((x) => x.effective_status).join(), 'por_vencer,vencido,vigente'); eq((await one(null, `select company_blocked('${C2}') b`)).b, true); eq((await one(null, `select company_blocked('${C1}') b`)).b, false); });
 
+console.log('\nPrivilegios sobre funciones');
+await ok('el rol anónimo no puede ejecutar NINGUNA función de public', async () => {
+  const r = await rows(null, `select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and has_function_privilege('anon', p.oid, 'execute')`);
+  if (r.length) throw new Error('anon ejecuta: ' + r.map((x) => x.proname).join(', ')); });
+await ok('«authenticated» solo ejecuta la API pública y los ayudantes de las políticas (lista cerrada)', async () => {
+  const allowed = new Set(['auth_role', 'auth_company_id', 'auth_interventor_id', 'is_admin', 'is_project_member', 'is_project_buyer', 'can_view_project', 'has_pending_submission', 'effective_doc_status', 'company_compliance', 'company_blocked',
+    'validate_schedule', 'save_project', 'review_project', 'activate_project', 'submit_milestone', 'review_milestone', 'request_schedule_change', 'resolve_schedule_change', 'submit_document', 'review_document_submission',
+    'admin_set_role', 'create_purchase', 'mark_payment_paid', 'save_project_draft', 'can_view_company', 'safe_uuid', 'can_view_company_files', 'can_write_company_files', 'can_upload_evidence',
+    'admin_upsert_company', 'admin_upsert_interventor', 'admin_set_active']);
+  const r = await rows(null, `select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.prokind = 'f' and has_function_privilege('authenticated', p.oid, 'execute')`);
+  const extra = r.map((x) => x.proname).filter((n) => !allowed.has(n)); if (extra.length) throw new Error('authenticated puede ejecutar funciones no previstas: ' + [...new Set(extra)].join(', ')); });
+
 console.log('\nSeguridad (RLS y privilegios)');
 await denied('el rol anónimo no puede leer proyectos', 'anon', 'select * from projects', [], 'permission denied');
 await ok('comprador ve proyectos activos y solo su compra', async () => { eq((await rows(U.buyer, 'select 1 from projects')).length, 3); eq((await rows(U.buyer, 'select 1 from purchases')).length, 1); });

@@ -19,7 +19,7 @@
   // Mismos formatos que devuelve PostgREST: fechas como texto ISO y numéricos como números JSON
   const db = new PGlite({ extensions: { pgcrypto }, parsers: { 1082: (v) => v, 1114: (v) => v.replace(' ', 'T'), 1184: (v) => v.replace(' ', 'T').replace(/([+-]\d\d)$/, '$1:00'), 1700: (v) => Number(v), 20: (v) => Number(v) } });
   await db.exec(await get('../stubs.sql'));
-  const migs = ['20261008000001_tipos_y_tablas_base', '20261008000002_proyectos_hitos_y_finanzas', '20261008000003_funciones_triggers_y_vistas', '20261008000004_seguridad_rls', '20261008000005_almacenamiento', '20261008000006_catalogos', '20261008000007_admin_correo_y_organizaciones'];
+  const migs = ['20261008000001_tipos_y_tablas_base', '20261008000002_proyectos_hitos_y_finanzas', '20261008000003_funciones_triggers_y_vistas', '20261008000004_seguridad_rls', '20261008000005_almacenamiento', '20261008000006_catalogos', '20261008000007_admin_correo_y_organizaciones', '20261008000008_cerrar_funciones_a_anonimos'];
   for (const m of migs) { st('Migración ' + m); await db.exec(await get('../../migrations/' + m + '.sql')); }
   st('Cargando datos de ejemplo…'); await db.exec(await get('../../seed.sql'));
   window.__db = db;
