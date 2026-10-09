@@ -32,6 +32,25 @@ Cuando alguien compra vivienda sobre planos, entrega su cuota inicial a la const
 
 <br>
 
+### 📖 Palabras que vas a ver en este documento
+
+Este README mezcla explicación simple con detalle técnico exacto (nombres de funciones, códigos de error). Si no eres programador, estas son las palabras que más se repiten:
+
+| Palabra | Qué significa, en simple |
+|---|---|
+| **Contrato inteligente** | Un programa que vive en internet (en la red Stellar) y que nadie puede modificar ni apagar a su antojo. Guarda reglas fijas: "el dinero solo sale si pasa X e Y". |
+| **Firmar / firma digital** | El equivalente a poner tu huella o tu firma en un papel, pero con criptografía: prueba, sin dejar lugar a dudas, que fuiste tú (y no otra persona) quien aprobó algo. |
+| **Stellar / testnet** | Stellar es la red donde vive el contrato. "Testnet" es su versión de pruebas: el dinero que se mueve ahí no es real, sirve para probar que todo funciona antes de usar dinero de verdad. |
+| **Hito** | Una etapa de la obra (por ejemplo, "cimentación" o "estructura"). El presupuesto se reparte en hitos, y el dinero de cada uno se libera por separado. |
+| **Hash** | Una "huella digital" de un archivo o de un texto: si el archivo cambia aunque sea una letra, el hash cambia por completo. Sirve para comprobar que nadie alteró la evidencia o el cronograma después de firmarlo. |
+| **Freighter** | La "billetera" (una extensión del navegador) donde cada persona guarda su propia llave y aprueba sus propias firmas. La aplicación nunca ve esa llave. |
+| **Wallet / cuenta / dirección** | Tu identidad en la red Stellar — algo parecido a un número de cuenta bancaria, pero público y verificable por cualquiera. |
+| **bps / puntos base** | Una forma más precisa de escribir porcentajes: 1 % = 100 bps, y 100 % = 10000 bps. Se usa para repartir el presupuesto sin perder centavos en los redondeos. |
+| **TTL** | "Tiempo de vida" de un dato guardado en la red: cada tanto hay que "renovarlo" o la red lo archiva. El contrato lo hace solo, automáticamente. |
+| **WASM** | El formato en el que queda compilado el contrato para poder correr en la red — como un .exe, pero para blockchains. |
+
+<br>
+
 ## 2. Arquitectura
 
 La solución tiene tres capas, de arriba hacia abajo: la **interfaz** donde cada rol firma, la **lógica de apoyo** (todavía por construir) y el **contrato en Stellar**, que es la única fuente de verdad.
@@ -67,6 +86,8 @@ En resumen: la constructora **reporta** avance con fotos, el interventor lo **ce
 
 ### 🏗️🦺⚖️ 3.1 `register_project` — registrar el proyecto
 
+> 💬 **En simple:** así nace el proyecto en la red. Los 3 roles se ponen de acuerdo de una sola vez sobre el presupuesto y el cronograma, y a partir de ahí esas reglas quedan fijas — nadie las puede cambiar en secreto después.
+
 > **Firma:** constructora **+** interventor **+** administrador, los 3 en la misma invocación.
 
 | | |
@@ -77,6 +98,8 @@ En resumen: la constructora **reporta** avance con fotos, el interventor lo **ce
 ---
 
 ### ⚖️ 3.2 `deposit` — depósito de fondos
+
+> 💬 **En simple:** cuando el comprador paga, ese dinero no cae en la cuenta de la constructora ni en la del comprador — entra directo al contrato, a quedar "congelado" ahí hasta que se cumplan los hitos.
 
 > **Firma:** administrador únicamente. La compradora **no firma** esta operación — el comentario del código es explícito: *"la fiduciaria confirma que el dinero llegó"*.
 
@@ -89,6 +112,8 @@ En resumen: la constructora **reporta** avance con fotos, el interventor lo **ce
 
 ### 🏗️ 3.3 `report_milestone` — reporte de avance de un hito
 
+> 💬 **En simple:** la constructora dice "ya terminé esta etapa" y deja fotos como prueba. Es como subir la evidencia a un buzón que nadie (ni ella misma) puede borrar después.
+
 > **Firma:** constructora.
 
 | | |
@@ -99,6 +124,8 @@ En resumen: la constructora **reporta** avance con fotos, el interventor lo **ce
 ---
 
 ### 🦺 3.4 Observación o certificación por el interventor
+
+> 💬 **En simple:** el interventor revisa lo que reportó la constructora y decide: "esto no está bien, corrígelo" (observar) o "esto sí avanzó de verdad, suelten el pago" (certificar). Es el filtro independiente que evita que el dinero salga sin que la obra realmente avance.
 
 **`observe_milestone`** — rechaza el reporte y lo devuelve a corregir:
 
@@ -118,6 +145,8 @@ En resumen: la constructora **reporta** avance con fotos, el interventor lo **ce
 
 ### 🏗️ 3.5 `claim_pending` — cobro de la constructora
 
+> 💬 **En simple:** si cuando se certificó un hito todavía no había suficiente dinero depositado para pagarlo completo, queda un saldo pendiente. En cuanto llega más dinero, la constructora puede venir a cobrar ese resto.
+
 > **Firma:** constructora.
 
 | | |
@@ -128,6 +157,8 @@ En resumen: la constructora **reporta** avance con fotos, el interventor lo **ce
 ---
 
 ### 🏗️🦺 3.6 Cambios de cronograma
+
+> 💬 **En simple:** a veces hay que mover una fecha o ajustar un porcentaje del cronograma original. La constructora propone el cambio y el interventor lo aprueba o lo rechaza — nunca lo decide la constructora sola, y el total del presupuesto nunca puede cambiar por esta vía.
 
 **`request_schedule_change`** (🏗️ constructora propone):
 
@@ -147,6 +178,8 @@ En resumen: la constructora **reporta** avance con fotos, el interventor lo **ce
 
 ### ⚖️🌐 3.7 Congelar, descongelar y marcar vencidos
 
+> 💬 **En simple:** "congelar" es un botón de pánico que tiene el administrador — si algo anda mal con el proyecto, puede pausar los pagos sin detener el resto (los reportes y depósitos siguen funcionando). `check_overdue` es distinto: es una alerta pública de "esta etapa ya se atrasó", que cualquiera puede activar, sin mover dinero.
+
 | Función | Firma | Qué hace |
 |---|---|---|
 | `freeze` | ⚖️ Administrador | `congelado = true`. Bloquea `certify_milestone` y `claim_pending`; **no** bloquea `deposit`, `report_milestone` ni `observe_milestone`. Rechaza si ya estaba congelado (`YaCongelado`). |
@@ -156,6 +189,8 @@ En resumen: la constructora **reporta** avance con fotos, el interventor lo **ce
 ---
 
 ### ⚖️ 3.8 `set_compliance`
+
+> 💬 **En simple:** el administrador marca si la constructora tiene sus papeles legales al día. Si no los tiene, el contrato bloquea automáticamente los pagos hasta que se pongan al día — sin que nadie tenga que acordarse de revisarlo a mano cada vez.
 
 > **Firma:** administrador.
 
