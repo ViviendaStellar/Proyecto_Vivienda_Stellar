@@ -90,10 +90,16 @@ En resumen: la constructora **reporta** avance con fotos, el interventor lo **ce
 
 > **Firma:** constructora **+** interventor **+** administrador, los 3 en la misma invocación.
 
-| | |
-|---|---|
-| ❌ **Rechaza si** | el `project_id` ya existe (`YaRegistrado`) · presupuesto ≤ 0 (`PresupuestoInvalido`) · menos de 6 o más de 60 hitos (`CantidadHitosInvalida`) · un hito supera el tope `max(1500, 20000/cantidad_hitos)` puntos base (`HitoExcedeTope`) · la primera fecha límite no es posterior a ahora (`FechaPasada`) · las fechas no son estrictamente crecientes (`FechasNoCrecientes`) · los porcentajes no suman exactamente 10000 bps / 100 % (`SumaPorcentajesInvalida`) |
-| ✅ **Resultado** | Crea el `Project` (`activo = true`, `congelado = false`), fija `compliance = true`, y crea cada `Milestone`: el hito 0 nace `EnCurso`, el resto `Pendiente`, cada uno con su `cumulative_bps` precalculado. El cronograma queda bloqueado — no se puede volver a registrar el mismo `project_id`. |
+**❌ No se deja registrar si:**
+- Ese proyecto ya se había registrado antes — no se puede duplicar (`YaRegistrado`)
+- El presupuesto es cero o negativo (`PresupuestoInvalido`)
+- El cronograma tiene menos de 6 hitos o más de 60 (`CantidadHitosInvalida`)
+- Un solo hito concentra demasiado del presupuesto — entre más hitos tenga el cronograma, más bajo es el tope por hito (`HitoExcedeTope`)
+- La fecha límite del primer hito ya pasó, o no es una fecha futura (`FechaPasada`)
+- Las fechas de los hitos no van en orden, una tras otra (`FechasNoCrecientes`)
+- Los porcentajes de todos los hitos, sumados, no dan exactamente 100 % (`SumaPorcentajesInvalida`)
+
+**✅ Si todo está bien:** se crea el proyecto (activo, sin congelar) y cada hito de su cronograma — el primero queda listo para empezar, los demás en espera. A partir de aquí, el cronograma queda bloqueado: ese mismo proyecto no se puede volver a registrar.
 
 ---
 
@@ -103,10 +109,11 @@ En resumen: la constructora **reporta** avance con fotos, el interventor lo **ce
 
 > **Firma:** administrador únicamente. La compradora **no firma** esta operación — el comentario del código es explícito: *"la fiduciaria confirma que el dinero llegó"*.
 
-| | |
-|---|---|
-| ❌ **Rechaza si** | el proyecto no existe (`ProyectoNoExiste`) · el monto es ≤ 0 (`MontoInvalido`) |
-| ✅ **Resultado** | Transfiere `amount` del token del proyecto desde el administrador hacia el contrato, suma el saldo en custodia (`EscrowBalance`) y el aporte acumulado de esa compra (`Contribution`, identificada por `purchase_id`). Funciona **aunque el proyecto esté congelado** (que entre dinero no es un riesgo). |
+**❌ No se deja depositar si:**
+- El proyecto no existe (`ProyectoNoExiste`)
+- El monto es cero o negativo (`MontoInvalido`)
+
+**✅ Si todo está bien:** el dinero pasa de la cuenta del administrador al contrato, se suma al saldo retenido del proyecto y queda registrado cuánto lleva aportado esa compra puntual. Funciona **aunque el proyecto esté congelado** — que entre dinero nunca es un riesgo.
 
 ---
 
@@ -116,10 +123,12 @@ En resumen: la constructora **reporta** avance con fotos, el interventor lo **ce
 
 > **Firma:** constructora.
 
-| | |
-|---|---|
-| ❌ **Rechaza si** | el hito no está `EnCurso` ni `Observado` (`HitoNoEnCurso`) · menos de 3 fotos (`MIN_FOTOS`, `FotosInsuficientes`) · el `evidence_hash` es todo ceros (`EvidenciaVacia`) |
-| ✅ **Resultado** | El hito pasa a `Reportado`, guarda el `Report` (hash de evidencia, cantidad de fotos, momento del reporte) y emite `MilestoneReported`. Se puede reportar después de la fecha límite (queda constancia del atraso al certificar). |
+**❌ No se deja reportar si:**
+- El hito no está en curso ni fue observado antes — por ejemplo, ya está certificado, o todavía no le toca empezar (`HitoNoEnCurso`)
+- Hay menos de 3 fotos de evidencia (`FotosInsuficientes`)
+- La huella (hash) de la evidencia viene vacía (`EvidenciaVacia`)
+
+**✅ Si todo está bien:** el hito pasa a "reportado" y queda guardada la evidencia (su huella, cuántas fotos y cuándo se reportó). Se puede reportar después de la fecha límite — el atraso queda registrado más adelante, cuando se certifique.
 
 ---
 
@@ -129,17 +138,19 @@ En resumen: la constructora **reporta** avance con fotos, el interventor lo **ce
 
 **`observe_milestone`** — rechaza el reporte y lo devuelve a corregir:
 
-| | |
-|---|---|
-| ❌ **Rechaza si** | el hito no está `Reportado` (`HitoNoReportado`) |
-| ✅ **Resultado** | El hito pasa a `Observado`; la constructora corrige y vuelve a reportar (`report_milestone` acepta hitos `Observado`). Emite `MilestoneObserved`. |
+**❌ No se deja observar si:** el hito todavía no fue reportado (`HitoNoReportado`)
+
+**✅ Si todo está bien:** el hito pasa a "observado" y queda esperando a que la constructora corrija y reporte de nuevo.
 
 **`certify_milestone`** — aprueba el hito y libera fondos:
 
-| | |
-|---|---|
-| ❌ **Rechaza si** | proyecto congelado (`ProyectoCongelado`) · `compliance = false` (`DocumentosVencidos`) · el hito no está `Reportado` (`HitoNoReportado`) · el `evidence_hash` no coincide con el que reportó la constructora (`HashNoCoincide`) |
-| ✅ **Resultado** | Calcula el monto exacto del hito (reparto proporcional sin perder centavos, aritmética verificada) y paga `min(monto, saldo_en_custodia)`. Si alcanza para todo, el hito queda `Desembolsado`; si no, queda `Certificado` con un `pending` que se cobra después con `claim_pending`. Abre el hito siguiente en el mismo momento, sin esperar a que el pago esté completo. Si era el último y quedó `Desembolsado`, cierra el proyecto (`ProjectFinished`). Registra si fue tarde y cuántos segundos. Emite `MilestoneCertified` y `Disbursed`. |
+**❌ No se deja certificar si:**
+- El proyecto está congelado (`ProyectoCongelado`)
+- La constructora tiene documentos legales vencidos (`DocumentosVencidos`)
+- El hito no está reportado (`HitoNoReportado`)
+- La evidencia que se está certificando no es la misma que reportó la constructora — alguien intentó cambiarla (`HashNoCoincide`)
+
+**✅ Si todo está bien:** se calcula lo que vale ese hito y se paga lo que alcance del dinero que ya está depositado. Si alcanza para todo, el hito queda pagado del todo; si no, queda "certificado" con un saldo pendiente que se cobra más adelante con `claim_pending`. El hito siguiente se abre en ese mismo momento, sin esperar a que el pago quede completo. Si era el último hito del proyecto, el proyecto se cierra ahí mismo.
 
 ---
 
@@ -149,10 +160,12 @@ En resumen: la constructora **reporta** avance con fotos, el interventor lo **ce
 
 > **Firma:** constructora.
 
-| | |
-|---|---|
-| ❌ **Rechaza si** | proyecto congelado · `compliance = false` · el hito no está `Certificado` con `pending > 0` (`HitoSinPendiente`) |
-| ✅ **Resultado** | Paga `min(pending, saldo_en_custodia)`. Si el pendiente llega a 0, el hito pasa a `Desembolsado` (y cierra el proyecto si era el último). Emite `Disbursed`. |
+**❌ No se deja cobrar si:**
+- El proyecto está congelado
+- La constructora tiene documentos legales vencidos
+- Ese hito no tiene ningún saldo pendiente por cobrar (`HitoSinPendiente`)
+
+**✅ Si todo está bien:** se paga lo que alcance del saldo pendiente. Si con eso queda todo pagado, el hito pasa a "pagado por completo" (y cierra el proyecto si era el último hito).
 
 ---
 
@@ -162,17 +175,22 @@ En resumen: la constructora **reporta** avance con fotos, el interventor lo **ce
 
 **`request_schedule_change`** (🏗️ constructora propone):
 
-| | |
-|---|---|
-| ❌ **Rechaza si** | ya hay una solicitud pendiente (`SolicitudPendiente`) · un hito tocado no existe o no está `Pendiente` (`HitoNoModificable`) · índices repetidos (`IndiceRepetido`) · supera el tope por hito · nueva fecha ya pasada · el porcentaje total de los hitos tocados no se conserva (`TotalNoConservado`) · el cronograma resultante deja de ser estrictamente creciente (`FechasNoCrecientes`) |
-| ✅ **Resultado** | Guarda la `ScheduleChangeRequest` (ítems, motivo, nuevo hash de cronograma) y emite `ScheduleChangeRequested`. |
+**❌ No se deja proponer el cambio si:**
+- Ya hay otra solicitud de cambio esperando respuesta (`SolicitudPendiente`)
+- Se quiere tocar un hito que ya empezó, o que no existe — solo se pueden mover hitos que todavía no arrancan (`HitoNoModificable`)
+- Se repite el mismo hito dos veces en la misma solicitud (`IndiceRepetido`)
+- El nuevo porcentaje de algún hito supera el tope permitido
+- La nueva fecha propuesta ya pasó
+- Sumando los porcentajes de los hitos que se tocan, el total no da lo mismo que antes — no se le puede "quitar" presupuesto a un hito sin dárselo a otro (`TotalNoConservado`)
+- El cronograma, ya con los cambios aplicados, deja de tener las fechas en orden (`FechasNoCrecientes`)
+
+**✅ Si todo está bien:** la propuesta queda guardada, esperando que el interventor la apruebe o la rechace.
 
 **`resolve_schedule_change`** (🦺 interventor decide):
 
-| | |
-|---|---|
-| ❌ **Rechaza si** | no hay solicitud pendiente (`SinSolicitud`) |
-| ✅ **Resultado** | Si **aprueba**: aplica los cambios, recalcula el `cumulative_bps` de todos los hitos y actualiza `hash_cronograma`; emite `ScheduleChanged`. Si **rechaza**: no cambia nada, emite `ScheduleChangeRejected`. En ambos casos borra la solicitud pendiente. |
+**❌ No se deja resolver si:** no hay ninguna solicitud esperando (`SinSolicitud`)
+
+**✅ Si todo está bien:** si el interventor **aprueba**, los cambios se aplican de verdad al cronograma. Si **rechaza**, no cambia nada. En los dos casos, la solicitud se cierra — no queda pendiente para siempre.
 
 ---
 
@@ -194,9 +212,7 @@ En resumen: la constructora **reporta** avance con fotos, el interventor lo **ce
 
 > **Firma:** administrador.
 
-| | |
-|---|---|
-| ✅ **Resultado** | Fija si la constructora tiene su documentación legal vigente (`true`/`false`). Nace en `true`; si el administrador detecta un documento vencido, lo pasa a `false`, lo que bloquea de inmediato `certify_milestone` y `claim_pending` hasta que vuelva a `true`. |
+**✅ Qué hace:** marca "sí" o "no" a si la constructora tiene sus documentos al día. Empieza en "sí"; si el administrador detecta algo vencido, lo cambia a "no" — y eso bloquea de inmediato las certificaciones y los cobros, hasta que vuelva a estar en "sí".
 
 <br>
 
