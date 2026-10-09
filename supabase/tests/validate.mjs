@@ -11,25 +11,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const db = new PGlite({ extensions: { pgcrypto } });
 
 // ---------- Simulación mínima de lo que aporta Supabase ----------
-await db.exec(`
-  create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
-  grant anon, authenticated, service_role to postgres;
-  create schema auth; create schema extensions; create schema storage;
-  grant usage on schema auth, extensions, storage to anon, authenticated, service_role;
-  create table auth.users (id uuid primary key default gen_random_uuid(), instance_id uuid, aud text, role text, email text unique,
-    encrypted_password text, email_confirmed_at timestamptz, raw_app_meta_data jsonb, raw_user_meta_data jsonb, created_at timestamptz, updated_at timestamptz,
-    confirmation_token text, email_change text, email_change_token_new text, recovery_token text);
-  create table auth.identities (id uuid primary key, user_id uuid references auth.users(id) on delete cascade, provider_id text, identity_data jsonb, provider text,
-    last_sign_in_at timestamptz, created_at timestamptz, updated_at timestamptz);
-  create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
-  create table storage.buckets (id text primary key, name text, public boolean, file_size_limit bigint, allowed_mime_types text[]);
-  create table storage.objects (id uuid primary key default gen_random_uuid(), bucket_id text references storage.buckets(id), name text, owner uuid);
-  alter table storage.objects enable row level security;
-  grant select, insert, update, delete on storage.objects to anon, authenticated;
-  create function storage.foldername(name text) returns text[] language plpgsql as $$
-    declare _parts text[]; begin select string_to_array(name, '/') into _parts; return _parts[1:array_length(_parts, 1) - 1]; end $$;
-  create extension pgcrypto with schema extensions;
-`);
+await db.exec(readFileSync(join(root, 'tests', 'stubs.sql'), 'utf8'));
 
 // ---------- Migraciones y semilla ----------
 const files = readdirSync(join(root, 'migrations')).filter((f) => f.endsWith('.sql')).sort();
@@ -204,6 +186,24 @@ await ok('al confirmar un pago, ingresa al libro de la custodia', async () => {
   eq(+(await one(U.admin, `select contributed from v_project_funds where project_id = $1`, [NEW])).contributed, +pay.amount);
   eq(+(await one(U.admin, `select escrow_balance from v_project_funds where project_id = $1`, [NEW])).escrow_balance, +pay.amount - +(await one(null, `select sum(amount) d from disbursements where project_id = $1`, [NEW])).d); });
 await ok('v_purchases calcula cuotas pagadas y próxima cuota', async () => { const r = await one(U.buyer, `select installments_total, installments_paid, paid_total from v_purchases where id = 'f0000000-0000-4000-8000-000000000001'`); eq(+r.installments_total, 24); eq(+r.installments_paid, 17); });
+
+console.log('\nGestión de organizaciones y usuarios');
+await ok('los perfiles guardan el correo (también los nuevos)', async () => { eq((await one(null, `select email from profiles where id = '${U.admin}'`)).email, 'admin@inn-lock.co'); eq((await one(null, `select email from profiles where id = 'e0000000-0000-4000-8000-0000000000ff'`)).email, 'intruso@x.co'); });
+await ok('el administrador ve a todos los usuarios; los demás, solo su perfil', async () => { eq((await rows(U.admin, 'select 1 from profiles')).length >= 5, true); eq((await rows(U.buyer, 'select 1 from profiles')).length, 1); });
+await denied('un comprador no puede registrar constructoras', U.buyer, `select admin_upsert_company(null, '{"name":"X","nit":"1"}'::jsonb)`, [], 'administrador');
+await ok('el administrador registra y actualiza una constructora y un interventor', async () => {
+  const c = (await one(U.admin, `select admin_upsert_company(null, '{"name":"Nueva Constructora S.A.S.","short_name":"Nueva","nit":"900.111.222-3","city":"Cali","email":"a@b.co"}'::jsonb) id`)).id;
+  eq((await one(null, `select short_name from companies where id = $1`, [c])).short_name, 'Nueva');
+  await as(U.admin, `select admin_upsert_company($1, '{"name":"Nueva Constructora S.A.S.","short_name":"Nueva 2","nit":"900.111.222-3"}'::jsonb)`, [c]);
+  eq((await one(null, `select short_name from companies where id = $1`, [c])).short_name, 'Nueva 2');
+  const i = (await one(U.admin, `select admin_upsert_interventor(null, '{"name":"Ing. Nuevo","firm":"Firma Nueva","license":"Mat. 1"}'::jsonb) id`)).id;
+  eq((await rows(null, `select 1 from interventors where id = $1`, [i])).length, 1); });
+await denied('el NIT debe ser único', U.admin, `select admin_upsert_company(null, '{"name":"Otra","nit":"900.111.222-3"}'::jsonb)`, [], 'duplicate|unique|único');
+await ok('un usuario desactivado pierde su rol y su acceso a datos propios', async () => {
+  await as(U.admin, `select admin_set_active('e0000000-0000-4000-8000-0000000000ff', false)`);
+  eq((await one(null, `select active from profiles where id = 'e0000000-0000-4000-8000-0000000000ff'`)).active, false);
+  eq((await one('e0000000-0000-4000-8000-0000000000ff', `select auth_role() r`)).r, null); });
+await denied('nadie puede desactivarse a sí mismo', U.admin, `select admin_set_active('${U.admin}', false)`, [], 'ti mismo');
 
 console.log('\nAlmacenamiento (políticas de Storage)');
 await ok('la constructora sube la foto en la carpeta de su empresa', async () => { await as(U.builder, `insert into storage.objects (bucket_id, name) values ('project-photos', '${C1}/portada.jpg')`); });

@@ -8,6 +8,10 @@ python -m http.server 4180
 ```
 y abrir http://localhost:4180 (también funciona abriendo `index.html` directamente, salvo el modo offline).
 
+## Modos de uso
+- **Real** (por defecto): inicio de sesión con Supabase; todo se guarda en la base (`supabase/`). Ver `supabase/README.md`.
+- **Demostración** (`?demo=1` o el enlace en el inicio de sesión): datos de ejemplo en el navegador, sin base de datos.
+
 ## Perfiles de demostración (contraseña `demo1234`)
 | Perfil | Correo |
 |---|---|

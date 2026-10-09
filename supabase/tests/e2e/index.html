@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>INN-LOCK · Pruebas de integración (base simulada)</title>
+<link rel="stylesheet" href="../../../css/styles.css">
+</head>
+<body>
+<!-- Carga la página real en modo «en vivo» contra una base PGlite con las migraciones y el seed reales.
+     Abrir con un servidor en la raíz del repo:  http://localhost:4180/supabase/tests/e2e/ -->
+<div id="root"><div class="boot"><p id="status">Preparando la base de datos simulada…</p></div></div>
+<script type="module">
+  import { PGlite } from '../node_modules/@electric-sql/pglite/dist/index.js';
+  import { pgcrypto } from '../node_modules/@electric-sql/pglite/dist/contrib/pgcrypto.js';
+  import { createMockClient } from './mock-supabase.js';
+  const st = (t) => { document.getElementById('status').textContent = t; };
+  const get = async (u) => { const r = await fetch(u, { cache: 'no-store' }); if (!r.ok) throw new Error(u + ' ' + r.status); return r.text(); };
+  // Mismos formatos que devuelve PostgREST: fechas como texto ISO y numéricos como números JSON
+  const db = new PGlite({ extensions: { pgcrypto }, parsers: { 1082: (v) => v, 1114: (v) => v.replace(' ', 'T'), 1184: (v) => v.replace(' ', 'T').replace(/([+-]\d\d)$/, '$1:00'), 1700: (v) => Number(v), 20: (v) => Number(v) } });
+  await db.exec(await get('../stubs.sql'));
+  const migs = ['20261008000001_tipos_y_tablas_base', '20261008000002_proyectos_hitos_y_finanzas', '20261008000003_funciones_triggers_y_vistas', '20261008000004_seguridad_rls', '20261008000005_almacenamiento', '20261008000006_catalogos', '20261008000007_admin_correo_y_organizaciones'];
+  for (const m of migs) { st('Migración ' + m); await db.exec(await get('../../migrations/' + m + '.sql')); }
+  st('Cargando datos de ejemplo…'); await db.exec(await get('../../seed.sql'));
+  window.__db = db;
+  window.INNLOCK_CONFIG = { supabaseUrl: 'mock', supabaseKey: 'mock', createClient: () => createMockClient(db) };
+  st('Iniciando la aplicación…');
+  for (const s of ['icons', 'data', 'ui', 'schedule', 'live', 'wizard', 'admin', 'app']) {
+    await new Promise((res, rej) => { const el = document.createElement('script'); el.src = '../../../js/' + s + '.js'; el.onload = res; el.onerror = () => rej(new Error('No cargó ' + s)); document.body.appendChild(el); });
+  }
+  await new Promise((res) => { const el = document.createElement('script'); el.src = './scenario.js'; el.onload = res; document.body.appendChild(el); });
+  window.__ready = true;
+</script>
+</body>
+</html>

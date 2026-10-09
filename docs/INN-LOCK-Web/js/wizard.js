@@ -16,7 +16,7 @@
   const AMEN = ['Piscina', 'Gimnasio', 'Salón social', 'Coworking', 'Zona BBQ', 'Parque infantil', 'Pet park', 'Bicicletero', 'Seguridad 24/7', 'Terraza panorámica', 'Cancha múltiple', 'Spa y sauna', 'Lobby con concierge', 'Parqueadero de visitantes'];
   const STEPS = [['Datos del proyecto', 'home'], ['Documentación', 'file-check-2'], ['Presupuesto y cronograma', 'calendar'], ['Resumen y envío', 'send']];
   const TPL_X = 'assets/plantilla/INN-LOCK_Plantilla_Cronograma.xlsx', TPL_C = 'assets/plantilla/INN-LOCK_Plantilla_Cronograma.csv';
-  let ctx = null, F = null, saveT = null;
+  let ctx = null, F = null, saveT = null, FILES = {};
 
   /* ============ construcción de proyecto ============ */
   const hashId = (s) => { let h = 7; for (const ch of String(s)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h % 997 + 3; };
@@ -51,7 +51,7 @@
 
   /* ============ formulario ============ */
   const blank = (u) => ({ company: u.company, name: '', tagline: '', city: '', zone: '', address: '', description: '', towers: 1, floors: '', units: '', parking: '', strata: 5, amenities: [],
-    typologies: [{ name: '', area: '', beds: 2, baths: 2, parking: 1, price: '' }], photo: null, interventor: 'i1', lic: { number: '', issuer: '', expires: '' }, fidu: { issuer: '', number: '' },
+    typologies: [{ name: '', area: '', beds: 2, baths: 2, parking: 1, price: '' }], photo: null, interventor: ctx && ctx.INTERVENTORES.length ? ctx.INTERVENTORES[0].id : 'i1', lic: { number: '', issuer: '', expires: '' }, fidu: { issuer: '', number: '' },
     planos: [{ key: 'arq', name: 'Planos arquitectónicos', n: '', v: '1.0', file: '', size: '' }, { key: 'est', name: 'Planos estructurales', n: '', v: '1.0', file: '', size: '' }, { key: 'hid', name: 'Planos hidrosanitarios', n: '', v: '1.0', file: '', size: '' }, { key: 'ele', name: 'Planos eléctricos y de datos', n: '', v: '1.0', file: '', size: '' }],
     start: '', budget: '', rows: [], step: 1, confirm: false, editId: null });
   const sample = (u) => Object.assign(blank(u), { name: 'Parque Sur Residencial', tagline: 'Vivienda de diseño junto al parque de Envigado', city: 'Medellín', zone: 'Envigado', address: 'Cl. 37 Sur # 27 - 85',
@@ -65,7 +65,7 @@
   function set(path, v) { const k = path.split('.'), last = k.pop(), o = k.reduce((x, y) => x[y], F); o[last] = v; }
   const saveDraft = () => { clearTimeout(saveT); saveT = setTimeout(() => { if (!F || F.editId) return; ctx.db.drafts[ctx.state.user.id] = F; ctx.persist(); }, 350); };
   function load() {
-    const u = ctx.state.user;
+    const u = ctx.state.user; ctx.db.drafts = ctx.db.drafts || {};
     if (!F || F.company !== u.company) F = ctx.db.drafts[u.id] ? JSON.parse(JSON.stringify(ctx.db.drafts[u.id])) : blank(u);
     if (F.rows == null) F.rows = [];
   }
@@ -287,6 +287,7 @@
   function submit() {
     for (let n = 1; n <= 3; n++) { const e = checkStep(n); if (e.length) { F.step = n; render(e); return; } }
     if (!F.confirm) { render(['Debes aceptar la declaración para enviar el proyecto.']); return; }
+    if (ctx.LIVE) { submitLive(); return; }
     const u = ctx.state.user, now = new Date().toISOString();
     if (F.editId) {
       const rec = ctx.db.projects[F.editId], reg = rec.reg; reg.stage = 'interventor'; reg.history.push({ t: 'reenviado', by: u.name, role: u.role, d: now, text: 'Proyecto corregido y reenviado a interventoría.' });
@@ -297,6 +298,17 @@
     }
     F = null; U.confetti();
     U.modal({ title: 'Proyecto enviado', body: `<div class="alert a-ok">${I('check-circle-2')}<div><b>¡Listo!</b><p>Tu proyecto quedó en revisión del interventor. Te avisaremos si hay observaciones o cuando se active.</p></div></div>`, footer: '<button class="btn btn-primary" data-close>Entendido</button>' });
+    location.hash = '#/proyectos'; ctx.refresh();
+  }
+
+  async function submitLive() {
+    const u = ctx.state.user, editing = !!F.editId, form = F, files = FILES;
+    for (const x of form.planos.slice(0, 2)) if (!files[x.key] && !x.path) { render([`Vuelve a seleccionar el archivo de «${x.name}» (los archivos no se conservan al cerrar la página).`]); return; }
+    let id = null;
+    const ok = await ctx.act(async () => { id = await ctx.live.saveProject(form, files, true, u.company); }, null);
+    if (!ok) return;
+    delete ctx.db.drafts[u.id]; ctx.persist(); F = null; FILES = {}; if (id) ctx.setProject(id); U.confetti();
+    U.modal({ title: editing ? 'Proyecto reenviado' : 'Proyecto enviado', body: `<div class="alert a-ok">${I('check-circle-2')}<div><b>¡Listo!</b><p>Tu proyecto quedó en revisión del interventor. Te avisaremos si hay observaciones o cuando se active.</p></div></div>`, footer: '<button class="btn btn-primary" data-close>Entendido</button>' });
     location.hash = '#/proyectos'; ctx.refresh();
   }
 
@@ -320,7 +332,7 @@
       case 'sample': F = sample(ctx.state.user); saveDraft(); render(); U.toast('Datos de ejemplo cargados'); break;
       case 'reset': U.modal({ title: 'Empezar de nuevo', body: '<p>Se borrará el borrador actual del proyecto. ¿Continuar?</p>', footer: '<button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-bad" id="ok">Borrar borrador</button>', onMount: (m, close) => $('#ok', m).addEventListener('click', () => { F = blank(ctx.state.user); delete ctx.db.drafts[ctx.state.user.id]; ctx.persist(); close(); render(); }) }); break;
       case 'submit': submit(); break;
-      case 'edit': { const rec = ctx.db.projects[t.dataset.id]; F = JSON.parse(JSON.stringify(rec.form)); F.editId = t.dataset.id; F.step = 1; F.confirm = false; location.hash = '#/nuevo'; if (ctx.state.route === 'nuevo') render(); break; }
+      case 'edit': { const src = ctx.LIVE ? ctx.projById(t.dataset.id).form : ctx.db.projects[t.dataset.id].form; F = JSON.parse(JSON.stringify(src)); FILES = {}; F.editId = t.dataset.id; F.step = 1; F.confirm = false; location.hash = '#/nuevo'; if (ctx.state.route === 'nuevo') render(); break; }
       case 'sol-approve': solApprove(ctx.projById(t.dataset.id)); break;
       case 'sol-activate': solActivate(ctx.projById(t.dataset.id)); break;
       case 'sol-observe': solObserve(ctx.projById(t.dataset.id)); break;
@@ -333,18 +345,18 @@
     const items = ['Revisé el presupuesto y su distribución por hitos', 'Los hitos son medibles y verificables en obra', 'La duración y las fases son razonables para el alcance', 'Los planos y la licencia corresponden al proyecto'];
     U.modal({ title: 'Aprobar cronograma · ' + esc(p.name), body: `<div class="alert a-info" style="margin-bottom:16px">${I('lock')}<p>Al aprobar, el cronograma queda <b>bloqueado</b>: cualquier cambio posterior requerirá una solicitud de modificación.</p></div><div class="stack" style="gap:10px">${items.map((t) => `<label class="check" style="padding:12px 14px;border:1px solid var(--line);border-radius:12px"><input type="checkbox" class="ck"> ${t}</label>`).join('')}</div><div class="field" style="margin:16px 0 0"><label for="note">Comentario (opcional)</label><textarea class="input" id="note"></textarea></div>`,
       footer: `<button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-ok" id="go" disabled>${I('fingerprint')}Aprobar y firmar</button>`,
-      onMount: (m, close) => { const cks = $$('.ck', m), go = $('#go', m); cks.forEach((k) => k.addEventListener('change', () => { go.disabled = !cks.every((x) => x.checked); })); go.addEventListener('click', () => { setStage(p, 'admin', 'aprobado por interventor', $('#note', m).value); ctx.log('Aprobó el cronograma de «' + p.name + '»', 'check-circle-2', p.id); close(); U.toast('Cronograma aprobado. Pasa a validación de la plataforma.'); ctx.refresh(); }); } });
+      onMount: (m, close) => { const cks = $$('.ck', m), go = $('#go', m); cks.forEach((k) => k.addEventListener('change', () => { go.disabled = !cks.every((x) => x.checked); })); go.addEventListener('click', () => { if (ctx.LIVE) { const note = $('#note', m).value; close(); ctx.act(() => ctx.live.reviewProject(p.id, true, note), 'Cronograma aprobado. Pasa a validación de la plataforma.'); return; } setStage(p, 'admin', 'aprobado por interventor', $('#note', m).value); ctx.log('Aprobó el cronograma de «' + p.name + '»', 'check-circle-2', p.id); close(); U.toast('Cronograma aprobado. Pasa a validación de la plataforma.'); ctx.refresh(); }); } });
   }
   function solActivate(p) {
     const cm = ctx.compliance(ctx.company(p.constructora));
     U.modal({ title: 'Validar y activar · ' + esc(p.name), body: cm.blocked.length ? `<div class="alert a-bad">${I('shield-alert')}<div><b>No se puede activar</b><p>${cm.blocked.map((d) => d.title).join(', ')} está vencido. La constructora debe renovarlo.</p></div></div>` : `<div class="alert a-ok" style="margin-bottom:12px">${I('shield-check')}<div><b>Documentación vigente</b><p>El proyecto se publicará como «En construcción» y comenzará el hito del primer mes. El cronograma queda bloqueado.</p></div></div><div class="field" style="margin:0"><label for="note">Comentario (opcional)</label><textarea class="input" id="note"></textarea></div>`,
       footer: cm.blocked.length ? '<button class="btn btn-ghost" data-close>Entendido</button>' : `<button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-ok" id="go">${I('check-circle-2')}Activar proyecto</button>`,
-      onMount: (m, close) => { const b = $('#go', m); if (b) b.addEventListener('click', () => { setStage(p, 'activo', 'activado', $('#note', m).value); ctx.log('Activó el proyecto «' + p.name + '»', 'shield-check', p.id); close(); U.confetti(); U.toast('Proyecto activado y publicado'); ctx.refresh(); }); } });
+      onMount: (m, close) => { const b = $('#go', m); if (b) b.addEventListener('click', () => { if (ctx.LIVE) { const note = $('#note', m).value; close(); ctx.act(async () => { await ctx.live.activateProject(p.id, true, note); U.confetti(); }, 'Proyecto activado y publicado'); return; } setStage(p, 'activo', 'activado', $('#note', m).value); ctx.log('Activó el proyecto «' + p.name + '»', 'shield-check', p.id); close(); U.confetti(); U.toast('Proyecto activado y publicado'); ctx.refresh(); }); } });
   }
   function solObserve(p) {
     U.modal({ title: 'Devolver con observaciones', body: `<p class="muted" style="margin-bottom:14px">Indica qué debe corregir la constructora en <b>${esc(p.name)}</b>.</p><div class="field" style="margin:0"><label for="obs">Observaciones</label><textarea class="input" id="obs" placeholder="Ej.: La fase de estructura concentra demasiado presupuesto en un solo mes…"></textarea></div>`,
       footer: `<button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-bad" id="go">${I('alert-triangle')}Enviar observaciones</button>`,
-      onMount: (m, close) => $('#go', m).addEventListener('click', () => { const t = $('#obs', m).value.trim(); if (t.length < 8) { U.toast('Describe brevemente las observaciones', 'err'); return; } setStage(p, 'observado', 'observado', t); ctx.log('Devolvió «' + p.name + '» con observaciones', 'alert-triangle', p.id); close(); U.toast('Observaciones enviadas a la constructora'); ctx.refresh(); }) });
+      onMount: (m, close) => $('#go', m).addEventListener('click', () => { const t = $('#obs', m).value.trim(); if (t.length < 8) { U.toast('Describe brevemente las observaciones', 'err'); return; } if (ctx.LIVE) { close(); ctx.act(() => (ctx.state.user.role === 'admin' ? ctx.live.activateProject(p.id, false, t) : ctx.live.reviewProject(p.id, false, t)), 'Observaciones enviadas a la constructora'); return; } setStage(p, 'observado', 'observado', t); ctx.log('Devolvió «' + p.name + '» con observaciones', 'alert-triangle', p.id); close(); U.toast('Observaciones enviadas a la constructora'); ctx.refresh(); }) });
   }
 
   /* ============ entrada de datos ============ */
@@ -365,7 +377,7 @@
     const el = e.target.closest('[data-file]'); if (!el || !el.files || !el.files[0] || !F) return; const f = el.files[0], kind = el.dataset.file;
     try {
       if (kind === 'photo') { if (!/^image\//.test(f.type)) throw new Error('Selecciona una imagen (JPG o PNG).'); F.photo = await resizeImage(f); saveDraft(); render(); }
-      else if (kind === 'plano') { if (f.size > 50 * 1048576) throw new Error('El archivo supera los 50 MB.'); const x = F.planos[+el.dataset.i]; x.file = f.name; x.size = sz(f.size); saveDraft(); render(); }
+      else if (kind === 'plano') { if (f.size > 50 * 1048576) throw new Error('El archivo supera los 50 MB.'); const x = F.planos[+el.dataset.i]; x.file = f.name; x.size = sz(f.size); x.path = null; FILES[x.key] = f; saveDraft(); render(); }
       else if (kind === 'import') { const res = await S.parseFile(f); importModal(res, f.name); }
     } catch (err) { U.toast(err.message || 'No se pudo leer el archivo', 'err'); }
     el.value = '';
@@ -410,7 +422,9 @@
         ins.forEach((x) => x.addEventListener('input', check)); reason.addEventListener('input', check); check();
         $('#chg-fix', m).addEventListener('click', () => { const v = vals().map((x) => (isNaN(x) || x < 0 ? 0 : x)), t = v.reduce((a, b) => a + b, 0); if (t <= 0) return; const sc = v.map((x) => S.round2((x * orig) / t)); sc[sc.length - 1] = S.round2(sc[sc.length - 1] + orig - sc.reduce((a, b) => a + b, 0)); ins.forEach((x, i) => { x.value = sc[i]; }); check(); });
         go.addEventListener('click', () => {
-          const v = vals(), u = ctx.state.user; ctx.db.changes = ctx.db.changes || {}; (ctx.db.changes[p.id] = ctx.db.changes[p.id] || []).push({ id: 'c' + Date.now().toString(36), pid: p.id, by: u.name, d: new Date().toISOString(), reason: reason.value.trim(), status: 'pendiente', items: pend.map((x, i) => ({ n: x.n, from: x.tranchePct, to: v[i] })) });
+          const v = vals(), u = ctx.state.user;
+          if (ctx.LIVE) { const items = pend.map((x, i) => ({ n: x.n, to: v[i], from: x.tranchePct })).filter((x) => Math.abs(x.to - x.from) > 0.001).map((x) => ({ n: x.n, to: x.to })), reasonTxt = reason.value.trim(); close(); ctx.act(() => ctx.live.requestChange(p.id, reasonTxt, items), 'Solicitud enviada al interventor'); return; }
+          ctx.db.changes = ctx.db.changes || {}; (ctx.db.changes[p.id] = ctx.db.changes[p.id] || []).push({ id: 'c' + Date.now().toString(36), pid: p.id, by: u.name, d: new Date().toISOString(), reason: reason.value.trim(), status: 'pendiente', items: pend.map((x, i) => ({ n: x.n, from: x.tranchePct, to: v[i] })) });
           ctx.persist(); ctx.log('Solicitó un cambio al cronograma de «' + p.name + '»', 'pen-line', p.id); close(); U.toast('Solicitud enviada al interventor'); ctx.refresh();
         });
       } });
@@ -433,11 +447,11 @@
   function chgApprove(p, c) {
     U.modal({ title: 'Aprobar cambio de cronograma', body: `<div class="alert a-info" style="margin-bottom:14px">${I('lock')}<p>Al aprobar, los porcentajes de los meses indicados se actualizan, cambia el avance planificado y se recalculan los desembolsos futuros. Queda registrado en el historial.</p></div><label class="check" style="padding:12px 14px;border:1px solid var(--line);border-radius:12px"><input type="checkbox" id="ck"> Evalué el motivo y el impacto en el avance planificado y el flujo de desembolsos</label><div class="field" style="margin:16px 0 0"><label for="note">Comentario (opcional)</label><textarea class="input" id="note"></textarea></div>`,
       footer: `<button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-ok" id="go" disabled>${I('fingerprint')}Aprobar y firmar</button>`,
-      onMount: (m, close) => { const ck = $('#ck', m), go = $('#go', m); ck.addEventListener('change', () => { go.disabled = !ck.checked; }); go.addEventListener('click', () => { c.status = 'aprobada'; c.note = $('#note', m).value.trim(); c.resolvedOn = new Date().toISOString(); applyChange(p, c); ctx.persist(); ctx.log('Aprobó un cambio al cronograma de «' + p.name + '»', 'check-circle-2', p.id); close(); U.toast('Cambio aprobado y cronograma actualizado'); ctx.refresh(); }); } });
+      onMount: (m, close) => { const ck = $('#ck', m), go = $('#go', m); ck.addEventListener('change', () => { go.disabled = !ck.checked; }); go.addEventListener('click', () => { if (ctx.LIVE) { const note = $('#note', m).value.trim(); close(); ctx.act(() => ctx.live.resolveChange(c.id, true, note), 'Cambio aprobado y cronograma actualizado'); return; } c.status = 'aprobada'; c.note = $('#note', m).value.trim(); c.resolvedOn = new Date().toISOString(); applyChange(p, c); ctx.persist(); ctx.log('Aprobó un cambio al cronograma de «' + p.name + '»', 'check-circle-2', p.id); close(); U.toast('Cambio aprobado y cronograma actualizado'); ctx.refresh(); }); } });
   }
   function chgReject(p, c) {
     U.modal({ title: 'Rechazar cambio de cronograma', body: `<div class="field" style="margin:0"><label for="obs">Motivo del rechazo</label><textarea class="input" id="obs" placeholder="Explica a la constructora por qué no se aprueba…"></textarea></div>`, footer: `<button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-bad" id="go">${I('x')}Rechazar solicitud</button>`,
-      onMount: (m, close) => $('#go', m).addEventListener('click', () => { const t = $('#obs', m).value.trim(); if (t.length < 8) { U.toast('Describe brevemente el motivo', 'err'); return; } c.status = 'rechazada'; c.note = t; c.resolvedOn = new Date().toISOString(); ctx.persist(); ctx.log('Rechazó un cambio al cronograma de «' + p.name + '»', 'x', p.id); close(); U.toast('Solicitud rechazada'); ctx.refresh(); }) });
+      onMount: (m, close) => $('#go', m).addEventListener('click', () => { const t = $('#obs', m).value.trim(); if (t.length < 8) { U.toast('Describe brevemente el motivo', 'err'); return; } if (ctx.LIVE) { close(); ctx.act(() => ctx.live.resolveChange(c.id, false, t), 'Solicitud rechazada'); return; } c.status = 'rechazada'; c.note = t; c.resolvedOn = new Date().toISOString(); ctx.persist(); ctx.log('Rechazó un cambio al cronograma de «' + p.name + '»', 'x', p.id); close(); U.toast('Solicitud rechazada'); ctx.refresh(); }) });
   }
 
   function init(c) {

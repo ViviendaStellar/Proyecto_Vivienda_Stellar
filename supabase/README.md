@@ -14,9 +14,12 @@ supabase/
 │  ├─ …003_funciones_triggers_y_vistas  Helpers, triggers de protección, vistas y todo el flujo de negocio (RPC)
 │  ├─ …004_seguridad_rls            Privilegios, RLS y políticas
 │  ├─ …005_almacenamiento           Buckets y políticas de Storage
-│  └─ …006_catalogos                Fases de obra y tipos de documento
+│  ├─ …006_catalogos                Fases de obra y tipos de documento
+│  └─ …007_admin_correo_y_organizaciones  Correo en perfiles y gestión de constructoras, interventores y usuarios
 ├─ seed.sql                         Datos de demostración (solo local)
-└─ tests/validate.mjs               69 pruebas de migraciones, RLS y flujo completo (sin Docker)
+└─ tests/
+   ├─ validate.mjs                  76 pruebas de migraciones, RLS y flujo completo (sin Docker)
+   └─ e2e/                          La página real en modo «en vivo» contra la misma base simulada (ver abajo)
 ```
 
 ## Cómo usarlo
@@ -124,6 +127,25 @@ const { data: projects } = await supabase.from('projects').select('*, project_ty
 const { data: id }       = await supabase.rpc('save_project', { p_id: null, p_payload: payload, p_submit: true });
 await supabase.rpc('review_milestone', { p_milestone, p_approve: true, p_note: 'OK', p_checks: [true, true, true, true] });
 supabase.channel('hitos').on('postgres_changes', { event: '*', schema: 'public', table: 'milestones' }, refrescar).subscribe();
+```
+
+## Conexión con la página (modo real)
+
+La página (`js/config.js`) usa la URL del proyecto y la clave **publishable**; la seguridad la dan las políticas RLS, no el secreto de la clave.
+Nunca pongas la `service_role` ni la contraseña de la base en el front-end.
+
+**Configura la autenticación en Supabase** (*Authentication → URL Configuration*), o los correos de confirmación apuntarán a localhost:
+- **Site URL:** `https://viviendastellar.github.io/Proyecto_Vivienda_Stellar/INN-LOCK-Web/`
+- **Redirect URLs:** la misma dirección (y `http://localhost:4180` para pruebas locales).
+- *Authentication → Providers → Email:* decide si exiges confirmar el correo (recomendado en producción).
+
+**Modo demostración:** `?demo=1` o el enlace «Ver la demostración» en el inicio de sesión usan datos de ejemplo guardados en el navegador, sin tocar la base.
+
+**Prueba de integración sin tocar tu proyecto** (la página real contra una base simulada con las migraciones y el seed):
+```bash
+cd supabase/tests && npm install      # una sola vez
+cd ../.. && python -m http.server 4180
+# abre http://localhost:4180/supabase/tests/e2e/ y en la consola del navegador:  await runScenario()
 ```
 
 ## Decisiones y pendientes
