@@ -1,6 +1,9 @@
 /* INN-LOCK · caché offline de recursos estáticos */
-const V = 'innlock-v5';
-const FILES = ['./', 'index.html', 'css/styles.css', 'js/icons.js', 'js/data.js', 'js/ui.js', 'js/vendor/supabase.js', 'js/config.js', 'js/live.js', 'js/admin.js', 'js/schedule.js', 'js/wizard.js', 'js/app.js', 'manifest.webmanifest', 'assets/img/favicon.svg', 'assets/fonts/plus-jakarta-sans-latin-wght-normal.woff2', 'assets/fonts/plus-jakarta-sans-latin-ext-wght-normal.woff2'];
+const V = 'innlock-v6';
+// js/vendor/stellar.js NO va aquí a propósito: pesa ~800 KB y solo se
+// necesita en modo testnet, donde chain/config.js lo carga de forma dinámica.
+// Precargarlo obligaría a descargarlo incluso en modo simulado (el de por defecto).
+const FILES = ['./', 'index.html', 'css/styles.css', 'js/icons.js', 'js/data.js', 'js/ui.js', 'js/vendor/supabase.js', 'js/config.js', 'js/chain/config.js', 'js/chain/uuid.js', 'js/chain/hash.js', 'js/chain/freighter.js', 'js/chain/contract.js', 'js/chain/adapter.js', 'js/live.js', 'js/admin.js', 'js/schedule.js', 'js/wizard.js', 'js/app.js', 'manifest.webmanifest', 'assets/img/favicon.svg', 'assets/fonts/plus-jakarta-sans-latin-wght-normal.woff2', 'assets/fonts/plus-jakarta-sans-latin-ext-wght-normal.woff2'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(V).then((c) => c.addAll(FILES)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then((k) => Promise.all(k.filter((x) => x !== V).map((x) => caches.delete(x)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', (e) => {
