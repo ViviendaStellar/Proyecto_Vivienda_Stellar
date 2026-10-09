@@ -11,16 +11,13 @@
   a.btn{display:inline-block;margin-top:14px;padding:12px 22px;border-radius:12px;background:#1450C8;color:#fff;text-decoration:none;font-weight:700}
 </style>
 <script>
-  // GitHub Pages sirve esta página para cualquier ruta que no existe.
-  // Si el visitante cayó fuera de la aplicación (raíz, /docs/…, enlaces antiguos), lo llevamos a INN-LOCK
-  // conservando ?code=… (confirmación de correo) y #/ruta.
+  // GitHub Pages sirve esta página para cualquier ruta que no existe (enlaces antiguos, /docs/…, etc.).
+  // Llevamos al visitante a la aplicación conservando ?code=… (confirmación de correo) y #/ruta.
   (function () {
     var parts = location.pathname.split('/').filter(Boolean);
     if (!parts.length) return;
-    var app = '/' + parts[0] + '/INN-LOCK-Web/';
-    var here = location.pathname.replace(/index\.html$/, '');
-    if (here !== app) location.replace(app + location.search + location.hash);   // si ya estamos en la app, no redirigir (evita bucles)
-    else window.__appMissing = true;
+    var app = '/' + parts[0] + '/';
+    if (location.pathname !== app) location.replace(app + location.search + location.hash);   // si ya estamos en la raíz, no redirigir (evita bucles)
   })();
 </script>
 </head>
@@ -28,7 +25,7 @@
   <div class="box">
     <h1>Página no encontrada</h1>
     <p>La dirección que abriste no existe. Puedes entrar a INN-LOCK desde el botón.</p>
-    <a class="btn" href="/Proyecto_Vivienda_Stellar/INN-LOCK-Web/">Ir a INN-LOCK</a>
+    <a class="btn" href="/Proyecto_Vivienda_Stellar/">Ir a INN-LOCK</a>
   </div>
 </body>
 </html>

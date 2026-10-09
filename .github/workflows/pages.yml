@@ -1,0 +1,42 @@
+# INN-LOCK · Publica el front-end (carpeta frontend/) en GitHub Pages.
+# Requisito (una sola vez): Settings → Pages → Build and deployment → Source: «GitHub Actions».
+name: Publicar INN-LOCK (GitHub Pages)
+
+on:
+  push:
+    branches: [main]
+    paths: ['frontend/**', '.github/workflows/pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preparar el sitio
+        run: |
+          test -f frontend/index.html
+          mkdir _site
+          cp -r frontend/. _site/                                  # la app en la raíz del sitio
+          mkdir _site/INN-LOCK-Web && cp -r frontend/. _site/INN-LOCK-Web/   # compatibilidad con la dirección anterior
+          touch _site/.nojekyll
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
