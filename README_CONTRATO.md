@@ -17,58 +17,39 @@
 
 ## 1. Descripción general
 
-INN-LOCK es un sistema de **custodia de fondos por hitos de obra** para la compra de vivienda sobre planos. El problema que resuelve: hoy un comprador entrega su cuota inicial a la constructora sin ninguna garantía de que ese dinero se use según lo pactado, y no tiene forma de comprobar, de manera independiente, que la obra avanzó antes de que se libere cada desembolso.
+Cuando alguien compra vivienda sobre planos, entrega su cuota inicial a la constructora sin ninguna garantía: no sabe si ese dinero se usa como se pactó, ni tiene forma de comprobar que la obra realmente avanzó antes de que se suelte el siguiente pago.
 
-INN-LOCK retiene el dinero en un contrato inteligente (`contracts/escrow`) en la red Stellar y solo lo libera hito por hito, cuando **tres roles distintos** están de acuerdo: la constructora reporta el avance con evidencia, un interventor independiente lo certifica, y un administrador/fiduciaria gestiona el registro del proyecto, el cumplimiento legal y los depósitos. Nadie puede mover el dinero solo: cada operación sensible exige la firma criptográfica del rol correspondiente, verificada por la red, no por la aplicación.
+**INN-LOCK resuelve esto reteniendo el dinero en un contrato inteligente**, no en la cuenta de la constructora. El contrato solo libera cada pago cuando tres personas distintas están de acuerdo: la constructora reporta el avance con evidencia, un interventor independiente lo certifica, y un administrador/fiduciaria gestiona el proyecto y los depósitos. Nadie puede mover el dinero por su cuenta — cada paso sensible exige una firma digital que la red Stellar verifica, no la aplicación.
 
-Es para:
-- **Constructoras** que quieren demostrarle a sus compradores que el dinero está protegido.
-- **Interventores** que certifican el avance de obra de forma independiente y verificable.
-- **Administradores/fiduciarias** que gestionan el cumplimiento legal y el flujo de fondos.
-- **Compradores**, que pueden ver en todo momento cuánto aportaron, cuánto sigue retenido y qué evidencia justificó cada salida.
+**¿Para quién es?**
+
+| Rol | Qué gana con INN-LOCK |
+|---|---|
+| 🏗️ **Constructora** | Demuestra a sus compradores, con pruebas verificables, que el dinero está protegido |
+| 🦺 **Interventor** | Certifica el avance de obra de forma independiente, con su propia firma |
+| ⚖️ **Administrador / fiduciaria** | Gestiona el cumplimiento legal y el flujo de fondos, sin perder el control |
+| 🏠 **Comprador** | Ve en todo momento cuánto aportó, cuánto sigue retenido y qué evidencia justificó cada salida |
 
 <br>
 
 ## 2. Arquitectura
 
-```mermaid
-flowchart LR
-  subgraph Interfaz["frontend/ — interfaz"]
-    UI["index.html, js/app.js, js/wizard.js..."]
-    Chain["js/chain/\nconfig · uuid · hash · canonical · args ·\nerrors · register · firmantes · demo-flujo · contract"]
-    Vendor["js/vendor/stellar.js\n(SDK de Stellar, solo se carga en modo testnet)"]
-  end
-  subgraph Pruebas["tools/ — solo testnet, nunca en producción"]
-    E2E["e2e-testnet/\nprueba de punta a punta sin Freighter"]
-    Signer["test-signer/\nfirma local opcional (127.0.0.1:4181)"]
-  end
-  subgraph Logica["services/ — lógica y orquestación (pendiente de implementar)"]
-    Keeper["keeper/\nvigila vencimientos (check_overdue)"]
-    Verifier["verifier/\nverifica consistencia on-chain"]
-  end
-  subgraph Red["contracts/escrow — contrato Soroban"]
-    Escrow["EscrowContract\nregistro, custodia, certificación"]
-    Token["token (SAC de testnet, nativo XLM)"]
-  end
+La solución tiene tres capas, de arriba hacia abajo: la **interfaz** donde cada rol firma, la **lógica de apoyo** (todavía por construir) y el **contrato en Stellar**, que es la única fuente de verdad.
 
-  UI --> Chain
-  Chain -.carga dinámica.-> Vendor
-  Chain -- "firma vía Freighter (real)" --> Escrow
-  Chain -- "firma vía test-signer (opcional, solo pruebas)" --> Signer
-  Signer --> Escrow
-  E2E -- "firma con llaves de la CLI, sin Freighter" --> Escrow
-  Keeper -. "check_overdue (sin firma)" .-> Escrow
-  Verifier -. "lee y compara" .-> Escrow
-  Escrow -- token::Client --> Token
-```
+<p align="center">
+  <img src="docs/semana3/img/arquitectura_onchain_v1.svg" alt="Arquitectura on-chain de INN-LOCK: interfaz, servicios y contrato en Stellar" width="100%">
+</p>
 
-- **Contrato Soroban** (`contracts/escrow`): la única fuente de verdad sobre el estado de cada proyecto, hito y saldo. Está escrito en Rust (`#![no_std]`), compila a WASM y corre en la red Stellar (testnet). No guarda llaves de nadie: cada función sensible exige `require_auth()` del rol correspondiente.
-- **Frontend estático** (`frontend/`): HTML/CSS/JS sin framework ni build step, autocontenido (sin CDN). Tiene dos modos independientes:
-  - **Real vs. Demostración** (`?demo=1`): real inicia sesión contra Supabase; demostración usa datos de ejemplo en el navegador.
-  - **Simulado vs. Testnet** (`?chain=testnet`): simulado (por defecto) no toca la red; testnet lee y firma contra el contrato real.
-- **Freighter**: la extensión de wallet del navegador. Es el único proveedor de firma "real": el frontend nunca ve ni maneja una llave secreta, todo pasa por `window.freighterApi` y la persona aprueba cada firma a mano.
-- **`tools/test-signer`**: un servicio HTTP local (127.0.0.1:4181), **solo para pruebas en testnet/localhost**, que firma con las llaves de `inn-constructora`/`inn-interventor`/`inn-admin` obtenidas de la CLI de Stellar al arrancar. Sirve para no tener que cambiar de cuenta en Freighter en cada prueba manual. Reconstruye cada invocación desde el XDR real y solo firma `register_project` sobre el contrato de `deployments/testnet.json` — nunca confía en lo que le mande el frontend.
-- **`tools/e2e-testnet`**: una prueba automatizada de punta a punta contra testnet real, sin Freighter ni `test-signer`, pensada para CI/verificación rápida.
+En palabras simples:
+
+1. **La interfaz** (`frontend/`) es donde constructora, interventor y administrador hacen clic para firmar. Puede firmar de dos formas: con **Freighter** (la extensión de wallet real, donde cada persona aprueba su propia firma) o, solo para pruebas, con el servicio local **`test-signer`**.
+2. **La lógica de apoyo** (`services/`) todavía no tiene código — está documentada para vigilar vencimientos y verificar que todo cuadre, pero por ahora el contrato funciona sin ella.
+3. **El contrato** (`contracts/escrow`) vive en la red Stellar (testnet). Está escrito en Rust, corre como WebAssembly, y es quien de verdad decide si una operación es válida: cada función sensible exige la firma del rol correcto antes de ejecutarse.
+
+Tres cosas más que vale la pena saber:
+- El frontend **nunca toca una llave secreta**. Firmar siempre pasa por Freighter (o, solo en pruebas, por `test-signer`, que guarda las llaves en memoria y nunca las expone).
+- Dos interruptores independientes controlan el modo de la app: **real vs. demostración** (`?demo=1`, datos de ejemplo sin base de datos) y **simulado vs. testnet** (`?chain=testnet`, habla de verdad con la red).
+- `tools/e2e-testnet` es una prueba automatizada que repite todo el flujo contra testnet real, sin Freighter, pensada para verificar rápido que nada se rompió.
 
 <br>
 

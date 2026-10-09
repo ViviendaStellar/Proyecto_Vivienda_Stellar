@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="760" viewBox="0 0 1240 760" font-family="'Plus Jakarta Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif">
+  <defs>
+    <linearGradient id="bgFondo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#080D1A"/>
+      <stop offset="50%" stop-color="#0D1527"/>
+      <stop offset="100%" stop-color="#070B14"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1D4ED8"/>
+      <stop offset="50%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#0EA5E9"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#151F36"/>
+      <stop offset="100%" stop-color="#0E1626"/>
+    </linearGradient>
+    <linearGradient id="stellarGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="50%" stop-color="#132347"/>
+      <stop offset="100%" stop-color="#0F1E3D"/>
+    </linearGradient>
+    <linearGradient id="cyanBadge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="greenBadge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="amberBadge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+
+    <filter id="neonGlowBlue" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#38BDF8" flood-opacity="0.35"/>
+    </filter>
+    <filter id="sombraCard" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+    <filter id="sombraModal" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+
+    <marker id="arrowCyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,1 L9,5 L0,9 z" fill="#38BDF8"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,1 L9,5 L0,9 z" fill="#34D399"/>
+    </marker>
+    <marker id="arrowMuted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,1 L9,5 L0,9 z" fill="#64748B"/>
+    </marker>
+
+    <pattern id="techGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1E293B" stroke-width="0.5" stroke-opacity="0.5"/>
+    </pattern>
+    <clipPath id="marcoPrincipal">
+      <rect x="0" y="0" width="1240" height="760" rx="20"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#marcoPrincipal)">
+    <rect x="0" y="0" width="1240" height="760" fill="url(#bgFondo)"/>
+    <rect x="0" y="0" width="1240" height="760" fill="url(#techGrid)"/>
+    <circle cx="140" cy="140" r="200" fill="#1D4ED8" fill-opacity="0.12" filter="blur(55px)"/>
+    <circle cx="1100" cy="620" r="220" fill="#0EA5E9" fill-opacity="0.10" filter="blur(60px)"/>
+    <circle cx="620" cy="420" r="180" fill="#059669" fill-opacity="0.07" filter="blur(60px)"/>
+
+    <!-- Cabecera -->
+    <rect x="0" y="0" width="1240" height="88" fill="#0B132B" fill-opacity="0.85"/>
+    <line x1="0" y1="88" x2="1240" y2="88" stroke="#1E293B" stroke-width="1.5"/>
+    <circle cx="40" cy="44" r="15" fill="url(#headerGrad)"/>
+    <path d="M34,44 L39,49 L47,39" stroke="#FFFFFF" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="68" y="40" font-size="23" font-weight="800" fill="#FFFFFF" letter-spacing="-0.3">Arquitectura on-chain · INN-LOCK</text>
+    <text x="68" y="64" font-size="13.5" font-weight="500" fill="#94A3B8">Tres capas: la interfaz, el contrato en Stellar, y los servicios de apoyo</text>
+    <g transform="translate(900, 30)">
+      <rect x="0" y="0" width="300" height="28" rx="14" fill="#131F37" stroke="#253556"/>
+      <circle cx="16" cy="14" r="4.5" fill="#38BDF8"/>
+      <text x="26" y="18" font-size="11" font-weight="700" fill="#38BDF8">Implementado</text>
+      <circle cx="140" cy="14" r="4.5" fill="#64748B"/>
+      <text x="150" y="18" font-size="11" font-weight="700" fill="#94A3B8">Pendiente</text>
+    </g>
+
+    <!-- ===== CAPA 1: INTERFAZ ===== -->
+    <g transform="translate(24, 108)">
+      <rect x="0" y="0" width="1192" height="164" rx="16" fill="url(#cardGrad)" stroke="#233554" stroke-width="1.2" filter="url(#sombraCard)"/>
+      <rect x="18" y="14" width="190" height="24" rx="6" fill="#1E3A8A"/>
+      <text x="113" y="30" font-size="11" font-weight="800" fill="#93C5FD" text-anchor="middle" letter-spacing="0.6">1 · INTERFAZ</text>
+      <text x="222" y="31" font-size="12.5" fill="#64748B">frontend/ — la app que usan constructora, interventor, administrador y comprador</text>
+
+      <!-- App -->
+      <g transform="translate(18, 50)">
+        <rect x="0" y="0" width="344" height="96" rx="12" fill="#0C1322" stroke="#263A5E" stroke-width="1.2"/>
+        <text x="18" y="28" font-size="13.5" font-weight="700" fill="#F8FAFC">📱 App de INN-LOCK</text>
+        <text x="18" y="50" font-size="11.5" fill="#94A3B8">Registrar proyecto → Solicitudes → Activar</text>
+        <text x="18" y="68" font-size="11.5" fill="#94A3B8">Mismo botón para los 3 roles, en su pantalla</text>
+        <rect x="18" y="76" width="308" height="2" fill="#1E293B"/>
+      </g>
+
+      <!-- Freighter -->
+      <g transform="translate(386, 50)">
+        <rect x="0" y="0" width="390" height="96" rx="12" fill="#0A1A14" stroke="#10B981" stroke-width="1.4"/>
+        <text x="18" y="28" font-size="13.5" font-weight="700" fill="#6EE7B7">👛 Freighter — firma real</text>
+        <text x="18" y="50" font-size="11.5" fill="#A7F3D0">La persona aprueba cada firma a mano</text>
+        <text x="18" y="68" font-size="11.5" fill="#A7F3D0">La app nunca ve ni toca una llave secreta</text>
+      </g>
+
+      <!-- test-signer -->
+      <g transform="translate(800, 50)">
+        <rect x="0" y="0" width="374" height="96" rx="12" fill="#1C1917" stroke="#D97706" stroke-width="1.2" stroke-dasharray="5 4"/>
+        <text x="18" y="28" font-size="13.5" font-weight="700" fill="#FBBF24">🧪 test-signer — solo pruebas</text>
+        <text x="18" y="50" font-size="11.5" fill="#FDE68A">127.0.0.1:4181 · solo testnet/localhost</text>
+        <text x="18" y="68" font-size="11.5" fill="#FDE68A">Opcional, para no cambiar de cuenta cada vez</text>
+      </g>
+    </g>
+
+    <!-- Flecha 1 -> 3 -->
+    <path d="M 310 272 L 310 318" stroke="#38BDF8" stroke-width="3" fill="none" marker-end="url(#arrowCyan)"/>
+    <g transform="translate(336, 282)">
+      <rect x="0" y="0" width="300" height="26" rx="13" fill="url(#cyanBadge)" filter="url(#neonGlowBlue)"/>
+      <text x="150" y="18" font-size="11.5" font-weight="800" fill="#FFFFFF" text-anchor="middle">firma register_project (3 de 3)</text>
+    </g>
+
+    <!-- ===== CAPA 2: SERVICIOS (pendiente) ===== -->
+    <g transform="translate(24, 324)">
+      <rect x="0" y="0" width="1192" height="110" rx="16" fill="#0E1626" stroke="#334155" stroke-width="1.2" stroke-dasharray="6 5"/>
+      <rect x="18" y="14" width="300" height="24" rx="6" fill="#1E293B"/>
+      <text x="168" y="30" font-size="11" font-weight="800" fill="#94A3B8" text-anchor="middle" letter-spacing="0.6">2 · LÓGICA Y ORQUESTACIÓN (services/)</text>
+      <text x="334" y="31" font-size="12" fill="#64748B">Documentado, sin código todavía</text>
+
+      <g transform="translate(18, 50)">
+        <rect x="0" y="0" width="578" height="46" rx="10" fill="#111827" stroke="#334155"/>
+        <text x="18" y="29" font-size="12.5" font-weight="700" fill="#94A3B8">⏱️ keeper — vigila vencimientos y llama check_overdue</text>
+      </g>
+      <g transform="translate(610, 50)">
+        <rect x="0" y="0" width="564" height="46" rx="10" fill="#111827" stroke="#334155"/>
+        <text x="18" y="29" font-size="12.5" font-weight="700" fill="#94A3B8">🔎 verifier — compara lo on-chain contra lo que muestra la app</text>
+      </g>
+    </g>
+
+    <path d="M 310 434 L 310 468" stroke="#64748B" stroke-width="2.2" stroke-dasharray="4 4" fill="none" marker-end="url(#arrowMuted)"/>
+    <text x="330" y="455" font-size="11" fill="#64748B">lee el contrato, sin firmar (futuro)</text>
+
+    <!-- ===== CAPA 3: RED STELLAR ===== -->
+    <g transform="translate(24, 476)">
+      <rect x="0" y="0" width="1192" height="256" rx="16" fill="url(#stellarGrad)" stroke="#38BDF8" stroke-width="1.8" filter="url(#sombraModal)"/>
+      <rect x="18" y="14" width="300" height="26" rx="8" fill="url(#cyanBadge)"/>
+      <text x="168" y="32" font-size="12" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.8">3 · RED STELLAR (TESTNET)</text>
+      <g transform="translate(334, 16)">
+        <rect x="0" y="0" width="840" height="22" rx="6" fill="#0B132B" stroke="#1D4ED8"/>
+        <text x="14" y="16" font-size="11" font-weight="600" fill="#93C5FD">contracts/escrow · Soroban (Rust/WASM) · cada operación sensible exige la firma del rol correcto</text>
+      </g>
+
+      <!-- Contrato -->
+      <g transform="translate(18, 52)">
+        <rect x="0" y="0" width="700" height="188" rx="12" fill="#0A1428" stroke="#10B981" stroke-width="1.8" filter="url(#sombraCard)"/>
+        <rect x="14" y="14" width="300" height="26" rx="6" fill="#064E3B"/>
+        <text x="164" y="32" font-size="12.5" font-weight="800" fill="#6EE7B7" text-anchor="middle">🔒 EscrowContract</text>
+        <text x="14" y="68" font-size="11.5" fill="#CBD5E1">register_project · deposit · report_milestone</text>
+        <text x="14" y="88" font-size="11.5" fill="#CBD5E1">certify_milestone · observe_milestone</text>
+        <text x="14" y="108" font-size="11.5" fill="#CBD5E1">claim_pending · freeze / unfreeze</text>
+        <text x="14" y="128" font-size="11.5" fill="#CBD5E1">cambios de cronograma · check_overdue</text>
+        <rect x="14" y="146" width="672" height="28" rx="6" fill="#09201D" stroke="#059669"/>
+        <text x="350" y="164" font-size="11" font-weight="700" fill="#A7F3D0" text-anchor="middle">El dinero solo se mueve si firma el rol correcto</text>
+      </g>
+
+      <!-- Roles -->
+      <g transform="translate(740, 52)">
+        <rect x="0" y="0" width="434" height="188" rx="12" fill="#091122" stroke="#1E3A8A" stroke-width="1.2"/>
+        <text x="18" y="30" font-size="12.5" font-weight="700" fill="#93C5FD">Los 3 roles que firman</text>
+
+        <g transform="translate(18, 42)">
+          <rect x="0" y="0" width="398" height="38" rx="8" fill="#131F37" stroke="#3B82F6"/>
+          <text x="14" y="25" font-size="11.5" font-weight="700" fill="#E2E8F0">🏗️ Constructora — registra, reporta, cobra</text>
+        </g>
+        <g transform="translate(18, 86)">
+          <rect x="0" y="0" width="398" height="38" rx="8" fill="#131F37" stroke="#10B981"/>
+          <text x="14" y="25" font-size="11.5" font-weight="700" fill="#E2E8F0">🦺 Interventor — certifica u observa el avance</text>
+        </g>
+        <g transform="translate(18, 130)">
+          <rect x="0" y="0" width="398" height="38" rx="8" fill="#131F37" stroke="#F59E0B"/>
+          <text x="14" y="25" font-size="11.5" font-weight="700" fill="#E2E8F0">⚖️ Administrador — deposita, congela, valida</text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
