@@ -460,3 +460,109 @@ select.input { appearance: none; -webkit-appearance: none; background-image: lin
 .ev-tile.file small { font-size: 11.5px; color: var(--muted); }
 .ev-x { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; border-radius: 50%; background: rgba(6,22,71,.85); color: #fff; display: grid; place-items: center; }
 .ev-x .ico { width: 14px; height: 14px; }
+
+/* ============ Escala compacta (≈ 88 %) ============ */
+:root { --sidebar: 232px; --topbar: 56px; --r: 12px; --r-lg: 16px; --r-xl: 22px; }
+body { font-size: 13.5px; line-height: 1.5; }
+.ico { width: 1.1em; height: 1.1em; }
+
+/* botones y controles */
+.btn { height: 36px; padding: 0 15px; font-size: 13px; border-radius: 10px; gap: 7px; }
+.btn-sm { height: 30px; padding: 0 11px; font-size: 12px; border-radius: 9px; }
+.btn-lg { height: 44px; padding: 0 22px; font-size: 14px; border-radius: 12px; }
+.icon-btn { width: 36px; height: 36px; border-radius: 10px; } .icon-btn .ico { width: 18px; height: 18px; }
+.input { height: 42px; padding: 0 14px; border-radius: 11px; font-size: 13.5px; }
+.input.sm { height: 34px; padding: 0 10px; border-radius: 9px; font-size: 13px; }
+textarea.input { min-height: 84px; }
+.input-wrap .input { padding-left: 42px; } .input-wrap > .ico { left: 14px; width: 17px; height: 17px; }
+.field { margin-bottom: 13px; } .field label { font-size: 12.5px; margin-bottom: 6px; }
+.badge { height: 23px; padding: 0 9px; font-size: 11.5px; } .badge .ico { width: 13px; height: 13px; }
+.chip { padding: 6px 11px; font-size: 12px; }
+
+/* tarjetas y rejillas */
+.card-pad { padding: 18px; } .card-head { margin-bottom: 14px; } .card-head h3 { font-size: 15px; } .card-head .sub { font-size: 12px; }
+.grid { gap: 16px; } .stack { gap: 14px; }
+.kpi { padding: 16px; } .kpi .ico-wrap { width: 36px; height: 36px; border-radius: 10px; margin-bottom: 11px; } .kpi .ico-wrap .ico { width: 18px; height: 18px; }
+.kpi .label { font-size: 12px; } .kpi .value { font-size: 23px; margin: 1px 0 4px; } .kpi .foot { font-size: 11.5px; }
+.divider { margin: 14px 0; }
+
+/* estructura */
+.sidebar { padding: 18px 12px 12px; } .sidebar .brand { padding: 2px 8px 16px; } .sidebar .brand svg { width: 34px; } .sidebar .brand .wm { font-size: 17.5px; }
+.brand svg { width: 38px; } .brand .wm { font-size: 19px; } .brand .wm small { font-size: 9px; margin-top: 4px; }
+.sidebar .brand .wm small { font-size: 7.5px; letter-spacing: .17em; }
+.nav-title { font-size: 10px; padding: 12px 10px 6px; }
+.nav a { padding: 8px 10px; font-size: 13px; gap: 10px; border-radius: 10px; margin-bottom: 1px; } .nav a .ico { width: 17px; height: 17px; }
+.nav a.active::before { left: -12px; top: 7px; bottom: 7px; width: 3px; }
+.nav a .pill { min-width: 19px; height: 19px; font-size: 11px; }
+.side-card { padding: 12px; font-size: 11.5px; border-radius: 13px; } .side-card b { font-size: 12.5px; }
+.topbar { gap: 8px; padding: 0 22px; }
+.proj-btn { padding: 5px 12px 5px 6px; border-radius: 12px; gap: 10px; } .proj-btn .thumb, .menu-item .thumb { width: 32px; height: 32px; border-radius: 9px; } .proj-btn .t b { font-size: 13px; } .proj-btn .t small { font-size: 11px; }
+.menu { min-width: 270px; border-radius: 14px; } .menu-item { padding: 8px; font-size: 13px; } .menu-item .thumb { width: 36px; height: 36px; }
+.avatar { width: 32px; height: 32px; font-size: 12px; } .user-btn .t b { font-size: 12.5px; } .user-btn .t small { font-size: 10.5px; }
+.demo-tag { font-size: 10.5px; padding: 4px 9px; } .notif { width: 330px; } .notif .it { padding: 11px 14px; } .notif .it p { font-size: 12.5px; }
+.content { padding: 22px 22px 56px; max-width: 1320px; }
+.page-head { margin-bottom: 20px; } .page-head h1 { font-size: clamp(21px, 2vw, 26px); } .page-head p { font-size: 13px; margin-top: 4px; }
+.crumbs { font-size: 12px; margin-bottom: 8px; }
+
+/* hero, tarjetas de proyecto, fichas */
+.hero { min-height: 320px; margin-bottom: 20px; border-radius: 20px; } .hero-in { padding: 26px; min-height: 320px; gap: 14px; }
+.hero h1 { font-size: clamp(24px, 2.8vw, 36px); } .hero .loc { font-size: 13px; } .hero .stat { padding: 9px 13px; min-width: 104px; border-radius: 13px; } .hero .stat small { font-size: 11px; } .hero .stat b { font-size: 17px; }
+.pcard .img { height: 168px; } .pcard .body { padding: 16px; gap: 11px; } .pcard h3 { font-size: 16.5px; } .pcard .where { font-size: 12.5px; }
+.pcard .img .pct { font-size: 12.5px; padding: 5px 10px; } .mini-stats b { font-size: 13.5px; } .mini-stats div { font-size: 10.5px; }
+.tabs { margin-bottom: 18px; } .tab { padding: 8px 14px; font-size: 13px; }
+.fact { padding: 11px 13px; border-radius: 12px; } .fact b { font-size: 14px; } .fact small { font-size: 11.5px; } .facts { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.typo { padding: 15px; } .typo h4 { font-size: 14.5px; } .typo .price b { font-size: 18px; }
+
+/* documentos y legal */
+.doc { padding: 14px; gap: 13px; border-radius: 15px; } .doc .di { width: 44px; height: 44px; border-radius: 13px; } .doc .di .ico { width: 21px; height: 21px; } .doc h4 { font-size: 14px; } .doc .meta { font-size: 11.5px; }
+.co-head { padding: 20px; gap: 18px; } .co-logo { width: 62px; height: 62px; border-radius: 18px; font-size: 22px; }
+.co-stats div { padding: 12px 18px; } .co-stats b { font-size: 17px; } .co-stats small { font-size: 11px; }
+.score { padding: 20px; gap: 18px; } .ring { width: 100px; height: 100px; } .ring .v { font-size: 22px; }
+.alert { padding: 13px 15px; gap: 11px; border-radius: 13px; font-size: 13px; } .alert p { font-size: 12.5px; }
+
+/* línea de tiempo y tablas */
+.tl-item { grid-template-columns: 46px minmax(0, 1fr); gap: 14px; padding-bottom: 14px; } .tl-dot { width: 46px; height: 46px; border-radius: 15px; } .tl-dot .ico { width: 20px; height: 20px; } .tl-item::before { left: 22px; top: 44px; }
+.tl-card { padding: 16px; } .tl-card h4 { font-size: 15px; } .tl-card h4 small { font-size: 12px; } .tl-card .phase { font-size: 12.5px; }
+.tl-meta div { padding: 8px 10px; } .tl-meta b { font-size: 13.5px; } .tl-meta small { font-size: 10.5px; } .acts-list li { font-size: 13px; }
+.year-lbl { margin: 20px 0 12px; font-size: 12.5px; }
+table { font-size: 13px; } th { padding: 10px 13px; font-size: 10.5px; } td { padding: 11px 13px; }
+.vault { padding: 24px; border-radius: 22px; } .vault .big { font-size: clamp(26px, 3.4vw, 38px); } .vault .row-3 b { font-size: 16px; } .vault .row-3 div { padding: 11px 13px; }
+.funds-bar { height: 18px; }
+
+/* modales */
+.modal { max-width: 500px; border-radius: 20px; } .modal.wide { max-width: 680px; } .modal-h { padding: 18px 22px 0; } .modal-h h3 { font-size: 17.5px; } .modal-b { padding: 15px 22px; } .modal-f { padding: 0 22px 20px; }
+.toast { padding: 11px 15px; font-size: 13px; border-radius: 13px; }
+
+/* asistente */
+.stepper button { padding: 8px 12px; border-radius: 14px; } .stepper .sn { width: 28px; height: 28px; font-size: 12.5px; } .stepper .sl { font-size: 13px; } .stepper { margin-bottom: 18px; gap: 8px; }
+.opt { padding: 15px; } .opt b { font-size: 14px; } .opt span { font-size: 12.5px; }
+.wiz-foot { padding: 10px 14px; border-radius: 15px; }
+.req { padding: 20px; } .req-thumb { width: 100px; height: 68px; } .photo-box { min-height: 140px; }
+
+/* ===== Inicio de sesión: más pequeño ===== */
+.login { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.login-art { padding: 34px 44px; }
+.login-art h1 { font-size: clamp(26px, 2.8vw, 38px); }
+.login-art .lead { font-size: 14px; margin-top: 14px; max-width: 42ch; }
+.feat { margin-top: 24px; gap: 10px; max-width: 400px; } .feat li { padding: 11px 13px; gap: 11px; border-radius: 13px; } .feat .fi { width: 32px; height: 32px; border-radius: 10px; } .feat b { font-size: 13px; } .feat span { font-size: 12px; }
+.login-foot { font-size: 11.5px; }
+.login-form-wrap { padding: 24px 22px; }
+.login-box { max-width: 372px; }
+.login-box h2 { font-size: 23px; } .login-box > p { font-size: 13px; margin: 4px 0 16px; }
+.role-grid { gap: 8px; margin-bottom: 15px; }
+.role { padding: 9px 10px; gap: 9px; border-radius: 13px; border-width: 1.5px; } .role .ri { width: 30px; height: 30px; border-radius: 9px; } .role .ri .ico { width: 16px; height: 16px; }
+.role b { font-size: 12.5px; } .role span { font-size: 10.5px; line-height: 1.25; }
+.login-box .input { height: 40px; font-size: 13px; }
+.login-box .field { margin-bottom: 11px; }
+.login-box .btn-lg { height: 42px; font-size: 13.5px; }
+.check { font-size: 12.5px; } .sep { margin: 14px 0; font-size: 11.5px; }
+.demo-note { margin-top: 15px; padding: 10px 12px; font-size: 11.5px; border-radius: 12px; }
+.form-error { font-size: 12.5px; padding: 9px 12px; }
+
+@media (max-width: 980px) { .login-box { max-width: 380px; } .content { padding: 18px 14px 56px; } .topbar { padding: 0 12px; } }
+@media (max-width: 720px) {
+  .tl-item { grid-template-columns: 40px minmax(0, 1fr); gap: 10px; } .tl-dot { width: 40px; height: 40px; border-radius: 13px; } .tl-item::before { left: 19px; top: 40px; }
+  .hero-in { padding: 18px; } .hero { min-height: 340px; } .hero .stat { min-width: calc(50% - 6px); padding: 8px 11px; } .hero .stat b { font-size: 15px; }
+  .kpi .value { font-size: 21px; } .req-thumb { width: 100%; height: 140px; }
+  .login-box { max-width: 360px; } .role-grid { grid-template-columns: 1fr 1fr; } .role span { display: none; } .role { padding: 8px 9px; }
+}
