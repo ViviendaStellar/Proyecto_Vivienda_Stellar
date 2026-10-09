@@ -1,5 +1,7 @@
 # INN-LOCK · Base de datos (Supabase / PostgreSQL)
 
+> En el repositorio del equipo esta carpeta vive en `frontend/supabase/` (la integración de Supabase con GitHub usa la ruta `frontend`).
+
 Modelo de datos, seguridad y flujo de negocio de la plataforma de custodia de fondos para vivienda sobre planos.
 La capa on-chain (Stellar/Soroban) se anclará después; hoy `onchain_records` guarda lo que se anclará con `status = 'simulado'`.
 

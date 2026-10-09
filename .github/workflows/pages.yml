@@ -5,7 +5,7 @@ name: Publicar INN-LOCK (GitHub Pages)
 on:
   push:
     branches: [main]
-    paths: ['frontend/**', '.github/workflows/pages.yml']
+    paths: ['frontend/**', '!frontend/supabase/**', '.github/workflows/pages.yml']   # los cambios solo de base de datos no republican la web
   workflow_dispatch:
 
 permissions:
@@ -30,8 +30,8 @@ jobs:
         run: |
           test -f frontend/index.html
           mkdir _site
-          cp -r frontend/. _site/                                  # la app en la raíz del sitio
-          mkdir _site/INN-LOCK-Web && cp -r frontend/. _site/INN-LOCK-Web/   # compatibilidad con la dirección anterior
+          rsync -a --exclude='supabase' frontend/ _site/                      # la app en la raíz del sitio (sin la carpeta de la base de datos)
+          mkdir _site/INN-LOCK-Web && rsync -a --exclude='supabase' frontend/ _site/INN-LOCK-Web/   # compatibilidad con la dirección anterior
           touch _site/.nojekyll
 
       - uses: actions/configure-pages@v5

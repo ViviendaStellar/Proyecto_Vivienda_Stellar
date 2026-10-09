@@ -16,9 +16,10 @@ Abre http://localhost:4180
 - **Modo real** (por defecto): inicia sesión con tu cuenta; los datos viven en Supabase.
 - **Modo demostración:** abre http://localhost:4180/?demo=1 (datos de ejemplo, sin base de datos).
 
-**Base de datos** (Supabase / PostgreSQL), carpeta `supabase/`:
+**Base de datos** (Supabase / PostgreSQL), carpeta `frontend/supabase/`:
 
 ```bash
+cd frontend
 supabase link --project-ref <ref>
 supabase db push
 ```
@@ -26,7 +27,7 @@ supabase db push
 **Pruebas** (sin Docker):
 
 ```bash
-cd supabase/tests
+cd frontend/supabase/tests
 npm install
 npm test
 ```
