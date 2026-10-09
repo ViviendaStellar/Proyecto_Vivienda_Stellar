@@ -1,0 +1,8 @@
+{
+  "name": "inn-lock-db-tests",
+  "private": true,
+  "type": "module",
+  "description": "Valida migraciones, RLS y el flujo de negocio en un Postgres en memoria (PGlite), sin Docker.",
+  "scripts": { "test": "node validate.mjs" },
+  "devDependencies": { "@electric-sql/pglite": "^0.3.0" }
+}

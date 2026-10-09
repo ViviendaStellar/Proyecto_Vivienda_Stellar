@@ -1,0 +1,32 @@
+# INN-LOCK · Configuración de Supabase CLI (desarrollo local: `supabase start`)
+project_id = "inn-lock"
+
+[api]
+enabled = true
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 17
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[auth]
+enabled = true
+site_url = "http://localhost:4180"
+additional_redirect_urls = ["http://localhost:4180", "https://viviendastellar.github.io/Proyecto_Vivienda_Stellar/INN-LOCK-Web/"]
+jwt_expiry = 3600
+enable_signup = true
+minimum_password_length = 8
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false
+
+[storage]
+enabled = true
+file_size_limit = "200MiB"

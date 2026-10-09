@@ -33,3 +33,11 @@ y abrir http://localhost:4180 (también funciona abriendo `index.html` directame
 
 ## Pendiente para la fase blockchain
 Reemplazar `data.js` por API y los registros simulados (hash, firmas 2-de-3, huellas de documentos) por transacciones reales Stellar/Soroban. Los datos de demo se guardan solo en `localStorage` (menú de usuario → *Restablecer datos de demo*).
+
+## Publicar la página en GitHub Pages (repo del equipo)
+```bash
+bash scripts/publicar-web.sh --simular   # ver qué cambiaría
+bash scripts/publicar-web.sh             # publicar en docs/INN-LOCK-Web (main)
+bash scripts/publicar-web.sh --pr        # o subir a una rama para abrir un Pull Request
+```
+Usa una copia aparte del repo (`../INN-LOCK-publicacion`) con el usuario `dotcom2409` configurado solo ahí; no modifica la configuración global de Git ni otros proyectos.
