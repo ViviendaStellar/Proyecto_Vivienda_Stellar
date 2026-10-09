@@ -1,0 +1,15 @@
+# Rust's output directory
+target
+
+# Local settings
+.soroban
+.stellar
+
+# Llaves, identidades y secretos (nunca deben subirse al repo)
+*.key
+*.pem
+*secret*
+*seed*
+identities/
+.env
+.env.*

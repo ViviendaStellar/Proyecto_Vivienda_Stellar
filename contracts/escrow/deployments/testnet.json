@@ -1,0 +1,15 @@
+{
+  "network": "testnet",
+  "network_passphrase": "Test SDF Network ; September 2015",
+  "escrow_contract_id": "CBS57WMMUYBWCLFGEKOZYWPRAHHBFP432AJ57P5HFWK6DD7GRI5WJOBT",
+  "token_contract_id": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
+  "token_asset": "native",
+  "wasm_hash": "0e4c459b058e8f5359decb6b65cac210c6aee589eefc337f0c6068a3eba5a957",
+  "accounts": {
+    "inn_constructora": "GCYQDJ6UO3EHEL4GXLVMGTVTJEOV3OTWDJQPGSFTHPS2BCLRLT4OYRJS",
+    "inn_interventor": "GAGEYZHS5LQPGQSK5YNQBCR6RKUJLSPO7ET4K76UJXZJUH6QZZ5PWEIW",
+    "inn_admin": "GBP3BRO5XE3EG7YVSE74OQVFCK4XCOOCWCGXHTFEBTBLZCQ576EVMI7M"
+  },
+  "deployed_at": "2026-10-09T15:11:20Z",
+  "deployed_with_source_account": "inn-admin"
+}
