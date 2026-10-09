@@ -1,0 +1,13 @@
+{
+  "name": "inn-lock-vendor-build",
+  "private": true,
+  "description": "Empaqueta @stellar/stellar-sdk y @stellar/freighter-api en un solo archivo autocontenido (frontend/js/vendor/stellar.js), igual que ya se hizo con supabase.js. No es parte de la app: solo se usa para generar ese archivo.",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "devDependencies": {
+    "@stellar/stellar-sdk": "17.2.1",
+    "@stellar/freighter-api": "6.0.1",
+    "esbuild": "^0.28.2"
+  }
+}

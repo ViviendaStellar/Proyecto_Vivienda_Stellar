@@ -1,0 +1,13 @@
+{
+  "name": "innlock-e2e-testnet",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Prueba automatizada de punta a punta de register_project en testnet: firma por separado de constructora, interventor y administrador (sin Freighter), más 5 casos negativos. No es parte del frontend ni se publica.",
+  "main": "run.js",
+  "scripts": {
+    "test": "node run.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

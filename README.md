@@ -62,3 +62,9 @@ python -m http.server 4180
 | ⚙️ Administrador | admin@inn-lock.co |
 
 Para detener el servidor, presiona `Ctrl + C` en la terminal.
+
+<br>
+
+## 🔗 Modos de cadena
+
+Además del modo real/demostración de arriba, la página tiene dos modos de **cadena** (independientes de esos): **simulado** (predeterminado, no toca la red) y **testnet** (lee el contrato real en la red de pruebas de Stellar). Se activa con `?chain=testnet` en la URL y se recuerda en el navegador. Detalle completo, diagrama de capas y qué función firma cada rol: [`docs/semana3/ARQUITECTURA_ONCHAIN.md`](docs/semana3/ARQUITECTURA_ONCHAIN.md).

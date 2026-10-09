@@ -1,0 +1,2 @@
+# Dependencias de Node (cualquier carpeta del repositorio: frontend/supabase/tests/, tools/vendor-build/, etc.)
+node_modules/

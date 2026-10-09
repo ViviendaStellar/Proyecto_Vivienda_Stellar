@@ -1,0 +1,14 @@
+{
+  "name": "innlock-test-signer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Servicio local (127.0.0.1) que firma invocaciones del contrato escrow de testnet con las llaves de inn-constructora/inn-interventor/inn-admin, para no tener que cambiar de cuenta en Freighter en cada prueba. Solo testnet, solo localhost. No es parte del frontend ni se publica.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node __tests__/run.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
