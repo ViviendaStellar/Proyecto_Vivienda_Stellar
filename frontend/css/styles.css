@@ -582,3 +582,10 @@ table { font-size: 13px; } th { padding: 10px 13px; font-size: 10.5px; } td { pa
 .feat { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; max-width: none; padding: 0; }
 .feat li { align-items: center; gap: 7px; padding: 7px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; background: rgba(6,24,73,.45); }
 .feat li svg { width: 14px; height: 14px; color: #FFD54A; flex: none; }
+
+/* Login: la foto se ve limpia arriba y el texto va abajo, sobre un degradado oscuro (legible) */
+.login-art { justify-content: flex-start; background: linear-gradient(180deg, rgba(6,24,73,.50) 0%, rgba(6,24,73,0) 16%, rgba(6,24,73,0) 40%, rgba(6,24,73,.80) 62%, rgba(6,24,73,.96) 100%), url('../assets/img/login-familia.jpg') 52% 12% / cover no-repeat, linear-gradient(160deg, #0F3C99 0%, #0B2A6F 45%, #061849 100%); }
+.login-art .login-stack:nth-child(2) { margin-top: auto; }
+.login-art .login-foot { margin-top: 18px; }
+.login-art h1 { font-size: clamp(22px, 2.1vw, 30px); max-width: 20ch; }
+.feat li { font-size: 11.5px; padding: 6px 11px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); }
