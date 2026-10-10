@@ -209,6 +209,7 @@
       <div class="card card-pad"><div class="card-head"><h3>Lista de verificación</h3></div><div class="stack" style="gap:10px">${checks.map((x) => `<div class="row"><span class="di ${x[0] ? 'ic-ok' : 'ic-bad'}" style="width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:none">${I(x[0] ? 'check' : 'x')}</span><span style="font-size:14px;font-weight:600">${x[1]}</span></div>`).join('')}</div></div>
       <div class="card card-pad"><div class="card-head"><h3>¿Qué pasa después?</h3></div><ol class="flow"><li><b>Interventoría</b> revisa el presupuesto y el cronograma.</li><li><b>INN-LOCK</b> valida la documentación y activa el proyecto.</li><li>El cronograma <b>queda bloqueado</b> y se publica a los compradores.</li></ol></div>
       <div class="card card-pad"><label class="check" style="align-items:flex-start"><input type="checkbox" data-f="confirm" data-t="bool" ${F.confirm ? 'checked' : ''} style="margin-top:3px"> <span>Declaro que la información y los documentos son veraces y acepto que los fondos se custodien y desembolsen según este cronograma, previa aprobación del interventor.</span></label>
+        ${toggleFirmaPruebaHtml()}
         <button type="button" class="btn btn-primary btn-lg btn-block" style="margin-top:16px" data-w="submit">${I('send')}${F.editId ? 'Reenviar a interventoría' : 'Enviar a interventoría'}</button></div>
     </div></div>`;
   }
@@ -229,8 +230,72 @@
     if (!p.reg || p.reg.stage === 'activo') return '';
     const u = ctx.state.user, s = STAGES[p.reg.stage], last = p.reg.history[p.reg.history.length - 1];
     const msg = { interventor: 'El interventor está revisando el presupuesto y el cronograma de obra.', admin: 'El interventor aprobó el cronograma. Falta la validación final de INN-LOCK para activar el proyecto.', observado: 'El proyecto fue devuelto con observaciones. Corrígelo y reenvíalo.' }[p.reg.stage];
-    return `<div class="alert ${p.reg.stage === 'observado' ? 'a-bad' : 'a-info'} reveal" style="margin-bottom:22px">${I(s.i)}<div class="grow"><b>${s.l}</b><p>${msg}</p>${p.reg.stage === 'observado' && last ? `<p style="margin-top:6px"><b>Observación:</b> ${esc(last.text)}</p>` : ''}</div>${p.reg.stage === 'observado' && u.role === 'constructora' ? `<button class="btn btn-primary btn-sm" data-w="edit" data-id="${p.id}">${I('pen-line')}Editar y reenviar</button>` : ''}</div>`;
+    return `<div class="alert ${p.reg.stage === 'observado' ? 'a-bad' : 'a-info'} reveal" style="margin-bottom:22px">${I(s.i)}<div class="grow"><b>${s.l}</b><p>${msg}</p>${p.reg.stage === 'observado' && last ? `<p style="margin-top:6px"><b>Observación:</b> ${esc(last.text)}</p>` : ''}${chainInfoHtml(p)}</div>${p.reg.stage === 'observado' && u.role === 'constructora' ? `<button class="btn btn-primary btn-sm" data-w="edit" data-id="${p.id}">${I('pen-line')}Editar y reenviar</button>` : ''}</div>`;
   };
+
+  /* ---------- proveedor de firma: Freighter (real) o el servicio de prueba de tools/test-signer ---------- */
+  const CLAVE_FIRMA_PRUEBA = 'innlock.chain.pruebaLocal';
+  const usarFirmaPrueba = () => { try { return localStorage.getItem(CLAVE_FIRMA_PRUEBA) === '1'; } catch (e) { return false; } };
+  const fijarFirmaPrueba = (v) => { try { localStorage.setItem(CLAVE_FIRMA_PRUEBA, v ? '1' : '0'); } catch (e) { /* sin almacenamiento */ } };
+  const proveedorElegido = () => (usarFirmaPrueba() && window.ChainFirmantes ? window.ChainFirmantes.proveedorPruebaLocal() : undefined);
+  /** Casilla "Firmar con el servicio de pruebas", visible solo en testnet (nunca en modo simulado ni en modo real/Supabase). */
+  function toggleFirmaPruebaHtml() {
+    if (!(window.ChainDemo && window.ChainDemo.disponible())) return '';
+    return `<label class="check" style="font-size:12.5px;margin:10px 0;gap:8px"><input type="checkbox" data-chain-prueba ${usarFirmaPrueba() ? 'checked' : ''}> 🧪 Firmar con el servicio de pruebas (<code>tools/test-signer</code>), sin cambiar de cuenta en Freighter. Solo testnet/localhost; si el servicio no está corriendo, lo dice al intentar firmar.</label>`;
+  }
+
+  /**
+   * Estado on-chain (testnet) guardado para este proyecto, si existe. Nada
+   * de esto se muestra en modo simulado. El conteo "firmado N/3" sale del
+   * localStorage (sincrónico); la vigencia restante de cada firma necesita
+   * una lectura a la red (getLatestLedger), así que se deja un marcador
+   * (`[data-chain-pid]`) que `refrescarVigencia()` completa después de
+   * pintar la vista (ver mount.solicitudes/panel/info en init()).
+   */
+  function chainInfoHtml(p) {
+    if (!(window.ChainDemo && window.ChainDemo.disponible()) || !p.reg.chainProjectId) return '';
+    const estado = window.ChainRegister.obtenerEstado(p.reg.chainProjectId);
+    if (!estado) return '';
+    let texto, clase;
+    if (estado.status === 'confirmado') { texto = 'Activo en cadena'; clase = 'b-ok'; }
+    else if (estado.status === 'error') { texto = 'Error en la última operación en cadena'; clase = 'b-bad'; }
+    else {
+      const firmados = ['constructora', 'interventor', 'administrador'].filter((r) => estado.signedBy[r]).length;
+      texto = 'Firmado ' + firmados + '/3'; clase = 'b-info';
+    }
+    const link = p.reg.chainExplorerUrl ? ` · <a href="${esc(p.reg.chainExplorerUrl)}" target="_blank" rel="noopener">Ver en Stellar Expert</a>` : '';
+    return `<div class="muted" style="font-size:12.5px;margin-top:4px">${I('external-link')}On-chain (testnet): <span class="badge ${clase}" style="margin:0 4px">${esc(texto)}</span>${link}<div data-chain-pid="${esc(p.id)}"></div></div>`;
+  }
+
+  /** Completa, para cada marcador `[data-chain-pid]` pintado por chainInfoHtml, cuánto le queda de vigencia a cada firma (o si ya caducó). Lectura de solo consulta a la red; nunca firma ni bloquea el render. */
+  async function refrescarVigencia(view) {
+    if (!view || !(window.ChainDemo && window.ChainDemo.disponible())) return;
+    const nodos = Array.from(view.querySelectorAll('[data-chain-pid]'));
+    const etiquetas = { constructora: 'Constructora', interventor: 'Interventor', administrador: 'Administrador' };
+    for (const nodo of nodos) {
+      const p = ctx.projById(nodo.dataset.chainPid);
+      if (!p || !p.reg.chainProjectId) continue;
+      try {
+        const vig = await window.ChainRegister.vigenciaFirmas(p.reg.chainProjectId);
+        if (!vig || !nodo.isConnected) continue;
+        const miRol = { constructora: 'constructora', interventor: 'interventor', administrador: 'admin' };
+        const partes = Object.keys(etiquetas).map((rol) => {
+          const v = vig.roles[rol];
+          if (!v) return '';
+          if (!v.firmado) return etiquetas[rol] + ': sin firmar';
+          if (v.caducada) {
+            // Solo constructora/interventor pueden "volver a firmar sin más": el
+            // administrador firma y envía en el mismo paso, no se queda a medias.
+            const puedeRefirmar = rol !== 'administrador' && miRol[rol] === ctx.state.user.role;
+            const boton = puedeRefirmar ? ` <button class="btn btn-bad btn-sm" data-w="chain-refirmar" data-id="${esc(p.id)}" data-rol="${rol}">${I('refresh-cw')}Firmar de nuevo</button>` : '';
+            return etiquetas[rol] + ': firma caducada, debe firmar de nuevo' + boton;
+          }
+          return etiquetas[rol] + ': vence en ' + v.ledgersRestantes + ' ledgers (~' + Math.round(v.ledgersRestantes * 5 / 60) + ' min)';
+        }).filter(Boolean);
+        nodo.innerHTML = partes.length ? '<div style="margin-top:2px">' + partes.join('</div><div style="margin-top:2px">') + '</div>' : '';
+      } catch (e) { /* lectura de solo consulta: si falla, se deja el marcador vacío */ }
+    }
+  }
 
   /* ---------- solicitudes (interventor y administrador) ---------- */
   const reqProjects = () => { const u = ctx.state.user; return ctx.PROJECTS.filter((p) => p.reg && (u.role === 'admin' ? ['interventor', 'admin', 'observado'].includes(p.reg.stage) : p.interventor === u.interventor && ['interventor', 'admin', 'observado'].includes(p.reg.stage))); };
@@ -247,6 +312,7 @@
       <div class="facts" style="margin:18px 0">${[['coins', 'Presupuesto', U.moneyM(p.budget)], ['calendar', 'Duración', p.months + ' meses'], ['flag', 'Inicio → entrega', U.fmtMY(p.start) + ' → ' + U.fmtMY(p.end)], ['home', 'Unidades', p.units]].map((x) => `<div class="fact"><small>${I(x[0])}${x[1]}</small><b>${x[2]}</b></div>`).join('')}</div>
       <div class="grid g-2" style="gap:18px;align-items:start"><div class="stack" style="gap:10px">${checks.map((x) => `<div class="row"><span class="di ${x[0] ? 'ic-ok' : 'ic-bad'}" style="width:28px;height:28px;border-radius:9px;display:grid;place-items:center;flex:none">${I(x[0] ? 'check' : 'x')}</span><span style="font-size:14px;font-weight:600">${x[1]}</span></div>`).join('')}</div><div>${planChart(p.form.rows)}</div></div>
       <details class="det"><summary>Ver cronograma y desembolsos (${p.months} hitos)</summary><div class="table-wrap" style="max-height:340px;overflow:auto"><table><thead><tr><th>Mes</th><th>Fase</th><th>%</th><th>Desembolso</th><th>Acumulado</th><th>Actividades</th></tr></thead><tbody>${p.monthsData.map((m) => { cum += m.tranchePct; return `<tr><td style="text-transform:capitalize;white-space:nowrap"><b>${m.label}</b></td><td>${m.phaseName}</td><td class="num">${U.pct(m.tranchePct, 2)}</td><td class="num">${U.moneyM(p.budget * m.tranchePct / 100)}</td><td class="num">${U.pct(cum, 1)}</td><td style="font-size:13px;color:var(--text-2)">${esc(m.activities.join(' · '))}</td></tr>`; }).join('')}</tbody></table></div></details>
+      ${chainInfoHtml(p)}
       ${p.reg.history.length ? `<div class="hist" style="margin-top:18px">${p.reg.history.map((h) => `<div><b style="color:${h.t === 'observado' ? 'var(--bad)' : h.t.includes('aprob') || h.t === 'activado' ? 'var(--ok)' : 'var(--info)'}">${h.t}</b> · <span class="muted">${esc(h.by)} · ${U.fmtDT(h.d)}</span>${h.text ? `<div style="color:var(--text-2)">${esc(h.text)}</div>` : ''}</div>`).join('')}</div>` : ''}
       <div class="row row-wrap" style="margin-top:20px">${acts}</div></article>`;
   }
@@ -284,17 +350,36 @@
       onMount: (m, close) => { const b = $('#imp-go', m); if (b) b.addEventListener('click', () => { F.rows = res.rows.map((r) => ({ phase: r.phase, pct: r.pct, acts: r.acts })); if (res.meta.start) F.start = res.meta.start; if (res.meta.budget) F.budget = res.meta.budget; if (!F.name && res.meta.name) F.name = res.meta.name; saveDraft(); close(); render(); U.toast(res.rows.length + ' hitos cargados desde el archivo'); }); } });
   }
 
-  function submit() {
+  async function submit() {
     for (let n = 1; n <= 3; n++) { const e = checkStep(n); if (e.length) { F.step = n; render(e); return; } }
     if (!F.confirm) { render(['Debes aceptar la declaración para enviar el proyecto.']); return; }
     if (ctx.LIVE) { submitLive(); return; }
     const u = ctx.state.user, now = new Date().toISOString();
-    if (F.editId) {
-      const rec = ctx.db.projects[F.editId], reg = rec.reg; reg.stage = 'interventor'; reg.history.push({ t: 'reenviado', by: u.name, role: u.role, d: now, text: 'Proyecto corregido y reenviado a interventoría.' });
-      const np = build(F, F.editId, reg), old = ctx.PROJECTS.findIndex((x) => x.id === F.editId); ctx.PROJECTS[old] = np; rec.form = F; ctx.persist(); ctx.log('Reenvió el proyecto «' + np.name + '» a interventoría', 'send', np.id); ctx.setProject(np.id);
+    const editing = !!F.editId;
+    const rec = editing ? ctx.db.projects[F.editId] : null;
+    const reg = editing ? rec.reg : { stage: 'interventor', submittedOn: now, history: [] };
+
+    if (window.ChainDemo && window.ChainDemo.disponible()) {
+      // Objeto de solo lectura (mismo `reg`, cualquier id local) para poder
+      // calcular el cronograma on-chain ANTES de tocar reg.stage/history: si
+      // Freighter rechaza o cancela, el proyecto queda intacto y se puede
+      // reintentar el envío sin haber movido nada todavía.
+      const paraFirmar = build(F, editing ? F.editId : 'tmp', reg);
+      const proveedor = proveedorElegido();
+      U.toast(proveedor ? '🧪 Firmando el cronograma con el servicio de pruebas…' : 'Conecta Freighter con la cuenta de constructora y aprueba la firma del cronograma…', 'info');
+      try { await window.ChainDemo.firmarConstructora(paraFirmar, proveedor); ctx.persist(); }
+      catch (e) { U.toast(e.message || 'No se pudo firmar el cronograma en cadena. Vuelve a intentar el envío.', 'err'); return; }
+    }
+
+    let np;
+    if (editing) {
+      reg.stage = 'interventor'; reg.history.push({ t: 'reenviado', by: u.name, role: u.role, d: now, text: 'Proyecto corregido y reenviado a interventoría.' });
+      np = build(F, F.editId, reg);
+      const old = ctx.PROJECTS.findIndex((x) => x.id === F.editId); ctx.PROJECTS[old] = np; rec.form = F; ctx.persist(); ctx.log('Reenvió el proyecto «' + np.name + '» a interventoría', 'send', np.id); ctx.setProject(np.id);
     } else {
-      const id = 'n' + Date.now().toString(36), reg = { stage: 'interventor', submittedOn: now, history: [{ t: 'enviado', by: u.name, role: u.role, d: now, text: 'Proyecto registrado y enviado a interventoría.' }] };
-      const np = build(F, id, reg); ctx.PROJECTS.push(np); ctx.db.projects[id] = { form: F, reg }; delete ctx.db.drafts[u.id]; ctx.persist(); ctx.log('Registró el proyecto «' + np.name + '»', 'plus', id); ctx.setProject(id);
+      reg.history.push({ t: 'enviado', by: u.name, role: u.role, d: now, text: 'Proyecto registrado y enviado a interventoría.' });
+      np = build(F, 'n' + Date.now().toString(36), reg);
+      ctx.PROJECTS.push(np); ctx.db.projects[np.id] = { form: F, reg }; delete ctx.db.drafts[u.id]; ctx.persist(); ctx.log('Registró el proyecto «' + np.name + '»', 'plus', np.id); ctx.setProject(np.id);
     }
     F = null; U.confetti();
     U.modal({ title: 'Proyecto enviado', body: `<div class="alert a-ok">${I('check-circle-2')}<div><b>¡Listo!</b><p>Tu proyecto quedó en revisión del interventor. Te avisaremos si hay observaciones o cuando se active.</p></div></div>`, footer: '<button class="btn btn-primary" data-close>Entendido</button>' });
@@ -339,19 +424,89 @@
       case 'chg-open': changeModal(ctx.projById(t.dataset.id)); break;
       case 'chg-approve': { const p = ctx.projById(t.dataset.id); chgApprove(p, findChange(p.id, t.dataset.c)); break; }
       case 'chg-reject': { const p = ctx.projById(t.dataset.id); chgReject(p, findChange(p.id, t.dataset.c)); break; }
+      case 'chain-refirmar': chainRefirmar(ctx.projById(t.dataset.id), t.dataset.rol, t); break;
+    }
+  }
+  /** Vuelve a firmar SOLO la entrada de un rol cuya firma ya caducó (constructora o interventor). No cambia la etapa del proyecto: solo refresca esa firma. */
+  async function chainRefirmar(p, rol, boton) {
+    if (!(window.ChainDemo && window.ChainDemo.disponible())) return;
+    const proveedor = proveedorElegido();
+    const original = boton.innerHTML;
+    boton.disabled = true; boton.innerHTML = proveedor ? 'Firmando (modo prueba)…' : 'Conecta Freighter y aprueba…';
+    try {
+      if (rol === 'constructora') await window.ChainDemo.firmarConstructora(p, proveedor);
+      else if (rol === 'interventor') await window.ChainDemo.firmarInterventor(p, proveedor);
+      ctx.persist();
+      U.toast('Firma renovada.');
+      ctx.refresh();
+    } catch (e) {
+      U.toast(e.message || 'No se pudo volver a firmar.', 'err');
+      boton.disabled = false; boton.innerHTML = original;
     }
   }
   function solApprove(p) {
     const items = ['Revisé el presupuesto y su distribución por hitos', 'Los hitos son medibles y verificables en obra', 'La duración y las fases son razonables para el alcance', 'Los planos y la licencia corresponden al proyecto'];
-    U.modal({ title: 'Aprobar cronograma · ' + esc(p.name), body: `<div class="alert a-info" style="margin-bottom:16px">${I('lock')}<p>Al aprobar, el cronograma queda <b>bloqueado</b>: cualquier cambio posterior requerirá una solicitud de modificación.</p></div><div class="stack" style="gap:10px">${items.map((t) => `<label class="check" style="padding:12px 14px;border:1px solid var(--line);border-radius:12px"><input type="checkbox" class="ck"> ${t}</label>`).join('')}</div><div class="field" style="margin:16px 0 0"><label for="note">Comentario (opcional)</label><textarea class="input" id="note"></textarea></div>`,
+    U.modal({ title: 'Aprobar cronograma · ' + esc(p.name), body: `<div class="alert a-info" style="margin-bottom:16px">${I('lock')}<p>Al aprobar, el cronograma queda <b>bloqueado</b>: cualquier cambio posterior requerirá una solicitud de modificación.</p></div><div class="stack" style="gap:10px">${items.map((t) => `<label class="check" style="padding:12px 14px;border:1px solid var(--line);border-radius:12px"><input type="checkbox" class="ck"> ${t}</label>`).join('')}</div><div class="field" style="margin:16px 0 0"><label for="note">Comentario (opcional)</label><textarea class="input" id="note"></textarea></div>${toggleFirmaPruebaHtml()}`,
       footer: `<button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-ok" id="go" disabled>${I('fingerprint')}Aprobar y firmar</button>`,
-      onMount: (m, close) => { const cks = $$('.ck', m), go = $('#go', m); cks.forEach((k) => k.addEventListener('change', () => { go.disabled = !cks.every((x) => x.checked); })); go.addEventListener('click', () => { if (ctx.LIVE) { const note = $('#note', m).value; close(); ctx.act(() => ctx.live.reviewProject(p.id, true, note), 'Cronograma aprobado. Pasa a validación de la plataforma.'); return; } setStage(p, 'admin', 'aprobado por interventor', $('#note', m).value); ctx.log('Aprobó el cronograma de «' + p.name + '»', 'check-circle-2', p.id); close(); U.toast('Cronograma aprobado. Pasa a validación de la plataforma.'); ctx.refresh(); }); } });
+      onMount: (m, close) => { const cks = $$('.ck', m), go = $('#go', m), original = go.innerHTML; cks.forEach((k) => k.addEventListener('change', () => { go.disabled = !cks.every((x) => x.checked); })); go.addEventListener('click', async () => {
+        const note = $('#note', m).value;
+        if (ctx.LIVE) { close(); ctx.act(() => ctx.live.reviewProject(p.id, true, note), 'Cronograma aprobado. Pasa a validación de la plataforma.'); return; }
+        if (window.ChainDemo && window.ChainDemo.disponible()) {
+          const proveedor = proveedorElegido();
+          go.disabled = true; go.innerHTML = proveedor ? '🧪 Firmando (modo prueba)…' : 'Conecta Freighter (interventor) y aprueba…';
+          try { await window.ChainDemo.firmarInterventor(p, proveedor); ctx.persist(); }
+          catch (e) { U.toast(e.message || 'No se pudo firmar en cadena.', 'err'); go.disabled = false; go.innerHTML = original; return; }
+        }
+        setStage(p, 'admin', 'aprobado por interventor', note); ctx.log('Aprobó el cronograma de «' + p.name + '»', 'check-circle-2', p.id); close(); U.toast('Cronograma aprobado. Pasa a validación de la plataforma.'); ctx.refresh();
+      }); } });
   }
   function solActivate(p) {
     const cm = ctx.compliance(ctx.company(p.constructora));
-    U.modal({ title: 'Validar y activar · ' + esc(p.name), body: cm.blocked.length ? `<div class="alert a-bad">${I('shield-alert')}<div><b>No se puede activar</b><p>${cm.blocked.map((d) => d.title).join(', ')} está vencido. La constructora debe renovarlo.</p></div></div>` : `<div class="alert a-ok" style="margin-bottom:12px">${I('shield-check')}<div><b>Documentación vigente</b><p>El proyecto se publicará como «En construcción» y comenzará el hito del primer mes. El cronograma queda bloqueado.</p></div></div><div class="field" style="margin:0"><label for="note">Comentario (opcional)</label><textarea class="input" id="note"></textarea></div>`,
+    U.modal({ title: 'Validar y activar · ' + esc(p.name), body: cm.blocked.length ? `<div class="alert a-bad">${I('shield-alert')}<div><b>No se puede activar</b><p>${cm.blocked.map((d) => d.title).join(', ')} está vencido. La constructora debe renovarlo.</p></div></div>` : `<div class="alert a-ok" style="margin-bottom:12px">${I('shield-check')}<div><b>Documentación vigente</b><p>El proyecto se publicará como «En construcción» y comenzará el hito del primer mes. El cronograma queda bloqueado.</p></div></div><div class="field" style="margin:0"><label for="note">Comentario (opcional)</label><textarea class="input" id="note"></textarea></div>${toggleFirmaPruebaHtml()}`,
       footer: cm.blocked.length ? '<button class="btn btn-ghost" data-close>Entendido</button>' : `<button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-ok" id="go">${I('check-circle-2')}Activar proyecto</button>`,
-      onMount: (m, close) => { const b = $('#go', m); if (b) b.addEventListener('click', () => { if (ctx.LIVE) { const note = $('#note', m).value; close(); ctx.act(async () => { await ctx.live.activateProject(p.id, true, note); U.confetti(); }, 'Proyecto activado y publicado'); return; } setStage(p, 'activo', 'activado', $('#note', m).value); ctx.log('Activó el proyecto «' + p.name + '»', 'shield-check', p.id); close(); U.confetti(); U.toast('Proyecto activado y publicado'); ctx.refresh(); }); } });
+      onMount: (m, close) => { const b = $('#go', m); if (!b) return; const original = b.innerHTML; b.addEventListener('click', async () => {
+        const note = $('#note', m) ? $('#note', m).value : '';
+        if (ctx.LIVE) { close(); ctx.act(async () => { await ctx.live.activateProject(p.id, true, note); U.confetti(); }, 'Proyecto activado y publicado'); return; }
+        if (window.ChainDemo && window.ChainDemo.disponible()) {
+          const proveedor = proveedorElegido();
+          b.disabled = true; b.innerHTML = proveedor ? '🧪 Firmando y enviando (modo prueba)…' : 'Conecta Freighter (administrador) y firma…';
+          let resultado;
+          try { resultado = await window.ChainDemo.firmarYEnviarAdministrador(p, proveedor); }
+          catch (e) {
+            // Si la red ya confirmó la transacción (aunque falló un paso
+            // posterior, como releer get_project), no hay que volver a
+            // firmar ni a enviar: se ofrece el mismo botón de reintento que
+            // usamos para un fallo al guardar.
+            const estado = window.ChainDemo.estadoGuardado(p);
+            if (estado && estado.status === 'confirmado') {
+              p.reg.chainTxHash = estado.txHash; p.reg.chainExplorerUrl = window.ChainConfig.explorerUrl + '/tx/' + estado.txHash; p.reg.chainConfirmedAt = estado.confirmedAt; ctx.persist();
+              U.toast('La transacción ya quedó confirmada en testnet; falta terminar de guardar.', 'err');
+              activarConReintento(p, note, close);
+              return;
+            }
+            U.toast(e.message || 'No se pudo activar en cadena.', 'err'); b.disabled = false; b.innerHTML = original; return;
+          }
+          p.reg.chainTxHash = resultado.txHash; p.reg.chainExplorerUrl = resultado.explorerUrl; p.reg.chainConfirmedAt = new Date().toISOString();
+          ctx.persist();
+          try { setStage(p, 'activo', 'activado', note); }
+          catch (e) { activarConReintento(p, note, close); return; }
+          ctx.log('Activó el proyecto «' + p.name + '»', 'shield-check', p.id); close(); U.confetti(); U.toast('Proyecto activado y publicado'); ctx.refresh(); return;
+        }
+        setStage(p, 'activo', 'activado', note); ctx.log('Activó el proyecto «' + p.name + '»', 'shield-check', p.id); close(); U.confetti(); U.toast('Proyecto activado y publicado'); ctx.refresh();
+      }); } });
+  }
+  /** Si la cadena ya confirmó la activación pero falló el guardado local, deja reintentar SOLO el guardado (sin volver a firmar ni enviar). */
+  function activarConReintento(p, note, closeAnterior) {
+    closeAnterior();
+    U.modal({ title: 'Activación pendiente', body: `<div class="alert a-bad">${I('alert-triangle')}<div><b>La transacción quedó confirmada en testnet</b><p>Pero no se pudo guardar la activación en la aplicación. Puedes reintentar: no se vuelve a firmar ni a enviar nada a la red.</p></div></div>`,
+      footer: `<button class="btn btn-ok" id="retry">${I('refresh-cw')}Reintentar guardado</button>`,
+      onMount: (m, close) => $('#retry', m).addEventListener('click', () => {
+        if (!window.ChainDemo.yaConfirmadoEnCadena(p)) { U.toast('La cadena ya no confirma esta transacción; no se reintenta.', 'err'); return; }
+        try { setStage(p, 'activo', 'activado', note); }
+        catch (e) { U.toast('Sigue sin poder guardarse: ' + (e.message || ''), 'err'); return; }
+        ctx.log('Activó el proyecto «' + p.name + '»', 'shield-check', p.id); close(); U.confetti(); U.toast('Proyecto activado y publicado'); ctx.refresh();
+      })
+    });
   }
   function solObserve(p) {
     U.modal({ title: 'Devolver con observaciones', body: `<p class="muted" style="margin-bottom:14px">Indica qué debe corregir la constructora en <b>${esc(p.name)}</b>.</p><div class="field" style="margin:0"><label for="obs">Observaciones</label><textarea class="input" id="obs" placeholder="Ej.: La fase de estructura concentra demasiado presupuesto en un solo mes…"></textarea></div>`,
@@ -361,6 +516,8 @@
 
   /* ============ entrada de datos ============ */
   function onField(e) {
+    const casillaPrueba = e.target.closest('[data-chain-prueba]');
+    if (casillaPrueba) { fijarFirmaPrueba(casillaPrueba.checked); return; }
     const el = e.target.closest('[data-f]'); if (!el || !F) return; const path = el.dataset.f, t = el.dataset.t; let v;
     if (t === 'bool') v = el.checked;
     else if (t === 'int' || t === 'num') v = el.value === '' ? '' : Number(el.value);
@@ -458,7 +615,7 @@
     ctx = c;
     document.addEventListener('click', onClick);
     document.addEventListener('input', onField); document.addEventListener('change', onField); document.addEventListener('change', onFile);
-    return { views: { nuevo: viewNuevo, solicitudes: viewSolicitudes }, mount: { nuevo: () => { if (F && F.step === 3) updateSched(); } }, banner: bannerHtml, notifications, pendingCount, changesCard, changeButton, STAGES,
+    return { views: { nuevo: viewNuevo, solicitudes: viewSolicitudes }, mount: { nuevo: (view) => { if (F && F.step === 3) updateSched(); refrescarVigencia(view); }, solicitudes: refrescarVigencia, panel: refrescarVigencia, info: refrescarVigencia }, banner: bannerHtml, notifications, pendingCount, changesCard, changeButton, STAGES,
       resetForm: () => { F = null; } };
   }
   window.Wizard = { init, hydrate, build, STAGES };

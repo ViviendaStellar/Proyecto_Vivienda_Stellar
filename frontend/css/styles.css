@@ -573,12 +573,3 @@ table { font-size: 13px; } th { padding: 10px 13px; font-size: 10.5px; } td { pa
 @keyframes busy { from { background-position: -50% 0; } to { background-position: 150% 0; } }
 .boot { min-height: 100vh; display: grid; place-content: center; justify-items: center; gap: 14px; color: var(--muted); }
 .boot svg { width: 64px; animation: float 2.4s ease-in-out infinite; }
-
-/* Login: panel lateral compacto con foto de fondo (assets/img/login-familia.jpg; si no existe se ve el degradado) */
-.login-art { background: linear-gradient(180deg, rgba(6,24,73,.55) 0%, rgba(6,24,73,.15) 38%, rgba(6,24,73,.15) 55%, rgba(6,24,73,.82) 100%), url('../assets/img/login-familia.jpg') center / cover no-repeat, linear-gradient(160deg, #0F3C99 0%, #0B2A6F 45%, #061849 100%); }
-.login-art::before, .login-art .skyline { display: none; }
-.login-art h1 { font-size: clamp(24px, 2.4vw, 33px); max-width: 17ch; text-shadow: 0 2px 18px rgba(0,0,0,.35); }
-.login-art .lead { font-size: 13.5px; margin-top: 10px; max-width: 38ch; color: rgba(255,255,255,.88); text-shadow: 0 1px 12px rgba(0,0,0,.4); }
-.feat { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; max-width: none; padding: 0; }
-.feat li { align-items: center; gap: 7px; padding: 7px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; background: rgba(6,24,73,.45); }
-.feat li svg { width: 14px; height: 14px; color: #FFD54A; flex: none; }

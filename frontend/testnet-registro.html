@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>INN-LOCK · Registro de prueba en testnet</title>
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  body { background: var(--bg); color: var(--text); font-family: var(--font); max-width: 880px; margin: 0 auto; padding: 24px 20px 80px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  p.lead { color: var(--text-2); margin: 0 0 24px; }
+  .paso { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; margin-bottom: 18px; }
+  .paso h2 { font-size: 16px; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+  .paso h2 .n { width: 24px; height: 24px; border-radius: 50%; background: var(--brand); color: var(--brand-ink); font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  label { display: block; font-size: 13px; color: var(--text-2); margin: 10px 0 4px; }
+  input[type=text], input[type=number], textarea { width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid var(--line-2); border-radius: var(--r-sm); font-family: inherit; font-size: 13px; background: var(--surface); color: var(--text); }
+  textarea { font-family: ui-monospace, monospace; min-height: 140px; }
+  button { background: var(--brand); color: var(--brand-ink); border: none; border-radius: var(--r-sm); padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  button.secundario { background: var(--surface-2); color: var(--text); }
+  .roles { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; font-size: 12px; }
+  .roles div { background: var(--surface-2); border-radius: var(--r-sm); padding: 8px; word-break: break-all; }
+  .roles b { display: block; margin-bottom: 2px; }
+  pre { background: var(--surface-2); border-radius: var(--r-sm); padding: 10px; font-size: 11px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
+  .msg { border-radius: var(--r-sm); padding: 10px 12px; font-size: 13px; margin-top: 10px; }
+  .msg.ok { background: var(--ok-bg); color: var(--ok); }
+  .msg.bad { background: var(--bad-bg); color: var(--bad); }
+  .msg.info { background: var(--info-bg); color: var(--info); }
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+  .badge.ok { background: var(--ok-bg); color: var(--ok); }
+  .badge.muted { background: var(--surface-3); color: var(--muted); }
+  a { color: var(--brand); }
+</style>
+</head>
+<body>
+<h1>🧪 Registro de prueba en testnet</h1>
+<p class="lead">Pantalla aparte para probar <code>register_project</code> con las 3 firmas reales de Freighter, paso a paso. No toca el asistente de "Registrar proyecto" de la demo. Modo de cadena actual: <b id="modo-actual">—</b> · <a href="?chain=testnet">forzar testnet</a> · <a href="?chain=simulado">forzar simulado</a></p>
+
+<div class="paso" id="aviso-modo" style="display:none"></div>
+
+<div class="paso">
+  <h2><span class="n">1</span> Datos del proyecto y cronograma</h2>
+  <label>UUID del proyecto</label>
+  <input type="text" id="f-project-id">
+  <button type="button" class="secundario" id="btn-generar-uuid">Generar uno nuevo</button>
+
+  <label>Presupuesto (XLM)</label>
+  <input type="number" id="f-presupuesto" value="100" min="1" step="1">
+
+  <label>Roles de prueba (de contracts/escrow/deployments/testnet.json)</label>
+  <div class="roles">
+    <div><b>Constructora</b><span id="r-constructora"></span></div>
+    <div><b>Interventor</b><span id="r-interventor"></span></div>
+    <div><b>Administrador/fiduciaria</b><span id="r-administrador"></span></div>
+  </div>
+
+  <label>Hitos (JSON editable — 6 a 60, porcentajes en base 10000, fechas en segundos Unix)</label>
+  <textarea id="f-hitos"></textarea>
+  <button type="button" class="secundario" id="btn-hitos-ejemplo">Rellenar con 6 hitos de ejemplo (fechas futuras)</button>
+
+  <div>
+    <button type="button" id="btn-preparar">Calcular hash y guardar</button>
+  </div>
+  <div id="out-preparar"></div>
+</div>
+
+<div class="paso">
+  <h2><span class="n">2</span> Firma de la constructora <span class="badge muted" id="badge-constructora">pendiente</span></h2>
+  <p style="font-size:13px;color:var(--text-2)">Conecta Freighter con la cuenta <b>inn-constructora</b>. Esta firma se guarda en tu navegador (localStorage); todavía no se envía nada a la red.</p>
+  <button type="button" id="btn-firma-constructora">Conectar Freighter y firmar (constructora)</button>
+  <div id="out-constructora"></div>
+</div>
+
+<div class="paso">
+  <h2><span class="n">3</span> Firma del interventor <span class="badge muted" id="badge-interventor">pendiente</span></h2>
+  <button type="button" class="secundario" id="btn-resumen-interventor">Ver resumen de lo que voy a firmar</button>
+  <div id="out-resumen-interventor"></div>
+  <button type="button" id="btn-firma-interventor" disabled>Conectar Freighter y firmar (interventor)</button>
+  <div id="out-interventor"></div>
+</div>
+
+<div class="paso">
+  <h2><span class="n">4</span> Firma y envío del administrador/fiduciaria <span class="badge muted" id="badge-administrador">pendiente</span></h2>
+  <p style="font-size:13px;color:var(--text-2)">
+    Conecta Freighter con la cuenta <b>inn-admin</b> (el administrador/fiduciaria: quien confirma los pagos y paga la tarifa de esta transacción). Esta vez Freighter va a pedir <b>dos aprobaciones, en este orden</b>:
+    <br>1) primero la <b>autorización</b> de <code>register_project</code> para la cuenta del administrador (igual que hicieron la constructora y el interventor),
+    <br>2) después la <b>transacción completa</b> (porque el administrador es quien la envía a la red y paga la tarifa).
+    <br>Recién con esas dos aprobaciones el proyecto queda registrado en testnet.
+  </p>
+  <button type="button" class="secundario" id="btn-resumen-administrador">Ver resumen de lo que voy a firmar</button>
+  <div id="out-resumen-administrador"></div>
+  <button type="button" id="btn-firma-administrador" disabled>Conectar Freighter, firmar y enviar (administrador/fiduciaria)</button>
+  <div id="out-administrador"></div>
+</div>
+
+<div class="paso">
+  <h2>Estado guardado (depuración)</h2>
+  <button type="button" class="secundario" id="btn-ver-estado">Mostrar</button>
+  <button type="button" class="secundario" id="btn-reiniciar">Borrar estado de este proyecto</button>
+  <pre id="out-estado" style="display:none"></pre>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/chain/config.js"></script>
+<script src="js/chain/uuid.js"></script>
+<script src="js/chain/hash.js"></script>
+<script src="js/chain/canonical.js"></script>
+<script src="js/chain/args.js"></script>
+<script src="js/chain/errors.js"></script>
+<script src="js/chain/freighter.js"></script>
+<script src="js/chain/contract.js"></script>
+<script src="js/chain/register.js"></script>
+<script>
+(function () {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+
+  function msg(el, texto, tipo) {
+    el.innerHTML = '<div class="msg ' + (tipo || 'info') + '">' + texto + '</div>';
+  }
+  function limpiar(el) { el.innerHTML = ''; }
+
+  function proyectoId() { return $('f-project-id').value.trim(); }
+
+  function actualizarInsignias() {
+    const id = proyectoId();
+    const state = id ? window.ChainRegister.obtenerEstado(id) : null;
+    const set = (badgeId, listo) => {
+      const b = $(badgeId);
+      b.textContent = listo ? 'firmado' : 'pendiente';
+      b.className = 'badge ' + (listo ? 'ok' : 'muted');
+    };
+    set('badge-constructora', !!(state && state.signedBy.constructora));
+    set('badge-interventor', !!(state && state.signedBy.interventor));
+    set('badge-administrador', !!(state && state.signedBy.administrador));
+    // El botón de la constructora necesita que el Paso 1 ya haya guardado
+    // datos para ESTE UUID — si no, antes daba un error fácil de pasar por
+    // alto ("No hay datos guardados...") en vez de simplemente no dejar.
+    $('btn-firma-constructora').disabled = !state;
+    $('btn-firma-interventor').disabled = !(state && state.signedBy.constructora);
+    $('btn-firma-administrador').disabled = !(state && state.signedBy.interventor);
+  }
+
+  function mostrarAvisoModo() {
+    const aviso = $('aviso-modo');
+    $('modo-actual').textContent = window.ChainConfig.mode;
+    if (!window.ChainConfig.isTestnet) {
+      aviso.style.display = '';
+      msg(aviso, 'Estás en modo <b>simulado</b>: esta pantalla necesita modo <b>testnet</b> para funcionar de verdad. Usa el enlace "forzar testnet" de arriba.', 'bad');
+    } else {
+      aviso.style.display = 'none';
+    }
+  }
+
+  function rellenarRoles() {
+    const r = window.ChainConfig.testRoles;
+    $('r-constructora').textContent = r.constructora;
+    $('r-interventor').textContent = r.interventor;
+    $('r-administrador').textContent = r.administrador;
+  }
+
+  function hitosDeEjemplo() {
+    const ahora = Math.floor(Date.now() / 1000);
+    const pcts = [1700, 1700, 1700, 1700, 1700, 1500];
+    return pcts.map((pct, i) => ({ deadline: ahora + (i + 1) * 86400, percentageBps: pct }));
+  }
+
+  $('btn-generar-uuid').addEventListener('click', () => {
+    $('f-project-id').value = crypto.randomUUID();
+    actualizarInsignias();
+  });
+  $('f-project-id').addEventListener('input', actualizarInsignias);
+
+  $('btn-hitos-ejemplo').addEventListener('click', () => {
+    $('f-hitos').value = JSON.stringify(hitosDeEjemplo(), null, 2);
+  });
+
+  $('btn-preparar').addEventListener('click', async () => {
+    const out = $('out-preparar');
+    limpiar(out);
+    try {
+      const id = proyectoId();
+      if (!id) throw new Error('Pon o genera un UUID de proyecto primero.');
+      const hitos = JSON.parse($('f-hitos').value || '[]');
+      const presupuestoXlm = Number($('f-presupuesto').value);
+      if (!(presupuestoXlm > 0)) throw new Error('El presupuesto debe ser mayor que cero.');
+      const presupuestoStroops = BigInt(Math.round(presupuestoXlm * 10000000));
+
+      const datos = {
+        projectId: id,
+        constructora: window.ChainConfig.testRoles.constructora,
+        interventor: window.ChainConfig.testRoles.interventor,
+        administrador: window.ChainConfig.testRoles.administrador,
+        token: window.ChainConfig.tokenContractId,
+        presupuestoTotal: presupuestoStroops.toString(),
+        hitos
+      };
+      const state = await window.ChainRegister.prepararProyecto(datos);
+      msg(out, 'Guardado. Hash del cronograma (SHA-256 del JSON canónico):<br><code>' + state.hashCronograma + '</code>', 'ok');
+      actualizarInsignias();
+    } catch (e) {
+      msg(out, window.ChainErrors.traducir(e), 'bad');
+    }
+  });
+
+  $('btn-firma-constructora').addEventListener('click', async () => {
+    const out = $('out-constructora');
+    limpiar(out);
+    try {
+      const id = proyectoId();
+      if (!id) throw new Error('Falta el UUID del proyecto.');
+      msg(out, 'Revisa Freighter: va a pedir conectar la cuenta y luego aprobar la autorización…', 'info');
+      await window.ChainRegister.firmarConstructora(id);
+      msg(out, 'Firma de la constructora guardada (1 de 3).', 'ok');
+      actualizarInsignias();
+    } catch (e) {
+      msg(out, window.ChainErrors.traducir(e), 'bad');
+    }
+  });
+
+  function renderResumen(out, resumen) {
+    const hitosTxt = resumen.state.hitos.map((h, i) => (i + 1) + '. ' + (h.percentageBps / 100) + '% — vence ' + new Date(h.deadline * 1000).toLocaleString()).join('<br>');
+    out.innerHTML =
+      '<div class="msg ' + (resumen.coincide ? 'ok' : 'bad') + '">' +
+      (resumen.coincide ? '✅ El hash recalculado coincide con el que se firmó.' : '⚠️ El hash recalculado NO coincide — algo cambió, no firmes.') +
+      '</div>' +
+      '<pre>Proyecto: ' + resumen.state.projectId + '\n' +
+      'Presupuesto: ' + (Number(resumen.state.presupuestoTotal) / 10000000) + ' XLM\n' +
+      'Constructora: ' + resumen.state.constructora + '\n' +
+      'Interventor: ' + resumen.state.interventor + '\n' +
+      'Administrador/fiduciaria: ' + resumen.state.administrador + '\n' +
+      'Token: ' + resumen.state.token + '\n' +
+      'Hash guardado:      ' + resumen.state.hashCronograma + '\n' +
+      'Hash recalculado:   ' + resumen.hashRecalculado + '</pre>' +
+      '<div style="font-size:13px">Hitos:<br>' + hitosTxt + '</div>';
+  }
+
+  $('btn-resumen-interventor').addEventListener('click', async () => {
+    const out = $('out-resumen-interventor');
+    limpiar(out);
+    try {
+      const resumen = await window.ChainRegister.resumenParaFirmar(proyectoId());
+      renderResumen(out, resumen);
+    } catch (e) { msg(out, window.ChainErrors.traducir(e), 'bad'); }
+  });
+
+  $('btn-firma-interventor').addEventListener('click', async () => {
+    const out = $('out-interventor');
+    limpiar(out);
+    try {
+      msg(out, 'Revisa Freighter…', 'info');
+      await window.ChainRegister.firmarInterventor(proyectoId());
+      msg(out, 'Firma del interventor guardada (2 de 3).', 'ok');
+      actualizarInsignias();
+    } catch (e) { msg(out, window.ChainErrors.traducir(e), 'bad'); }
+  });
+
+  $('btn-resumen-administrador').addEventListener('click', async () => {
+    const out = $('out-resumen-administrador');
+    limpiar(out);
+    try {
+      const resumen = await window.ChainRegister.resumenParaFirmar(proyectoId());
+      renderResumen(out, resumen);
+    } catch (e) { msg(out, window.ChainErrors.traducir(e), 'bad'); }
+  });
+
+  $('btn-firma-administrador').addEventListener('click', async () => {
+    const out = $('out-administrador');
+    limpiar(out);
+    try {
+      msg(out, 'Revisa Freighter (firma la autorización y luego la transacción completa)… esto puede tardar unos segundos al enviar y confirmar.', 'info');
+      const r = await window.ChainRegister.firmarYEnviarAdministrador(proyectoId());
+      msg(out,
+        '✅ Proyecto <b>activo en cadena</b>.<br>' +
+        'tx: <code>' + r.txHash + '</code><br>' +
+        '<a href="' + r.explorerUrl + '" target="_blank" rel="noopener">Ver en el explorador ↗</a><br>' +
+        'Releído con get_project — constructora: ' + r.proyectoOnChain.constructora,
+        'ok'
+      );
+      try {
+        localStorage.setItem('innlock.onchain.' + proyectoId(), JSON.stringify({ status: 'confirmada', txHash: r.txHash, confirmedAt: new Date().toISOString() }));
+      } catch (e) { /* si no hay almacenamiento, no es grave */ }
+      actualizarInsignias();
+    } catch (e) { msg(out, window.ChainErrors.traducir(e), 'bad'); }
+  });
+
+  $('btn-ver-estado').addEventListener('click', () => {
+    const pre = $('out-estado');
+    const state = window.ChainRegister.obtenerEstado(proyectoId());
+    pre.style.display = '';
+    pre.textContent = state ? JSON.stringify(state, null, 2) : '(sin datos guardados para este UUID)';
+  });
+
+  $('btn-reiniciar').addEventListener('click', () => {
+    const id = proyectoId();
+    if (id) localStorage.removeItem('innlock.chain.register.' + id);
+    $('out-estado').style.display = 'none';
+    actualizarInsignias();
+  });
+
+  // Arranque
+  $('f-project-id').value = crypto.randomUUID();
+  $('f-hitos').value = JSON.stringify(hitosDeEjemplo(), null, 2);
+  rellenarRoles();
+  mostrarAvisoModo();
+  actualizarInsignias();
+})();
+</script>
+</body>
+</html>
