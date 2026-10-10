@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="420" viewBox="0 0 1240 420" font-family="'Plus Jakarta Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif">
+  <defs>
+    <linearGradient id="bgFondo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#080D1A"/>
+      <stop offset="50%" stop-color="#0D1527"/>
+      <stop offset="100%" stop-color="#070B14"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1D4ED8"/>
+      <stop offset="50%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#0EA5E9"/>
+    </linearGradient>
+    <linearGradient id="cyanBadge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="greenBadge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <filter id="sombraCard" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+    <marker id="arrowMuted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,1 L9,5 L0,9 z" fill="#475569"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,1 L9,5 L0,9 z" fill="#34D399"/>
+    </marker>
+    <pattern id="techGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1E293B" stroke-width="0.5" stroke-opacity="0.5"/>
+    </pattern>
+    <clipPath id="marcoPrincipal">
+      <rect x="0" y="0" width="1240" height="420" rx="20"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#marcoPrincipal)">
+    <rect x="0" y="0" width="1240" height="420" fill="url(#bgFondo)"/>
+    <rect x="0" y="0" width="1240" height="420" fill="url(#techGrid)"/>
+    <circle cx="120" cy="100" r="160" fill="#1D4ED8" fill-opacity="0.12" filter="blur(50px)"/>
+    <circle cx="1120" cy="320" r="180" fill="#059669" fill-opacity="0.10" filter="blur(55px)"/>
+
+    <rect x="0" y="0" width="1240" height="84" fill="#0B132B" fill-opacity="0.85"/>
+    <line x1="0" y1="84" x2="1240" y2="84" stroke="#1E293B" stroke-width="1.5"/>
+    <circle cx="38" cy="42" r="14" fill="url(#headerGrad)"/>
+    <path d="M32,42 L37,47 L45,37" stroke="#FFFFFF" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="64" y="38" font-size="21" font-weight="800" fill="#FFFFFF" letter-spacing="-0.3">Las 3 firmas de register_project, en orden</text>
+    <text x="64" y="61" font-size="12.5" font-weight="500" fill="#94A3B8">Cada una en su propia cuenta de Freighter — nunca se saltan pasos ni se repiten de más</text>
+
+    <!-- Paso 1: Constructora -->
+    <g transform="translate(30, 120)">
+      <rect x="0" y="0" width="340" height="230" rx="14" fill="#0C1322" stroke="#3B82F6" stroke-width="1.6" filter="url(#sombraCard)"/>
+      <circle cx="34" cy="34" r="18" fill="url(#cyanBadge)"/>
+      <text x="34" y="40" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">1</text>
+      <text x="62" y="30" font-size="15" font-weight="800" fill="#FFFFFF">🏗️ Constructora</text>
+      <text x="62" y="48" font-size="11.5" fill="#93C5FD" font-family="monospace">inn-constructora</text>
+
+      <text x="20" y="84" font-size="12" fill="#CBD5E1">1. Cambia Freighter a esta cuenta</text>
+      <text x="20" y="104" font-size="12" fill="#CBD5E1">2. "Conectar Freighter y firmar"</text>
+      <text x="20" y="124" font-size="12" fill="#CBD5E1">3. Aprueba la ventana de autorización</text>
+
+      <rect x="20" y="144" width="300" height="66" rx="8" fill="#0A1A2E" stroke="#1E3A8A"/>
+      <text x="32" y="166" font-size="11" font-weight="700" fill="#60A5FA">Qué firma:</text>
+      <text x="32" y="184" font-size="11" fill="#CBD5E1">el presupuesto, el cronograma</text>
+      <text x="32" y="200" font-size="11" fill="#CBD5E1">y su hash — quedan bloqueados</text>
+    </g>
+
+    <path d="M 382 235 L 428 235" stroke="#475569" stroke-width="2.5" fill="none" marker-end="url(#arrowMuted)"/>
+
+    <!-- Paso 2: Interventor -->
+    <g transform="translate(450, 120)">
+      <rect x="0" y="0" width="340" height="230" rx="14" fill="#0C1322" stroke="#10B981" stroke-width="1.6" filter="url(#sombraCard)"/>
+      <circle cx="34" cy="34" r="18" fill="url(#greenBadge)"/>
+      <text x="34" y="40" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">2</text>
+      <text x="62" y="30" font-size="15" font-weight="800" fill="#FFFFFF">🦺 Interventor</text>
+      <text x="62" y="48" font-size="11.5" fill="#6EE7B7" font-family="monospace">inn-interventor</text>
+
+      <text x="20" y="84" font-size="12" fill="#CBD5E1">1. Revisa el resumen y el hash</text>
+      <text x="20" y="104" font-size="12" fill="#CBD5E1">2. Cambia Freighter a esta cuenta</text>
+      <text x="20" y="124" font-size="12" fill="#CBD5E1">3. "Conectar Freighter y firmar"</text>
+
+      <rect x="20" y="144" width="300" height="66" rx="8" fill="#09201D" stroke="#059669"/>
+      <text x="32" y="166" font-size="11" font-weight="700" fill="#34D399">Qué firma:</text>
+      <text x="32" y="184" font-size="11" fill="#CBD5E1">la MISMA invocación — el hash</text>
+      <text x="32" y="200" font-size="11" fill="#CBD5E1">se vuelve a comparar antes de firmar</text>
+    </g>
+
+    <path d="M 802 235 L 848 235" stroke="#475569" stroke-width="2.5" fill="none" marker-end="url(#arrowMuted)"/>
+
+    <!-- Paso 3: Administrador -->
+    <g transform="translate(870, 120)">
+      <rect x="0" y="0" width="340" height="230" rx="14" fill="#0A1428" stroke="#F59E0B" stroke-width="1.8" filter="url(#sombraCard)"/>
+      <circle cx="34" cy="34" r="18" fill="#D97706"/>
+      <text x="34" y="40" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">3</text>
+      <text x="62" y="30" font-size="15" font-weight="800" fill="#FFFFFF">⚖️ Administrador</text>
+      <text x="62" y="48" font-size="11.5" fill="#FDE68A" font-family="monospace">inn-admin</text>
+
+      <text x="20" y="84" font-size="12" fill="#CBD5E1">1. Cambia Freighter a esta cuenta</text>
+      <text x="20" y="104" font-size="12" fill="#CBD5E1">2. "Conectar, firmar y enviar"</text>
+      <text x="20" y="124" font-size="12" fill="#CBD5E1">3. Aprueba las 2 ventanas (firma + tx)</text>
+
+      <rect x="20" y="144" width="300" height="66" rx="8" fill="#201708" stroke="#D97706"/>
+      <text x="32" y="166" font-size="11" font-weight="700" fill="#FBBF24">Qué pasa:</text>
+      <text x="32" y="184" font-size="11" fill="#CBD5E1">firma, envía, espera confirmación</text>
+      <text x="32" y="200" font-size="11" fill="#CBD5E1">y relee get_project para comprobar</text>
+    </g>
+
+    <!-- Resultado -->
+    <g transform="translate(420, 376)">
+      <rect x="0" y="0" width="400" height="30" rx="15" fill="url(#greenBadge)" filter="url(#sombraCard)"/>
+      <text x="200" y="20" font-size="12.5" font-weight="800" fill="#FFFFFF" text-anchor="middle">✅ Proyecto activo en cadena (testnet)</text>
+    </g>
+  </g>
+</svg>
