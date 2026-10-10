@@ -10,13 +10,13 @@
    Uso:
      1. En testnet-registro.html, sección "Estado guardado (depuración)",
         clic en "Mostrar" y copia ese JSON a un archivo, p. ej. estado.json.
-     2. node docs/semana3/verificar-registro.js estado.json
+     2. node contracts/escrow/docs/verificar-registro.js estado.json
 */
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
 
-const raiz = path.join(__dirname, '..', '..');
+const raiz = path.join(__dirname, '..', '..', '..');
 global.window = global;
 global.self = global;
 require(path.join(raiz, 'frontend', 'js', 'vendor', 'stellar.js'));

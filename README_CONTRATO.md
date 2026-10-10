@@ -56,7 +56,7 @@ Este README mezcla explicación simple con detalle técnico exacto (nombres de f
 La solución tiene tres capas, de arriba hacia abajo: la **interfaz** donde cada rol firma, la **lógica de apoyo** (todavía por construir) y el **contrato en Stellar**, que es la única fuente de verdad.
 
 <p align="center">
-  <img src="docs/semana3/img/arquitectura_onchain_v1.svg" alt="Arquitectura on-chain de INN-LOCK: interfaz, servicios y contrato en Stellar" width="100%">
+  <img src="contracts/escrow/docs/img/arquitectura_onchain_v1.svg" alt="Arquitectura on-chain de INN-LOCK: interfaz, servicios y contrato en Stellar" width="100%">
 </p>
 
 En palabras simples:
@@ -352,7 +352,7 @@ Qué hace (`tools/e2e-testnet/run.js`): construye un proyecto de muestra (`lib/p
 ### 6.8 Verificar lo que quedó en testnet
 
 ```bash
-node docs/semana3/verificar-registro.js estado.json
+node contracts/escrow/docs/verificar-registro.js estado.json
 ```
 
 `estado.json` se exporta desde el panel de depuración de `testnet-registro.html` ("Estado guardado" → "Mostrar"). El script relee `get_project` y `get_milestone(0)` del contrato (sin firmar nada) y compara cada campo contra lo que se guardó al firmar.
@@ -385,6 +385,11 @@ De `contracts/escrow/deployments/testnet.json`:
 │       ├── Cargo.toml                # [workspace], soroban-sdk = "28"
 │       ├── AGENTS.md                 # comandos de build/test/deploy confirmados
 │       ├── deployments/testnet.json  # contrato ya desplegado, direcciones de prueba
+│       ├── docs/                     # documentación y herramientas del propio contrato
+│       │   ├── ARQUITECTURA_ONCHAIN.md   # diagrama de capas y detalle de las 3 firmas
+│       │   ├── GUIA_FIRMAS_TESTNET.md    # guía manual paso a paso con Freighter
+│       │   ├── verificar-registro.js     # lee get_project y compara contra lo firmado
+│       │   └── img/arquitectura_onchain_v1.svg
 │       └── contracts/escrow/
 │           ├── src/lib.rs            # el contrato (ver secciones 3-4)
 │           ├── src/test.rs           # tests con mock_auths / mock_all_auths
@@ -417,10 +422,8 @@ De `contracts/escrow/deployments/testnet.json`:
 │   └── vendor-build/                 # empaqueta @stellar/stellar-sdk y freighter-api
 │       └── build.mjs                 # genera frontend/js/vendor/stellar.js
 ├── docs/
-│   └── semana3/
-│       ├── ARQUITECTURA_ONCHAIN.md   # diagrama de capas y detalle de las 3 firmas
-│       ├── GUIA_FIRMAS_TESTNET.md    # guía manual paso a paso con Freighter
-│       └── verificar-registro.js     # lee get_project y compara contra lo firmado
+│   ├── Semana2/ProductBlueprint.md   # historias de usuario y Blueprint original
+│   └── semana3/                      # vacía a propósito (.gitkeep) — su contenido vive en contracts/escrow/docs/
 ├── e2e-testnet.sh                    # atajo: cd tools/e2e-testnet && node run.js
 └── .github/workflows/pages.yml       # publica frontend/ en GitHub Pages al hacer push a main
 ```
@@ -450,15 +453,15 @@ De `contracts/escrow/deployments/testnet.json`:
 
 ## 🔗 Modos de cadena (resumen)
 
-Además del modo real/demostración, la página tiene dos modos de **cadena**, independientes de ese: **simulado** (predeterminado, no toca la red) y **testnet** (lee y firma contra el contrato real). Se activa con `?chain=testnet` en la URL y se recuerda en el navegador. Detalle completo: [`docs/semana3/ARQUITECTURA_ONCHAIN.md`](docs/semana3/ARQUITECTURA_ONCHAIN.md) y [`docs/semana3/GUIA_FIRMAS_TESTNET.md`](docs/semana3/GUIA_FIRMAS_TESTNET.md).
+Además del modo real/demostración, la página tiene dos modos de **cadena**, independientes de ese: **simulado** (predeterminado, no toca la red) y **testnet** (lee y firma contra el contrato real). Se activa con `?chain=testnet` en la URL y se recuerda en el navegador. Detalle completo: [`contracts/escrow/docs/ARQUITECTURA_ONCHAIN.md`](contracts/escrow/docs/ARQUITECTURA_ONCHAIN.md) y [`contracts/escrow/docs/GUIA_FIRMAS_TESTNET.md`](contracts/escrow/docs/GUIA_FIRMAS_TESTNET.md).
 
 <br>
 
 ## Archivos leídos para este README
 
-`contracts/escrow/contracts/escrow/src/lib.rs` · `contracts/escrow/contracts/escrow/src/test.rs` (primeras ~1470 líneas de 2123; el resto son más tests del mismo tipo — congelamiento, cambios de cronograma — cuyos nombres se confirmaron en `test_snapshots/`) · `contracts/escrow/README.md` (genérico, de la plantilla de Soroban, sin información específica de este proyecto) · `contracts/escrow/AGENTS.md` · `contracts/escrow/deployments/testnet.json` · `contracts/escrow/Cargo.toml` · `contracts/escrow/contracts/escrow/Cargo.toml` · `frontend/README.md` · `frontend/js/chain/demo-flujo.js` · `frontend/js/chain/firmantes.js` · `frontend/js/chain/config.js` · `frontend/js/chain/freighter.js` · `frontend/js/wizard.js` · `frontend/js/schedule.js` (primeras 80 líneas) · `frontend/testnet-registro.html` (estructura, no el archivo completo) · `frontend/js/app.js` (rutas `ALLOWED`) · `tools/test-signer/server.js` · `tools/test-signer/lib/lista-blanca.js` (ya conocido de esta misma sesión) · `tools/e2e-testnet/run.js` y `tools/e2e-testnet/lib/*.js` · `e2e-testnet.sh` · `docs/semana3/GUIA_FIRMAS_TESTNET.md` · `docs/semana3/ARQUITECTURA_ONCHAIN.md` · `.github/workflows/pages.yml` · `services/README.md`, `services/keeper/README.md`, `services/verifier/README.md`.
+`contracts/escrow/contracts/escrow/src/lib.rs` · `contracts/escrow/contracts/escrow/src/test.rs` (primeras ~1470 líneas de 2123; el resto son más tests del mismo tipo — congelamiento, cambios de cronograma — cuyos nombres se confirmaron en `test_snapshots/`) · `contracts/escrow/README.md` (genérico, de la plantilla de Soroban, sin información específica de este proyecto) · `contracts/escrow/AGENTS.md` · `contracts/escrow/deployments/testnet.json` · `contracts/escrow/Cargo.toml` · `contracts/escrow/contracts/escrow/Cargo.toml` · `frontend/README.md` · `frontend/js/chain/demo-flujo.js` · `frontend/js/chain/firmantes.js` · `frontend/js/chain/config.js` · `frontend/js/chain/freighter.js` · `frontend/js/wizard.js` · `frontend/js/schedule.js` (primeras 80 líneas) · `frontend/testnet-registro.html` (estructura, no el archivo completo) · `frontend/js/app.js` (rutas `ALLOWED`) · `tools/test-signer/server.js` · `tools/test-signer/lib/lista-blanca.js` (ya conocido de esta misma sesión) · `tools/e2e-testnet/run.js` y `tools/e2e-testnet/lib/*.js` · `e2e-testnet.sh` · `contracts/escrow/docs/GUIA_FIRMAS_TESTNET.md` · `contracts/escrow/docs/ARQUITECTURA_ONCHAIN.md` · `.github/workflows/pages.yml` · `services/README.md`, `services/keeper/README.md`, `services/verifier/README.md`.
 
 **Inconsistencias encontradas entre documentación y código:**
 - `contracts/escrow/README.md` es la plantilla genérica que deja `stellar init`/`soroban init` (menciona un contrato `hello_world` que no existe en este repositorio) — no documenta nada específico de `escrow`. La información real del contrato está en el propio `lib.rs` y en `AGENTS.md`.
-- `frontend/README.md` describe el modo de cadena simulado/testnet como si solo sirviera para **lectura** ("Firmar... se añade en el Paso 8"); el código actual (`register.js`, `demo-flujo.js`, `firmantes.js`) ya firma y envía `register_project` de verdad — ese README quedó desactualizado respecto al estado real del código, aunque `docs/semana3/ARQUITECTURA_ONCHAIN.md` sí está al día.
+- `frontend/README.md` describe el modo de cadena simulado/testnet como si solo sirviera para **lectura** ("Firmar... se añade en el Paso 8"); el código actual (`register.js`, `demo-flujo.js`, `firmantes.js`) ya firma y envía `register_project` de verdad — ese README quedó desactualizado respecto al estado real del código, aunque `contracts/escrow/docs/ARQUITECTURA_ONCHAIN.md` sí está al día.
 - El comando de `stellar contract deploy` en la sección 6.3 es el patrón genérico de `AGENTS.md`, no el comando exacto que se usó para el despliegue real que aparece en `deployments/testnet.json` (ese registro solo guarda el resultado, no el comando) — por eso se marca "por confirmar".

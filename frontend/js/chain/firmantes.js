@@ -26,7 +26,7 @@
         body: JSON.stringify(cuerpo)
       });
     } catch (e) {
-      throw new Error('No se pudo conectar con el servicio de pruebas (tools/test-signer, ' + URL_BASE_PRUEBA + '). ¿Está corriendo? Mira docs/semana3/ARQUITECTURA_ONCHAIN.md.');
+      throw new Error('No se pudo conectar con el servicio de pruebas (tools/test-signer, ' + URL_BASE_PRUEBA + '). ¿Está corriendo? Mira contracts/escrow/docs/ARQUITECTURA_ONCHAIN.md.');
     }
     let json = null;
     try { json = await respuesta.json(); } catch (e) { /* respuesta sin cuerpo JSON */ }

@@ -5,7 +5,7 @@ Paso a paso para probar `register_project` de punta a punta, con las firmas real
 Hay dos formas de probarlo:
 
 - **`testnet-registro.html`** (pasos de abajo): una página de prueba aislada, pensada para verificar la mecánica de las 3 firmas sin depender del resto de la app.
-- **La app real** (`index.html?chain=testnet`, modo demostración — nunca con Supabase real): entra como constructora y envía/reenvía un proyecto en "Nuevo proyecto" (ahí te pide la firma de la constructora); como interventor, apruébalo desde "Solicitudes" (pide la firma del interventor); como administrador, valida y activa desde "Solicitudes" (pide la firma del administrador, envía la transacción y, si todo coincide, activa el proyecto). Ver `docs/semana3/ARQUITECTURA_ONCHAIN.md` sección 4 para el detalle de cómo quedó conectado. El resto de esta guía usa la página de prueba porque es más corta para depurar paso a paso.
+- **La app real** (`index.html?chain=testnet`, modo demostración — nunca con Supabase real): entra como constructora y envía/reenvía un proyecto en "Nuevo proyecto" (ahí te pide la firma de la constructora); como interventor, apruébalo desde "Solicitudes" (pide la firma del interventor); como administrador, valida y activa desde "Solicitudes" (pide la firma del administrador, envía la transacción y, si todo coincide, activa el proyecto). Ver `contracts/escrow/docs/ARQUITECTURA_ONCHAIN.md` sección 4 para el detalle de cómo quedó conectado. El resto de esta guía usa la página de prueba porque es más corta para depurar paso a paso.
 
 ## Antes de empezar
 
@@ -74,7 +74,7 @@ Hay dos formas de probarlo:
 1. En la sección "Estado guardado (depuración)" de la página, clic en **"Mostrar"** y copia ese JSON a un archivo, por ejemplo `estado.json`.
 2. Desde la raíz del repositorio:
    ```bash
-   node docs/semana3/verificar-registro.js estado.json
+   node contracts/escrow/docs/verificar-registro.js estado.json
    ```
 3. El script lee `get_project` y `get_milestone(0)` directamente del contrato (sin firmar nada) y compara cada campo contra lo que guardaste. Si algo no coincide, termina con un `✘` junto al campo y código de salida distinto de cero.
 
@@ -104,7 +104,7 @@ Si estás probando tú solo los 3 roles en la **app real** (no en `testnet-regis
 3. Márcala antes de hacer clic en el botón de firmar/aprobar/activar. Mientras esté marcada, esa acción (y las demás, queda guardado) firma a través del servicio — no se abre ninguna ventana de Freighter, no hace falta cambiar de cuenta.
 4. Desmárcala cuando quieras volver a firmar con Freighter de verdad (por ejemplo, para la demostración final).
 
-El servicio solo firma invocaciones a `register_project` sobre el contrato escrow de `contracts/escrow/deployments/testnet.json` — cualquier otra cosa la rechaza. Las 3 llaves se cargan una sola vez al arrancar (con `stellar keys secret <nombre>`) y quedan solo en memoria de ese proceso; para pruebas de ese servicio en sí (Origin ajeno, lista blanca, que ninguna llave se filtre a la consola), ver `tools/test-signer/__tests__/run.js` (`cd tools/test-signer && node __tests__/run.js`). Más detalle en `docs/semana3/ARQUITECTURA_ONCHAIN.md`.
+El servicio solo firma invocaciones a `register_project` sobre el contrato escrow de `contracts/escrow/deployments/testnet.json` — cualquier otra cosa la rechaza. Las 3 llaves se cargan una sola vez al arrancar (con `stellar keys secret <nombre>`) y quedan solo en memoria de ese proceso; para pruebas de ese servicio en sí (Origin ajeno, lista blanca, que ninguna llave se filtre a la consola), ver `tools/test-signer/__tests__/run.js` (`cd tools/test-signer && node __tests__/run.js`). Más detalle en `contracts/escrow/docs/ARQUITECTURA_ONCHAIN.md`.
 
 ## Problemas comunes
 

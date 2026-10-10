@@ -1,7 +1,7 @@
 /* INN-LOCK · Reutiliza (no copia) los módulos de frontend/js/chain/ y el
    mismo bundle del SDK de Stellar que usa el navegador, dándoles un
    `window`/`self` mínimo para que corran en Node. Es el mismo truco que ya
-   usa docs/semana3/verificar-registro.js. Esta pieza es de SOLO LECTURA de
+   usa contracts/escrow/docs/verificar-registro.js. Esta pieza es de SOLO LECTURA de
    configuración: no pide ninguna llave ni toca la red por sí misma. */
 'use strict';
 const path = require('node:path');

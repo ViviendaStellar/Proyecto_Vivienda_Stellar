@@ -1,6 +1,6 @@
 # Arquitectura on-chain · INN-LOCK
 
-Cómo quedan conectadas las tres capas del [Blueprint](../Semana2/ProductBlueprint.md) (sección 7) ahora que `contracts/escrow` existe y el frontend puede leerlo (y, desde el Paso 8, firmarlo). Las secciones 1-3 cubren hasta el Paso 7 (estructura, adaptador y lectura). La sección 4 documenta el Paso 8: las 3 firmas de `register_project` (constructora, interventor, administrador) ya conectadas a las pantallas reales de la app, en modo demo + testnet.
+Cómo quedan conectadas las tres capas del [Blueprint](../../../docs/Semana2/ProductBlueprint.md) (sección 7) ahora que `contracts/escrow` existe y el frontend puede leerlo (y, desde el Paso 8, firmarlo). Las secciones 1-3 cubren hasta el Paso 7 (estructura, adaptador y lectura). La sección 4 documenta el Paso 8: las 3 firmas de `register_project` (constructora, interventor, administrador) ya conectadas a las pantallas reales de la app, en modo demo + testnet.
 
 ## 1. Las tres capas
 
@@ -102,7 +102,7 @@ En "Solicitudes" y en la ficha del proyecto (`js/wizard.js`, `chainInfoHtml`/`re
 
 ### Prueba automatizada de punta a punta (sin Freighter)
 
-`tools/e2e-testnet/` (fuera de `frontend/`, paquete propio) repite el mismo flujo de 3 firmas contra testnet real, pero sin Freighter: obtiene las llaves de `inn-constructora`/`inn-interventor`/`inn-admin` con la CLI de Stellar en el momento, firma cada rol con su propio `Keypair` en una llamada separada, el administrador firma último y envía, y al final relee `get_project` y compara. También corre los 5 casos negativos del Paso 8 (cuenta equivocada, cronograma modificado, firma caducada, registro doble, porcentajes que no suman 100%). Reutiliza `args.js`, `canonical.js`, `hash.js`, `uuid.js`, `errors.js` y `contract.js` del frontend tal cual, sin copiarlos. Ver `docs/semana3/GUIA_FIRMAS_TESTNET.md` para el comando y los requisitos.
+`tools/e2e-testnet/` (fuera de `frontend/`, paquete propio) repite el mismo flujo de 3 firmas contra testnet real, pero sin Freighter: obtiene las llaves de `inn-constructora`/`inn-interventor`/`inn-admin` con la CLI de Stellar en el momento, firma cada rol con su propio `Keypair` en una llamada separada, el administrador firma último y envía, y al final relee `get_project` y compara. También corre los 5 casos negativos del Paso 8 (cuenta equivocada, cronograma modificado, firma caducada, registro doble, porcentajes que no suman 100%). Reutiliza `args.js`, `canonical.js`, `hash.js`, `uuid.js`, `errors.js` y `contract.js` del frontend tal cual, sin copiarlos. Ver `contracts/escrow/docs/GUIA_FIRMAS_TESTNET.md` para el comando y los requisitos.
 
 ### Firmar sin cambiar de cuenta en Freighter cada vez (`tools/test-signer/`, solo pruebas)
 
@@ -126,7 +126,7 @@ cd tools/test-signer
 INNLOCK_TEST_SIGNER=1 node server.js
 ```
 
-Ver `docs/semana3/GUIA_FIRMAS_TESTNET.md` para el detalle completo (requisitos, cómo probar y pruebas del propio servicio).
+Ver `contracts/escrow/docs/GUIA_FIRMAS_TESTNET.md` para el detalle completo (requisitos, cómo probar y pruebas del propio servicio).
 
 ### Límites conocidos de este piloto
 

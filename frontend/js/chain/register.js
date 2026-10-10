@@ -3,7 +3,7 @@
    Freighter. Solo funciona en modo testnet; nunca toca ni ve una llave
    secreta: Freighter firma, esta pieza solo arma y guarda XDR público.
 
-   Cómo se resuelve la caducidad de las firmas (ver docs/semana3 para más
+   Cómo se resuelve la caducidad de las firmas (ver contracts/escrow/docs para más
    detalle): cada firmante fija SU PROPIO ledger de expiración en el momento
    en que firma (no uno compartido desde el principio). La firma de la
    constructora puede esperar varios DÍAS en localStorage hasta que el
@@ -220,7 +220,7 @@
    * correcta y abre sus ventanas de aprobación. El otro proveedor posible,
    * `window.ChainFirmantes.proveedorPruebaLocal()`, delega la firma al
    * servicio de `tools/test-signer/` (solo testnet + localhost, ver
-   * docs/semana3/ARQUITECTURA_ONCHAIN.md): nunca pasa por Freighter ni por
+   * contracts/escrow/docs/ARQUITECTURA_ONCHAIN.md): nunca pasa por Freighter ni por
    * esta función de ninguna llave, solo le pide al servicio el XDR ya
    * firmado. El resto del flujo (simulación única, hash, caducidad, orden
    * seguro) es IDÉNTICO para los dos proveedores.

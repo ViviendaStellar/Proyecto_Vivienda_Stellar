@@ -4,7 +4,7 @@
    (el predeterminado) nada de este archivo se ejecuta y la app funciona
    exactamente como antes del Paso 8.
 
-   Límite conocido de este piloto (ver docs/semana3/ARQUITECTURA_ONCHAIN.md):
+   Límite conocido de este piloto (ver contracts/escrow/docs/ARQUITECTURA_ONCHAIN.md):
    las 3 direcciones que firman son las 3 cuentas de prueba compartidas de
    `window.ChainConfig.testRoles`, sin importar cuál constructora/interventor
    reales estén asignados al proyecto en la demo. Cuando exista un usuario
@@ -60,7 +60,7 @@
       // lo captura el asistente) directamente como unidades del token de
       // prueba. No hay conversión real a una moneda ni a stroops: el token
       // de testnet no representa dinero real. Documentado en
-      // docs/semana3/ARQUITECTURA_ONCHAIN.md.
+      // contracts/escrow/docs/ARQUITECTURA_ONCHAIN.md.
       presupuestoTotal: String(Math.round(Number(p.budget) || 0)),
       hitos
     };
