@@ -97,11 +97,11 @@
     root.innerHTML = `<div class="login">
       <aside class="login-art"><div class="login-stack">${U.brand()}</div>
         <div class="login-stack"><h1>Tu hogar, <em>protegido</em> desde el primer plano.</h1>
-          <p class="lead">La plataforma que libera el dinero de tu proyecto solo cuando la obra avanza, auditada por un interventor independiente.</p>
+          <p class="lead">Tu dinero se libera solo cuando la obra avanza, auditada por un interventor independiente.</p>
           <ul class="feat">
-            <li><span class="fi">${I('lock')}</span><div><b>Fondos en custodia</b><span>Tu inversión permanece protegida hasta que cada hito se cumple.</span></div></li>
-            <li><span class="fi">${I('clipboard-check')}</span><div><b>Interventoría independiente</b><span>Cada desembolso requiere la firma del interventor.</span></div></li>
-            <li><span class="fi">${I('link-2')}</span><div><b>Trazabilidad en blockchain</b><span>Registros inmutables sobre Stellar y contratos Soroban.</span></div></li>
+            <li>${I('lock')}Fondos en custodia</li>
+            <li>${I('clipboard-check')}Interventoría independiente</li>
+            <li>${I('link-2')}Trazabilidad en blockchain</li>
           </ul></div>
         <div class="login-foot login-stack">${I('shield-check')} Conexión cifrada · Datos protegidos · © 2026 INN-LOCK</div></aside>
       <main class="login-form-wrap"><div class="login-box">
@@ -137,11 +137,11 @@
     root.innerHTML = `<div class="login">
       <aside class="login-art"><div class="login-stack">${U.brand()}</div>
         <div class="login-stack"><h1>Tu hogar, <em>protegido</em> desde el primer plano.</h1>
-          <p class="lead">La plataforma que libera el dinero de tu proyecto solo cuando la obra avanza, auditada por un interventor independiente.</p>
+          <p class="lead">Tu dinero se libera solo cuando la obra avanza, auditada por un interventor independiente.</p>
           <ul class="feat">
-            <li><span class="fi">${I('lock')}</span><div><b>Fondos en custodia</b><span>Tu inversión permanece protegida hasta que cada hito se cumple.</span></div></li>
-            <li><span class="fi">${I('clipboard-check')}</span><div><b>Interventoría independiente</b><span>Cada desembolso requiere la firma del interventor.</span></div></li>
-            <li><span class="fi">${I('link-2')}</span><div><b>Trazabilidad en blockchain</b><span>Registros inmutables sobre Stellar y contratos Soroban.</span></div></li>
+            <li>${I('lock')}Fondos en custodia</li>
+            <li>${I('clipboard-check')}Interventoría independiente</li>
+            <li>${I('link-2')}Trazabilidad en blockchain</li>
           </ul></div>
         <div class="login-foot login-stack">${I('shield-check')} Conexión cifrada · Datos protegidos · © 2026 INN-LOCK</div></aside>
       <main class="login-form-wrap"><div class="login-box">

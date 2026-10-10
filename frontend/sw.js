@@ -1,5 +1,5 @@
 /* INN-LOCK · caché offline de recursos estáticos */
-const V = 'innlock-v6';
+const V = 'innlock-v6b';
 // js/vendor/stellar.js NO va aquí a propósito: pesa ~800 KB y solo se
 // necesita en modo testnet, donde chain/config.js lo carga de forma dinámica.
 // Precargarlo obligaría a descargarlo incluso en modo simulado (el de por defecto).
