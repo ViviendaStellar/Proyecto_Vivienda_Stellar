@@ -68,3 +68,6 @@ Para detener el servidor, presiona `Ctrl + C` en la terminal.
 ## 🔗 Modos de cadena
 
 Además del modo real/demostración de arriba, la página tiene dos modos de **cadena** (independientes de esos): **simulado** (predeterminado, no toca la red) y **testnet** (lee el contrato real en la red de pruebas de Stellar). Se activa con `?chain=testnet` en la URL y se recuerda en el navegador. Detalle completo, diagrama de capas y qué función firma cada rol: [`contracts/escrow/docs/ARQUITECTURA_ONCHAIN.md`](contracts/escrow/docs/ARQUITECTURA_ONCHAIN.md).
+
+Para la especificación técnica formal del contrato inteligente, eventos, máquina de estados y referencia de API en Soroban, consulta [README_CONTRATO.md](README_CONTRATO.md).
+
