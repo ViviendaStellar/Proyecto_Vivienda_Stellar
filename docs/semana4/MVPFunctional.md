@@ -11,7 +11,7 @@
 
 | Evidencia | Enlace |
 |---|---|
-| Video explicativo (problema y funcionamiento de la app) | **PENDIENTE: pegar aquí el enlace del video una vez grabado y subido** |
+| Video explicativo (problema y funcionamiento de la app) | https://www.youtube.com/watch?v=W30a7pI1kq8 |
 
 ### 1.2 Producto en línea
 
@@ -121,7 +121,7 @@ Las tres primeras cuentas se crearon el 9 de octubre a las 15:10 (transacciones 
 
 ### 3.2 Pendientes
 
-- [ ] Grabar y subir el video, y pegar su enlace en la sección 1.1.
+- [x] Grabar y subir el video y poner su enlace en la sección 1.1.
 - [ ] Conectar `report_milestone`, `certify_milestone` y `claim_pending` al frontend.
 - [ ] Ajustar los textos de custodia y mostrar la cobertura del presupuesto.
 - [ ] Probar el registro con correo y la recuperación de contraseña con una cuenta real.
