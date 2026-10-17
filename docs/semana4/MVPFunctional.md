@@ -79,182 +79,85 @@ Las tres primeras cuentas se crearon el 9 de octubre a las 15:10 (transacciones 
 
 ### 2.1 Aprendizajes
 
-1. **La custodia cubre solo la cuota inicial.** Cerca del 30 % del precio. El resto lo financian el banco y la constructora. Hay que decir con precisión qué protege INN-LOCK, sin prometer más.
-2. **Controlar el flujo del dinero, no solo la información, es lo que da valor.** La idea de pagar cada mes contra avance certificado es simple y fácil de explicar a compradores y a constructoras.
-3. **Las funciones de base de datos no deben quedar abiertas por defecto.** Supabase concede permisos de ejecución a usuarios anónimos sobre funciones nuevas. Lo detectamos con pruebas y lo cerramos con una migración propia (migración 8).
-4. **Las firmas on-chain caducan y dependen del contenido.** Si cambia el cronograma, el hash cambia y las firmas ya recogidas dejan de valer. La aplicación las invalida y avisa de qué rol falta firmar.
-5. **Una interfaz saturada no se lee.** En el inicio de sesión había demasiado texto sobre una foto. Lo corregimos poniendo el texto en la parte baja, sobre un degradado, y reduciendo el contenido.
-6. **Probar sin infraestructura es posible.** Una base de datos simulada en el navegador y en Node permite correr cientos de comprobaciones sin Docker.
-7. **El interventor es el punto sensible.** Su independencia define si el modelo se cree. Por eso su pago debe ser de la constructora y no de INN-LOCK.
+1. **Lo que protegemos es la cuota inicial**, cerca del 30 % del precio. El resto lo financian el banco y la constructora, así que no podemos prometer más.
+2. **El valor está en controlar el movimiento del dinero**, no solo en mostrar información.
+3. **Las firmas dependen del contenido.** Si cambia el cronograma, cambia su huella y hay que volver a firmar; la app avisa qué rol falta.
+4. **Supabase abre por defecto las funciones nuevas a usuarios anónimos.** Lo detectamos con pruebas y lo cerramos con la migración 8.
+5. **La independencia del interventor sostiene el modelo.** Por eso su pago debe venir de la constructora y no de INN-LOCK.
 
-### 2.2 Ajustes priorizados
+### 2.2 Ajustes ordenados por impacto y esfuerzo
 
-| Prioridad | Ajuste | Motivo | Estado |
-|---|---|---|---|
-| Alta | Conectar al frontend `report_milestone`, `certify_milestone` y `claim_pending` con transacciones reales en Testnet | Hoy esos pasos se simulan localmente tras el registro | Pendiente |
-| Alta | Cambiar los textos "fondos en custodia / presupuesto protegido" por "cuotas iniciales en custodia" | Evitar prometer más de lo que se cubre | Pendiente |
-| Alta | Definir y mostrar la **cobertura del presupuesto** (cuotas en custodia, crédito constructor y capital propio) | Responde a la objeción de la constructora sobre su flujo de caja | Pendiente |
-| Media | Una billetera propia por usuario, en lugar de las tres cuentas de prueba compartidas | Hoy cualquiera con las llaves de prueba actúa por un rol | Pendiente |
-| Media | Poner en marcha `services/keeper` y `services/verifier` | Revisión de plazos vencidos y conciliación entre cadena y base de datos | Pendiente |
-| Media | Correo de notificaciones y prueba real de registro y recuperación de contraseña | Aún no se probaron con cuentas reales | Pendiente |
-| Baja | Pasarela de pagos y conexión con una fiduciaria o banco | Requiere acuerdos y revisión legal | Pendiente |
-| Baja | Plan de respaldos de la base de datos | El plan gratuito no los incluye | Pendiente |
+| # | Ajuste | Impacto | Esfuerzo | Cuándo |
+|:---:|---|:---:|:---:|---|
+| 1 | Cambiar "fondos en custodia" por "cuotas iniciales en custodia" en la app | Alto | Bajo | Antes del cierre |
+| 2 | Probar registro y recuperación de contraseña con cuentas reales | Medio | Bajo | Antes del cierre |
+| 3 | Conectar al front `report_milestone`, `certify_milestone` y `claim_pending` (hoy solo `register_project` va a la red) | Alto | Medio | Pendiente |
+| 4 | Mostrar la cobertura del presupuesto: cuotas, crédito constructor y capital propio | Alto | Medio | Pendiente |
+| 5 | Billetera propia por usuario en lugar de las tres cuentas de prueba | Alto | Alto | Pendiente |
+| 6 | Poner en marcha `services/keeper` y `services/verifier` | Medio | Medio | Pendiente |
+| 7 | Conexión con una fiduciaria o un banco | Alto | Alto | Pendiente |
 
 ---
 
 ## 3. Riesgos y pendientes
 
-### 3.1 Riesgos
+### 3.1 Riesgos identificados antes del cierre
 
-| Riesgo | Tipo | Impacto | Cómo se mitiga |
-|---|---|---|---|
-| **Custodia de dinero real**: manejar fondos de terceros suele requerir una entidad regulada | Legal | Alto | Operar sobre una fiducia o una entidad regulada. Consultar a un abogado financiero y a la Superintendencia Financiera antes de prometer "custodia" en público |
-| **Todo está en Testnet**: el dinero que se mueve no es real | Técnico | Alto | Decirlo siempre con claridad. La salida a Mainnet es una fase aparte, con auditoría del contrato |
-| **Parte del flujo se simula** (varios pasos tras el registro) | Técnico | Medio | Conectarlos a la cadena (ver ajustes de prioridad alta) |
-| **Llaves de prueba compartidas** | Seguridad | Medio | Solo existen en Testnet y no deben usarse en producción. Migrar a billeteras por usuario |
-| **Plan gratuito de Supabase**: sin respaldos y con límite de ~50 MB por archivo | Operativo | Medio | Plan de respaldo y migración a un plan de pago antes de usar datos reales |
-| **Flujo de caja de la constructora**: liberar por hitos cambia cómo financia la obra | Comercial | Alto | Validar con constructoras. Definir con ellas la cobertura del presupuesto (crédito constructor, capital propio) |
-| **El banco decide**: sin su aceptación, el giro por hitos no se completa | Comercial | Alto | Piloto con un banco y una constructora grande a la vez |
-| **Independencia del interventor** | Reputacional | Alto | Que lo pague la constructora por contrato directo y no INN-LOCK |
-| **Cambios regulatorios** (por ejemplo, el nuevo marco para negocios fiduciarios de 2026) | Legal | Medio | Seguimiento con un abogado. Verificar el texto oficial |
-| **Datos personales de compradores** | Legal | Medio | Revisar la política de privacidad y la ley de protección de datos antes de cargar datos reales |
+| Riesgo | Impacto | Cómo se mitiga |
+|---|:---:|---|
+| **Custodia de dinero real.** Manejar fondos de terceros exige una entidad regulada | Alto | Operar sobre una fiducia. Consultar a un abogado financiero antes de prometer "custodia" en público |
+| **Todo está en Testnet.** El dinero que se mueve no es real | Alto | Decirlo siempre. La salida a Mainnet es otra fase, con auditoría del contrato |
+| **Flujo de caja de la constructora.** Cobrar por etapas cambia cómo financia la obra | Alto | Validarlo con constructoras y mostrar la cobertura del presupuesto |
+| **El banco decide.** Sin su aceptación, el giro por etapas no se completa | Alto | Piloto con un banco y una constructora a la vez |
+| **Independencia del interventor** | Alto | Que lo contrate y pague la constructora, no INN-LOCK |
+| **Parte del flujo se simula.** Después del registro, los pasos no van a la red | Medio | Conectarlos (ajuste 3) |
+| **Llaves de prueba compartidas** | Medio | Solo existen en Testnet. Migrar a billeteras por usuario (ajuste 5) |
+| **Plan gratuito de Supabase**, sin respaldos | Medio | Respaldos y plan de pago antes de cargar datos reales |
+| **Datos personales de compradoras** | Medio | Revisar la política de privacidad y la ley de protección de datos |
 
-### 3.2 Pendientes
+### 3.2 Qué queda por resolver
 
-- [x] Grabar y subir el video y poner su enlace en la sección 1.1.
-- [ ] Conectar `report_milestone`, `certify_milestone` y `claim_pending` al frontend.
-- [ ] Ajustar los textos de custodia y mostrar la cobertura del presupuesto.
-- [ ] Probar el registro con correo y la recuperación de contraseña con una cuenta real.
+- [x] Grabar y subir el video, con su enlace en la sección 1.1.
+- [ ] Ajustes 1 y 2, antes del cierre.
+- [ ] Conectar a la red los pasos posteriores al registro.
 - [ ] Definir con un abogado el esquema de custodia (fiducia u otra entidad regulada).
-- [ ] Ejecutar las pruebas de usabilidad con compradores, constructoras, interventores y administrador (ver sección 4).
-- [ ] Billeteras propias por usuario.
-- [ ] Puesta en marcha del keeper y del verifier.
-- [ ] Plan de respaldos de la base de datos.
+- [ ] Ejecutar el plan de validación de la sección 4.
+- [ ] Billeteras por usuario, keeper, verifier y respaldos de la base de datos.
 
 ---
 
 ## 4. Plan de validación con usuarios
 
-Esta validación busca saber **cómo interactúan los usuarios con la plataforma**: si entienden las pantallas, si completan sus tareas sin ayuda y dónde se confunden o se bloquean. No evalúa el modelo de negocio.
+### 4.1 A quiénes
 
-### 4.1 Objetivos
+| Rol | Perfil | Cuántas personas |
+|---|---|:---:|
+| **Compradora** (usuaria del Problem Brief) | Persona que paga o pagó la cuota inicial de su primera vivienda sobre planos, con cesantías o ahorros, como Laura, de 31 años, en Medellín | 5 |
+| Constructora | Quien administra proyectos o desembolsos en una constructora | 3 |
+| Interventor | Ingeniero o arquitecto con experiencia en interventoría | 3 |
 
-1. Comprobar que cada rol completa sus tareas principales sin ayuda.
-2. Medir cuánto tardan y cuántos errores cometen.
-3. Detectar textos, botones o pasos que confundan.
-4. Medir qué tan clara es la información clave: avance de obra, fondos en custodia, estado de cada hito y estado de las firmas.
-5. Priorizar los ajustes de usabilidad antes de la siguiente versión.
+La compradora es el centro de la validación. Constructora e interventor se incluyen porque sin ellos el dinero no se mueve.
 
-### 4.2 Participantes
+### 4.2 Métodos
 
-| Rol en la plataforma | Perfil | Cantidad sugerida |
-|---|---|---|
-| Comprador | Persona que compró o piensa comprar vivienda sobre planos; no necesita saber de tecnología | 5 |
-| Constructora | Persona que administre proyectos o documentación en una constructora | 3 |
-| Interventor | Ingeniero o arquitecto con experiencia en interventoría o supervisión técnica | 3 |
-| Administrador | Persona del equipo del proyecto con conocimiento de la operación | 1 o 2 |
+1. **Entrevista corta antes de usar el producto**: cómo sigue hoy su obra y su dinero, y cuánta confianza siente (de 1 a 5).
+2. **Prueba con el producto**: cada persona resuelve tareas reales en la app publicada (`?demo=1`, y `?chain=testnet` para las firmas), pensando en voz alta y sin ayuda.
+3. **Métricas**: tareas completadas sin ayuda, errores, tiempo y escala de usabilidad SUS.
+4. **Entrevista corta al final**: confianza después de usarlo y si elegiría un proyecto con INN-LOCK.
 
-Con 5 personas por rol se descubren la mayoría de los problemas de usabilidad más comunes. Para constructoras e interventores, 3 son suficientes para una primera ronda.
+### 4.3 Hipótesis y criterio de éxito
 
-### 4.3 Entorno de la prueba
+| # | Hipótesis | Se cumple si |
+|:---:|---|---|
+| H1 | La compradora entiende cuánto pagó, cuánto sigue retenido y en qué etapa va la obra | 4 de 5 lo explican bien sin ayuda, en menos de 2 minutos |
+| H2 | Ver el dinero retenido y la evidencia certificada aumenta su confianza | La confianza sube al menos 1 punto en 4 de 5 compradoras |
+| H3 | Prefiere un proyecto con INN-LOCK frente a uno sin él | 4 de 5 lo eligen |
+| H4 | La constructora acepta cobrar por etapas certificadas | 2 de 3 aceptan un piloto |
+| H5 | El interventor certifica una etapa con la app sin ayuda | 3 de 3 lo logran |
+| H6 | El producto es fácil de usar | SUS de 68 o más y 80 % de tareas sin ayuda |
 
-- **Versión:** la aplicación publicada en modo demostración (`?demo=1`), con datos ficticios y perfiles ya preparados (el correo y la contraseña se completan solos). Para las tareas con firma en la red, el modo Testnet (`?chain=testnet`) con la billetera Freighter.
-- **Dispositivos:** una parte de las personas en computador y otra en celular, porque la interfaz es responsiva.
-- **Formato:** presencial o por videollamada con pantalla compartida, de 25 a 30 minutos por persona, grabado con permiso.
-- **Quién acompaña:** una persona que guía y otra que toma notas. La que guía no ayuda ni explica, solo lee la tarea y observa.
+### 4.4 Cómo se usan los resultados
 
-### 4.4 Método
+Una hipótesis que no se cumple se revisa antes de construir más. Los problemas que se repitan en dos o más personas pasan a los ajustes de la sección 2.
 
-1. **Bienvenida (2 min).** Se explica que se prueba la plataforma, no a la persona, y se pide permiso para grabar.
-2. **Cuestionario inicial (2 min).** Experiencia con apps financieras o inmobiliarias y con billeteras digitales.
-3. **Tareas (15 a 20 min).** La persona resuelve cada tarea **pensando en voz alta**. No se le dice dónde hacer clic.
-4. **Cuestionario final (5 min).** Escala de usabilidad (SUS) y tres preguntas abiertas.
-
-### 4.5 Tareas por rol
-
-**Comprador**
-
-| # | Tarea | Qué se observa |
-|---|---|---|
-| C1 | Entrar a la plataforma con su perfil | ¿Entiende cómo elegir el perfil y entrar? |
-| C2 | Decir cuánto va avanzado el proyecto y si va al día frente al plan | ¿Encuentra el avance real y la comparación con lo planificado? |
-| C3 | Decir cuánto dinero está protegido en custodia y cuánto se ha desembolsado | ¿Entiende la diferencia entre ambos? |
-| C4 | Encontrar el próximo hito y su estado | ¿Entiende los estados del hito (en revisión, aprobado, observado)? |
-| C5 | Ver cuánto ha pagado y cuál es su próxima cuota | ¿Encuentra "Mi inversión"? |
-| C6 | Descargar o abrir su certificado de protección | ¿Encuentra la opción sin ayuda? |
-| C7 | Abrir las notificaciones | ¿Entiende qué significan? |
-
-**Constructora**
-
-| # | Tarea | Qué se observa |
-|---|---|---|
-| K1 | Revisar el estado de sus documentos legales y subir uno vencido | ¿Entiende qué falta y cómo subirlo? |
-| K2 | Registrar un proyecto nuevo con el asistente de cuatro pasos | ¿Se pierde en algún paso? ¿Entiende los campos? |
-| K3 | Cargar el cronograma con la plantilla de Excel (o armarlo en pantalla) | ¿Entiende los errores de validación (suma 100 %, actividades por mes)? |
-| K4 | Subir la evidencia del mes y enviarla a revisión | ¿Entiende qué debe adjuntar y cómo saber que se envió? |
-| K5 | Pedir un cambio en el cronograma | ¿Encuentra la opción y entiende su efecto? |
-| K6 | (Modo Testnet) Firmar el registro del proyecto con la billetera | ¿Entiende qué está firmando y quién falta por firmar? |
-
-**Interventor**
-
-| # | Tarea | Qué se observa |
-|---|---|---|
-| I1 | Encontrar los hitos pendientes de revisión | ¿Encuentra la bandeja de revisiones? |
-| I2 | Revisar la evidencia de un hito y aprobarlo | ¿Tiene la información que necesita para decidir? |
-| I3 | Observar otro hito dejando una nota para la constructora | ¿Entiende el efecto de observar? |
-| I4 | Revisar una solicitud de cambio de cronograma | ¿Entiende qué cambia y qué decide? |
-| I5 | (Modo Testnet) Certificar un hito con la billetera | ¿Entiende que su firma libera el dinero? |
-
-**Administrador**
-
-| # | Tarea | Qué se observa |
-|---|---|---|
-| A1 | Revisar y aprobar un proyecto enviado por una constructora | ¿Entiende el estado del proyecto y qué aprueba? |
-| A2 | Cambiar el rol de un usuario | ¿Encuentra la sección y entiende los roles? |
-| A3 | Asignar una unidad a un comprador | ¿Entiende el procedimiento? |
-| A4 | Consultar la auditoría de un movimiento | ¿Encuentra el registro y lo entiende? |
-
-### 4.6 Qué se mide
-
-| Métrica | Cómo se mide | Meta propuesta |
-|---|---|---|
-| Éxito de la tarea | Completó sin ayuda / con ayuda / no completó | Al menos 80 % completadas sin ayuda |
-| Tiempo por tarea | Cronómetro desde que se lee la tarea hasta que la termina | Se fija con la prueba piloto interna (tiempo de una persona del equipo × 2) |
-| Errores | Clics equivocados, pantallas visitadas por error, regresos | Menos de 2 errores por tarea |
-| Comprensión | Se pregunta: "¿qué entiendes de lo que ves aquí?" en el avance, los fondos y los estados | Al menos 4 de 5 personas lo explican correctamente |
-| Satisfacción | Escala SUS (10 preguntas, de 0 a 100) | 68 o más (promedio de referencia) |
-| Percepción | "¿Qué tan fácil fue? (1 a 5)" por tarea | Promedio de 4 o más |
-
-### 4.7 Registro de hallazgos
-
-Cada problema se anota con: tarea, persona, qué pasó, cita textual, pantalla, gravedad y propuesta de ajuste.
-
-| Gravedad | Significado |
-|---|---|
-| Crítica | La persona no logra completar la tarea |
-| Alta | La completa con mucha dificultad o con ayuda |
-| Media | Se confunde pero se recupera sola |
-| Baja | Molestia menor o sugerencia |
-
-### 4.8 Cuestionario final
-
-1. Escala SUS (10 afirmaciones, de 1 "muy en desacuerdo" a 5 "muy de acuerdo").
-2. ¿Qué fue lo más fácil de usar?
-3. ¿Qué fue lo más confuso o difícil?
-4. ¿Qué cambiarías o agregarías?
-
-### 4.9 Cronograma propuesto
-
-| Semana | Actividad |
-|---|---|
-| 1 | Preparar tareas y cuestionarios, hacer una prueba piloto interna y ajustar |
-| 2 | Pruebas con compradores y administrador |
-| 3 | Pruebas con constructoras e interventores |
-| 4 | Consolidar hallazgos, priorizar ajustes y definir qué se corrige primero |
-
-### 4.10 Cómo se usarán los resultados
-
-- Los problemas críticos y altos que se repitan en **2 o más personas** pasan a la lista de ajustes de prioridad alta (sección 2.2).
-- Las tareas con menos de 80 % de éxito se rediseñan antes de la siguiente prueba.
-- Se repite una segunda ronda corta con las pantallas corregidas, para comprobar que el cambio funcionó.
-- Los resultados se guardan en esta carpeta, con fecha, perfil de la persona (sin nombre) y los hallazgos.
+El guion completo (tareas por rol, métricas, registro de hallazgos y cronograma de cuatro semanas) está en [`GuionPruebasUsuarios.md`](GuionPruebasUsuarios.md).
